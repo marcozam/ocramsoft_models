@@ -1,0 +1,26 @@
+{
+  "name": "@ocramsoft/models",
+  "version": "1.0.0",
+  "description": "Shared TypeScript models for OcramSoft POS system",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "typescript",
+    "models",
+    "ocramsoft",
+    "pos"
+  ],
+  "author": "Marco Zamora",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "~5.8.2"
+  }
+}
