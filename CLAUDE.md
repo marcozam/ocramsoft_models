@@ -51,11 +51,9 @@ Apply the decision rule above before defining any type locally in BE or FE.
 3. Export from `src/index.ts`.
 4. Bump the package version: **patch** for new file, **minor** for new optional field on existing type.
 5. Run `npm run build` — verify `dist/` is updated.
-6. Ensure both repos reference the local package:
-   - `"@ocramsoft/models": "file:../ocramsoft_models"` in both `package.json` files (local dev default).
-   - Run `npm install` in each consuming repo so `node_modules/@ocramsoft/models` is updated from `dist/`.
+6. Run `npm link` in this repo to register the updated dist globally.
 7. In BE: create/update `src/modules/{feature}/models/{entity}.model.ts` to re-export from `@ocramsoft/models`.
-8. In FE: import the shared type directly with `import type { Xxx } from '@ocramsoft/models'`; remove any local duplicate interface.
+8. In FE: `import type { Xxx } from '@ocramsoft/models'`; remove any local duplicate interface.
 9. Run `npx tsc --noEmit` in both repos — must be error-free before finishing.
 10. Document the new entity in `IMPLEMENTATION.md`.
 
@@ -144,7 +142,7 @@ npm version patch      # or minor / major
 npm publish            # publishes to npm (or GitHub Packages)
 ```
 
-During local development both repos use `"@ocramsoft/models": "file:../ocramsoft_models"`. After `npm install`, changes in `src/` are not picked up until `npm run build` is re-run in this repo.
+**Local development** uses `npm link` — both repos' `package.json` keep `github:marcozam/ocramsoft_models` (production reference) while a `postinstall` hook symlinks the local dist automatically when the `CI` environment variable is not set. Run `setup-local-dev.sh` once per machine, then `npm run build && npm link` in this repo whenever you change source files.
 
 ---
 
