@@ -79,6 +79,12 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductGroup` | `extends SimpleEntity` + `categoryId?` |
 | `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?` |
 
+### `src/entities/optica-examen.ts`
+| Export | Notes |
+|---|---|
+| `OpticaExamenOjo` | Eye measurement: esfera, cilindro, grados, distanciaInterPupilar |
+| `OpticaExamen` | Full exam: patient, optometrista, mica refs, receta flags, both eyes |
+
 ### `src/http/api-response.ts`
 | Export | Notes |
 |---|---|

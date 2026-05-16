@@ -43,12 +43,21 @@ If in doubt, keep it in the originating repo until there is a real consumer on t
 
 ## How to Add a New Shared Model
 
+**Rule: any interface/type used by BOTH `ocramsoft_gateway` and `lock-security-portal` must live here first.**
+Apply the decision rule above before defining any type locally in BE or FE.
+
 1. Create `src/entities/{entity-name}.ts` (or `src/core/` for base types).
 2. Define only what is genuinely shared — no Firestore types, no Angular decorators.
 3. Export from `src/index.ts`.
 4. Bump the package version: **patch** for new file, **minor** for new optional field on existing type.
 5. Run `npm run build` — verify `dist/` is updated.
-6. Update the consuming repo(s): re-run `npm install` and replace the local model import.
+6. Ensure both repos reference the local package:
+   - `"@ocramsoft/models": "file:../ocramsoft_models"` in both `package.json` files (local dev default).
+   - Run `npm install` in each consuming repo so `node_modules/@ocramsoft/models` is updated from `dist/`.
+7. In BE: create/update `src/modules/{feature}/models/{entity}.model.ts` to re-export from `@ocramsoft/models`.
+8. In FE: import the shared type directly with `import type { Xxx } from '@ocramsoft/models'`; remove any local duplicate interface.
+9. Run `npx tsc --noEmit` in both repos — must be error-free before finishing.
+10. Document the new entity in `IMPLEMENTATION.md`.
 
 ### Template for a new entity file
 

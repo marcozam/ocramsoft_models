@@ -5,5 +5,6 @@ export * from './entities/user';
 export * from './entities/branch';
 export * from './entities/customer';
 export * from './entities/product';
+export * from './entities/optica-examen';
 export * from './http/api-response';
 //# sourceMappingURL=index.d.ts.map
