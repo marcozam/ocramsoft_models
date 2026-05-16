@@ -6,18 +6,26 @@ Shared TypeScript models for the OcramSoft POS system. Single source of truth fo
 
 ## Installation
 
-**Local development** (monorepo-style, file reference):
+**Standard (works in local dev and cloud deployments):**
 
 ```bash
-npm install --save ../ocramsoft_models
+npm install --save github:marcozam/ocramsoft_models
 ```
 
-This creates a symlink in `node_modules/@ocramsoft/models`. After any change to this package, run `npm run build` here before the consuming repo picks up the new types.
+This pulls directly from the GitHub repository. The compiled `dist/` is committed so no build step is needed in the consuming environment. A `prepare` script is also included as a fallback for fresh clones.
 
-**Production** (once published to a registry):
+**Pinned to a specific version (recommended for production):**
 
 ```bash
-npm install @ocramsoft/models
+npm install --save github:marcozam/ocramsoft_models#v1.0.0
+```
+
+Replace `v1.0.0` with any tag from the [releases page](https://github.com/marcozam/ocramsoft_models/releases).
+
+**`package.json` reference:**
+
+```json
+"@ocramsoft/models": "github:marcozam/ocramsoft_models"
 ```
 
 ---
