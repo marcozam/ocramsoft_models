@@ -7,4 +7,6 @@ export interface Branch extends BaseEntity {
   email?: string;
   address?: Address;
   isActive: boolean;
+  stockLocationId?: string;
+  pricingId?: string;
 }
