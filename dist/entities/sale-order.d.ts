@@ -3,7 +3,7 @@ import { Address } from './address';
 import { BaseEntity } from '../core/base-entity';
 /** Eagle-view representation of a sale order — no line items or payment breakdown. */
 export interface SaleOrderSummary extends BaseEntity {
-    folioNumber: string;
+    folioNumber: number;
     dateTime: string;
     subtotal: number;
     tax: number;
@@ -64,5 +64,11 @@ export interface CreateSaleRequest {
     deliveryAddress?: Address;
     cashierId?: string;
     cashierName?: string;
+}
+/** Extends CreateSaleRequest with optica exam linkage fields. */
+export interface CreateOpticaSaleRequest extends CreateSaleRequest {
+    examenId: string;
+    tipoMicaId: string;
+    materialId: string;
 }
 //# sourceMappingURL=sale-order.d.ts.map
