@@ -71,4 +71,9 @@ export interface CreateOpticaSaleRequest extends CreateSaleRequest {
     tipoMicaId: string;
     materialId: string;
 }
+/** HTTP request body to register payments for an existing sale order. */
+export interface RegisterSalePaymentsRequest {
+    sessionId: number;
+    payments: SaleOrderPayment[];
+}
 //# sourceMappingURL=sale-order.d.ts.map
