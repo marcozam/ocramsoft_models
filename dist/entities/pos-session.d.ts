@@ -19,4 +19,9 @@ export interface PosSession extends BaseEntity {
     totalSales?: number;
     cashDifference?: number;
 }
+export interface PosSessionExpectedAmount {
+    paymentMethodId: number;
+    paymentMethodName: string;
+    expectedAmount: number;
+}
 //# sourceMappingURL=pos-session.d.ts.map
