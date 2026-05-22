@@ -27,3 +27,14 @@ export interface PosSessionExpectedAmount {
   paymentMethodName: string;
   expectedAmount: number;
 }
+
+export interface StartSessionRequest {
+  branchId: string;
+  cashierId: string;
+  initialCash?: number;
+}
+
+export interface EndSessionRequest {
+  finalCash: number;
+  notes?: string;
+}
