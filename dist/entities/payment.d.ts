@@ -21,5 +21,6 @@ export interface Payment extends BaseEntity {
     amount: number;
     reference?: string;
     initial?: boolean;
+    received?: number;
 }
 //# sourceMappingURL=payment.d.ts.map

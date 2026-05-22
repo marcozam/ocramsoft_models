@@ -32,10 +32,7 @@ export interface SaleOrderItem {
 }
 export interface SaleOrderPayment extends Payment {
     paymentId: number;
-    totalReceived: number;
     dateTime: string;
-    initial: boolean;
-    processedBy: string;
     sessionId: number | null;
 }
 export interface SaleOrderComment {

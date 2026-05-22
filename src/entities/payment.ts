@@ -54,4 +54,5 @@ export interface Payment extends BaseEntity {
   amount: number;
   reference?: string;
   initial?: boolean;
+  received?: number; // For cash payments, the amount of cash received from the customer
 }

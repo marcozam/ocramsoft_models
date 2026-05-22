@@ -26,7 +26,6 @@ export interface PosSessionExpectedAmount {
 }
 export interface StartSessionRequest {
     branchId: string;
-    cashierId?: string;
     initialCash: number;
 }
 export interface EndSessionRequest {
