@@ -1,6 +1,7 @@
 import { Payment } from './payment';
 import { Address } from './address';
 import { BaseEntity } from '../core/base-entity';
+import { MedidasArmazon } from './optica-examen';
 
 /** Eagle-view representation of a sale order — no line items or payment breakdown. */
 export interface SaleOrderSummary extends BaseEntity {
@@ -73,9 +74,10 @@ export interface CreateSaleRequest {
 
 /** Extends CreateSaleRequest with optica exam linkage fields. */
 export interface CreateOpticaSaleRequest extends CreateSaleRequest {
-  examenId:   string;
-  tipoMicaId: string;
-  materialId: string;
+  examenId:          string;
+  tipoMicaId:        string;
+  materialId:        string;
+  frameMeasurements?: MedidasArmazon;
 }
 
 /** HTTP request body to register payments for an existing sale order. */

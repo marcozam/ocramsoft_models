@@ -21,6 +21,19 @@ export interface OpticaExamen {
     ojoDerecho: OpticaExamenOjo | null;
     ojoIzquierdo: OpticaExamenOjo | null;
 }
+export interface MedidasArmazon {
+    anguloNP_D: number;
+    anguloNP_I: number;
+    altura: number;
+    distanciaVertex: number;
+    iniciales?: string;
+    anguloPantoscopico: number;
+    anguloPanoramico: number;
+    A: number;
+    B: number;
+    ED: number;
+    DBL: number;
+}
 export interface CreateOpticaExamenRequest {
     patientId: string;
     tipoMicaRecomendadaId: number;
