@@ -69,6 +69,19 @@ Replace `v1.0.0` with any tag from the [releases page](https://github.com/marcoz
 | `HttpQueryResponse<T>` | List response: `{ success, data[], count, total? }` |
 | `ResponseCode` | Enum of application-level codes (4040, 4010, 2010, …) |
 
+### Utils (`src/utils/`)
+
+| Export | Description |
+|---|---|
+| `formatPersonFullName` | Composes full name from `name`, `paternalSurname`, `maternalSurname` |
+| `normalizeText` | Normalizes text input with safe trim fallback |
+| `normalizeOptionalDate` | Converts optional values into a valid `Date` or `undefined` |
+| `normalizeOptionalPositiveInt` | Parses optional positive integer values with validation |
+| `formatAddress` | Composes a compact display string for address values |
+| `normalizeAddress` | Normalizes casing/trim for core address fields |
+| `getCountryCodeFromName` | Maps country name to `CountryCodes` |
+| `areAddressesSimilar` | Lightweight similarity check for duplicate address detection |
+
 ---
 
 ## Usage
@@ -104,6 +117,16 @@ interface AppUser extends User {
 if (user.roles?.includes(UserRole.ADMIN)) {
   // ...
 }
+
+import {
+  formatPersonFullName,
+  normalizeOptionalDate,
+  formatAddress,
+} from '@ocramsoft/models';
+
+const fullName = formatPersonFullName(customer.person);
+const birthDate = normalizeOptionalDate(customer.person?.dateOfBirth);
+const compactAddress = formatAddress(customer.addresses?.[0]);
 ```
 
 ---

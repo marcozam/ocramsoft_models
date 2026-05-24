@@ -11,7 +11,7 @@ export enum ResponseCode {
 
 export interface HttpApiResponse<T> {
   success: boolean;
-  data?: T;
+  data: T;
   message?: string;
   errorCode?: string;
   count?: number;

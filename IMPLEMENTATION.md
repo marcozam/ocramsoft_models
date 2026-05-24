@@ -13,6 +13,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | 3. BE migration | ✅ Done |
 | 4. FE migration | ✅ Done |
 | 5. Compile verification | ✅ Done |
+| 6. Shared utility layer bootstrap | ✅ Done |
 
 ---
 
@@ -91,6 +92,22 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ResponseCode` | Enum of application response codes |
 | `HttpApiResponse<T>` | Single-item response envelope |
 | `HttpQueryResponse<T>` | List response envelope (new — was implied by FE's BaseRepository) |
+
+### `src/utils/person.utils.ts`
+| Export | Notes |
+|---|---|
+| `formatPersonFullName` | Shared full-name composition for BE/FE |
+| `normalizeText` | Safe trim helper for optional text inputs |
+| `normalizeOptionalDate` | Parses optional date-like values to `Date \| undefined` |
+| `normalizeOptionalPositiveInt` | Shared positive integer parser/validator |
+
+### `src/utils/address.utils.ts`
+| Export | Notes |
+|---|---|
+| `formatAddress` | Shared compact address formatter |
+| `normalizeAddress` | Shared address normalization helper |
+| `getCountryCodeFromName` | Country name → `CountryCodes` mapping |
+| `areAddressesSimilar` | Approximate duplicate-address detection helper |
 
 ---
 
