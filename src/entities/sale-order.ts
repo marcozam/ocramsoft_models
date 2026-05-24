@@ -13,6 +13,7 @@ export interface SaleOrderSummary extends BaseEntity {
   totalPaid: number;
   customerId: number | null;
   customerName?: string;
+  customerPhone?: string;
   branchId: number;
   branchName?: string;
   cashierId: number;

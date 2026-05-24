@@ -1,10 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AddressFactory = void 0;
+exports.validateZipCodeByCountry = validateZipCodeByCountry;
 exports.formatAddress = formatAddress;
 exports.normalizeAddress = normalizeAddress;
 exports.getCountryCodeFromName = getCountryCodeFromName;
 exports.areAddressesSimilar = areAddressesSimilar;
+exports.validateAddress = validateAddress;
+exports.getTimeZone = getTimeZone;
 const address_1 = require("../entities/address");
+function validateZipCodeByCountry(zipCode, countryCode) {
+    const patterns = {
+        [address_1.CountryCodes.US]: /^\d{5}(-\d{4})?$/,
+        [address_1.CountryCodes.CA]: /^[A-Z]\d[A-Z] \d[A-Z]\d$/,
+        [address_1.CountryCodes.ES]: /^\d{5}$/,
+        [address_1.CountryCodes.MX]: /^\d{5}$/,
+        [address_1.CountryCodes.BR]: /^\d{5}-\d{3}$/,
+        [address_1.CountryCodes.AR]: /^[A-Z]\d{4}[A-Z]{3}$/,
+    };
+    const pattern = patterns[countryCode];
+    return pattern ? pattern.test(zipCode.toUpperCase()) : true;
+}
 const COUNTRY_CODE_BY_NAME = {
     'united states': address_1.CountryCodes.US,
     usa: address_1.CountryCodes.US,
@@ -78,6 +94,57 @@ function areAddressesSimilar(address1, address2, threshold = 0.8) {
         5;
     return overallSimilarity >= threshold;
 }
+function validateAddress(address) {
+    const errors = [];
+    if (address.country && address.postalCode) {
+        const countryCode = getCountryCodeFromName(address.country);
+        if (countryCode && !validateZipCodeByCountry(address.postalCode, countryCode)) {
+            errors.push(`Invalid zip code format for ${address.country}`);
+        }
+    }
+    return { isValid: errors.length === 0, errors };
+}
+const TIMEZONE_BY_COUNTRY = {
+    'united states': 'America/New_York',
+    canada: 'America/Toronto',
+    mexico: 'America/Mexico_City',
+    spain: 'Europe/Madrid',
+    france: 'Europe/Paris',
+    germany: 'Europe/Berlin',
+    'united kingdom': 'Europe/London',
+    italy: 'Europe/Rome',
+    brazil: 'America/Sao_Paulo',
+    argentina: 'America/Argentina/Buenos_Aires',
+    colombia: 'America/Bogota',
+    chile: 'America/Santiago',
+};
+function getTimeZone(countryName) {
+    return TIMEZONE_BY_COUNTRY[countryName.trim().toLowerCase()] ?? 'UTC';
+}
+class AddressFactory {
+    static createUSAddress(street, city, state, zipCode) {
+        return { street, city, state, postalCode: zipCode, country: 'United States' };
+    }
+    static createCanadianAddress(street, city, province, postalCode) {
+        return { street, city, state: province, postalCode, country: 'Canada' };
+    }
+    static createSpanishAddress(street, city, province, postalCode) {
+        return { street, city, state: province, postalCode, country: 'Spain' };
+    }
+    static fromString(addressString, country) {
+        const parts = addressString.split(',').map((p) => p.trim());
+        if (parts.length < 3)
+            return null;
+        return {
+            street: parts[0],
+            city: parts[parts.length - 3] ?? '',
+            state: parts[parts.length - 2] ?? '',
+            postalCode: parts[parts.length - 1] ?? '',
+            country,
+        };
+    }
+}
+exports.AddressFactory = AddressFactory;
 function capitalizeWords(value) {
     return value.replace(/\w\S*/g, (word) => {
         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
