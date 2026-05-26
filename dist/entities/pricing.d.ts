@@ -1,6 +1,12 @@
 import { BaseEntity } from '../core/base-entity';
 export interface PricingItem extends BaseEntity {
-    productId: string;
+    id?: number;
+    productId: number;
+    price: number;
+}
+export interface GroupPrice extends BaseEntity {
+    id?: number;
+    groupId: number;
     price: number;
 }
 export interface Pricing extends BaseEntity {
@@ -9,5 +15,6 @@ export interface Pricing extends BaseEntity {
     end?: Date;
     branches?: string[];
     items?: PricingItem[];
+    groups?: GroupPrice[];
 }
 //# sourceMappingURL=pricing.d.ts.map
