@@ -49,6 +49,10 @@ export interface SaleOrderComment {
   comment: string;
 }
 
+export interface CreateSaleCommentRequest {
+  comment: string; // max 250 chars
+}
+
 /**
  * Full sale order.
  * When fetched with details=false only the SaleOrderSummary fields are populated.
@@ -71,6 +75,7 @@ export interface CreateSaleRequest {
   deliveryAddress?: Address;
   cashierId?: string;
   cashierName?: string;
+  comment?: string; // max 250 chars, order-level note
 }
 
 /** Extends CreateSaleRequest with optica exam linkage fields. */

@@ -13,6 +13,7 @@ export interface GroupPrice extends BaseEntity {
 }
 
 export interface Pricing extends BaseEntity {
+  id: string;
   name: string;
   start: Date;
   end?: Date;

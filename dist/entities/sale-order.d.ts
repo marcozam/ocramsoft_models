@@ -42,6 +42,9 @@ export interface SaleOrderComment {
     productId: number | null;
     comment: string;
 }
+export interface CreateSaleCommentRequest {
+    comment: string;
+}
 /**
  * Full sale order.
  * When fetched with details=false only the SaleOrderSummary fields are populated.
@@ -63,6 +66,7 @@ export interface CreateSaleRequest {
     deliveryAddress?: Address;
     cashierId?: string;
     cashierName?: string;
+    comment?: string;
 }
 /** Extends CreateSaleRequest with optica exam linkage fields. */
 export interface CreateOpticaSaleRequest extends CreateSaleRequest {
