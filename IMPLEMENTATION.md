@@ -86,6 +86,11 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `OpticaExamenOjo` | Eye measurement: esfera, cilindro, grados, distanciaInterPupilar |
 | `OpticaExamen` | Full exam: patient, optometrista, mica refs, receta flags, both eyes |
 
+### `src/entities/sale-order.ts`
+| Export | Notes |
+|---|---|
+| `OpticaSaleOrder` | `extends SaleOrder` + `examen: OpticaExamen \| null` — sale order with the exam linked via OpticaExamenVenta (GET /optica/sale/:saleId) |
+
 ### `src/http/api-response.ts`
 | Export | Notes |
 |---|---|
