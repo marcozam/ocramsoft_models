@@ -97,5 +97,12 @@ export interface OpticaSaleOrder extends SaleOrder {
 /** HTTP request body to register payments for an existing sale order. */
 export interface RegisterSalePaymentsRequest {
   sessionId: number;
-  payments: SaleOrderPayment[];
+  payments: Payment[];
+}
+
+/** Response data returned after registering payments for a sale. */
+export interface RegisterSalePaymentsData {
+  saleId: string;
+  registeredPayments: number;
+  totalAmount: number;
 }
