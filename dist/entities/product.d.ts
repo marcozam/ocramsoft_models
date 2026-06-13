@@ -6,6 +6,8 @@ export interface ProductCategory extends BaseEntity {
     hasStock?: boolean;
     requiresProcessing?: boolean;
     isSupply?: boolean;
+    /** When true, products in this category are schedulable services and carry a duration. */
+    isSchedulable?: boolean;
     brands?: ProductBrand[];
 }
 export interface ProductGroup extends SimpleEntity {
@@ -20,5 +22,7 @@ export interface Product extends BaseEntity {
     categoryId?: string;
     brandId?: string;
     groupId?: string;
+    /** Service duration in minutes. Set (> 0) only for schedulable services. */
+    durationMinutes?: number;
 }
 //# sourceMappingURL=product.d.ts.map

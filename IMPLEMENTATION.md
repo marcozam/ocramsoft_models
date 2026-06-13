@@ -78,7 +78,16 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductBrand` | `extends SimpleEntity` — FE alias: `Brand` |
 | `ProductCategory` | Core category shape |
 | `ProductGroup` | `extends SimpleEntity` + `categoryId?` |
-| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?` |
+| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) |
+| `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
+
+### `src/entities/appointment.ts`
+| Export | Notes |
+|---|---|
+| `AppointmentStatus` | enum; values = CatStatus ids under IDUso 403 (40301 SCHEDULED … 40306 NO_SHOW) |
+| `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
+| `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (= Σ), status, notes?, resourceId?` (resource reserved for future) |
+| `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
 
 ### `src/entities/optica-examen.ts`
 | Export | Notes |
