@@ -5,6 +5,8 @@ export interface ProductBrand extends SimpleEntity {}
 export interface ProductCategory extends BaseEntity {
   name: string;
   hasStock?: boolean;
+  /** When true, this category has product groups; products can be assigned a group. */
+  hasGroups?: boolean;
   requiresProcessing?: boolean;
   isSupply?: boolean;
   brands?: ProductBrand[];
