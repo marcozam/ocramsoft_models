@@ -12,6 +12,20 @@ export declare enum AppointmentStatus {
     CANCELLED = 40305,
     NO_SHOW = 40306
 }
+/**
+ * How an appointment was booked. Drives auditing and the booking authority used:
+ * a customer booking their own slot, a staff member booking for a customer, or an
+ * external system booking through the public API.
+ * Values match the SysMD CatCanalAgenda catalog ids.
+ */
+export declare enum BookingChannel {
+    /** The customer booked their own appointment (self-service portal). */
+    SELF_SERVICE = 1,
+    /** A staff member (receptionist/admin) booked on behalf of a customer. */
+    ON_BEHALF = 2,
+    /** An external system booked through the public API (API-key authenticated). */
+    API = 3
+}
 /** A single service booked within an appointment. Duration is snapshotted at booking time. */
 export interface AppointmentService {
     serviceId: number;
@@ -38,7 +52,16 @@ export interface Appointment extends BaseEntity {
     status: AppointmentStatus;
     statusName?: string;
     notes?: string;
+    /** Id of the user (staff or customer principal) who created the booking. */
     createdByUserId?: number;
+    /**
+     * How the booking was made: self-service, staff-on-behalf, or external API.
+     * Optional for backward compatibility with appointments booked before channels
+     * were tracked.
+     */
+    bookingChannel?: BookingChannel;
+    /** Identifier of the external API client, set only when bookingChannel === API. */
+    bookedByApiClientId?: string;
     /**
      * Reserved for the future multi-resource model (staff/station per branch).
      * Unused while scheduling is one-appointment-at-a-time per branch.
