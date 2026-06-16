@@ -2,9 +2,9 @@
 
 This repo is the **single source of truth** for TypeScript interfaces, enums, and HTTP envelope types shared between the POS system's backend (`ocramsoft_gateway`) and frontend (`lock-security-portal`).
 
-Package name: `@ocramsoft/models`  
-Consumed by: BE via `import { ... } from '@ocramsoft/models'` | FE via the same import  
-Dev reference: `"@ocramsoft/models": "file:../ocramsoft_models"` in both `package.json` files
+Package name: `@marcozam/models`  
+Consumed by: BE via `import { ... } from '@marcozam/models'` | FE via the same import  
+Dev reference: `"@marcozam/models": "file:../ocramsoft_models"` in both `package.json` files
 
 ---
 
@@ -52,8 +52,8 @@ Apply the decision rule above before defining any type locally in BE or FE.
 4. Bump the package version: **patch** for new file, **minor** for new optional field on existing type.
 5. Run `npm run build` — verify `dist/` is updated.
 6. Run `npm link` in this repo to register the updated dist globally.
-7. In BE: create/update `src/modules/{feature}/models/{entity}.model.ts` to re-export from `@ocramsoft/models`.
-8. In FE: `import type { Xxx } from '@ocramsoft/models'`; remove any local duplicate interface.
+7. In BE: create/update `src/modules/{feature}/models/{entity}.model.ts` to re-export from `@marcozam/models`.
+8. In FE: `import type { Xxx } from '@marcozam/models'`; remove any local duplicate interface.
 9. Run `npx tsc --noEmit` in both repos — must be error-free before finishing.
 10. Document the new entity in `IMPLEMENTATION.md`.
 
@@ -102,7 +102,7 @@ export * from './entities/example';
 
 ```ts
 // ocramsoft_gateway — extend shared type for BE-specific fields
-import { Branch } from '@ocramsoft/models';
+import { Branch } from '@marcozam/models';
 
 interface BranchDocument extends Branch {
   firestoreDocId: string; // BE-only
@@ -117,7 +117,7 @@ Repository interfaces and request DTOs stay in the BE. Only the core entity shap
 
 ```ts
 // lock-security-portal — use directly or extend for FE view-model
-import { User, UserRole } from '@ocramsoft/models';
+import { User, UserRole } from '@marcozam/models';
 
 interface UserListItem extends User {
   displayLabel: string; // FE-only computed field

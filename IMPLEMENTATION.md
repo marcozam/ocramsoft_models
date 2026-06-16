@@ -19,10 +19,10 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 
 ## Package
 
-- **Name:** `@ocramsoft/models`
+- **Name:** `@marcozam/models`
 - **Location:** `ocramsoft_models/` (sibling directory to `ocramsoft_gateway/` and `lock-security-portal/`)
 - **Output:** `dist/` (compiled CommonJS + `.d.ts`)
-- **Dev reference:** `"@ocramsoft/models": "file:../ocramsoft_models"` in both consumers' `package.json`
+- **Dev reference:** `"@marcozam/models": "file:../ocramsoft_models"` in both consumers' `package.json`
 
 ---
 
@@ -127,7 +127,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ## Migration Strategy
 
 Both repos use a **re-export wrapper** approach:
-- Model files in BE/FE import from `@ocramsoft/models` and re-export
+- Model files in BE/FE import from `@marcozam/models` and re-export
 - Existing imports in the rest of each codebase remain unchanged
 - BE/FE-specific extensions (extra fields, stricter id, Firestore types) stay local
 
@@ -139,7 +139,7 @@ This minimizes the diff and avoids touching controllers, services, repositories.
 
 | File | Change |
 |---|---|
-| `package.json` | Added `@ocramsoft/models` to `dependencies` |
+| `package.json` | Added `@marcozam/models` to `dependencies` |
 | `src/models/nosql.model.ts` | Import+re-export `BaseEntity`, `SimpleEntity` from shared; keep Firestore types |
 | `src/models/address.ts` | Import+re-export `IAddress`, `IAddressCountry`, `IAddressState`, `CountryCodes`, `CommonCountries` from shared; keep `validateZipCodeByCountry` locally |
 | `src/types/http-response.types.ts` | Import+re-export `HttpApiResponse`, `ResponseCode` from shared; add `HttpQueryResponse` |
@@ -155,7 +155,7 @@ This minimizes the diff and avoids touching controllers, services, repositories.
 
 | File | Change |
 |---|---|
-| `package.json` | Added `@ocramsoft/models` to `dependencies` |
+| `package.json` | Added `@marcozam/models` to `dependencies` |
 | `src/app/models/entities.ts` | Import `BaseEntity` from shared; re-export with `id: string` (narrowed to required) |
 | `src/shared/models/named-item.model.ts` | Re-export `NamedItem` from shared |
 | `src/shared/models/address-state.model.ts` | Re-export `AddressState` from shared |

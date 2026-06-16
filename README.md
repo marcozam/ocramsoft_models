@@ -1,4 +1,4 @@
-# @ocramsoft/models
+# @marcozam/models
 
 Shared TypeScript models for the OcramSoft POS system. Single source of truth for interfaces, enums, and HTTP envelope types consumed by both the backend ([ocramsoft_gateway](https://github.com/marcozam/ocramsoft_gateway)) and the frontend ([lock-security-portal](https://github.com/marcozam/lock-security-portal)).
 
@@ -25,7 +25,7 @@ Replace `v1.0.0` with any tag from the [releases page](https://github.com/marcoz
 **`package.json` reference:**
 
 ```json
-"@ocramsoft/models": "github:marcozam/ocramsoft_models"
+"@marcozam/models": "github:marcozam/ocramsoft_models"
 ```
 
 ---
@@ -89,7 +89,7 @@ Replace `v1.0.0` with any tag from the [releases page](https://github.com/marcoz
 ### Backend (Node.js / Express)
 
 ```ts
-import { User, UserRole, HttpApiResponse, Branch } from '@ocramsoft/models';
+import { User, UserRole, HttpApiResponse, Branch } from '@marcozam/models';
 
 // Extend the shared type with BE-specific fields
 interface UserDocument extends User {
@@ -106,7 +106,7 @@ function toResponse(user: User): HttpApiResponse<User> {
 ### Frontend (Angular)
 
 ```ts
-import { User, UserRole, Branch, Address } from '@ocramsoft/models';
+import { User, UserRole, Branch, Address } from '@marcozam/models';
 
 // Narrow id to required for FE use
 interface AppUser extends User {
@@ -122,7 +122,7 @@ import {
   formatPersonFullName,
   normalizeOptionalDate,
   formatAddress,
-} from '@ocramsoft/models';
+} from '@marcozam/models';
 
 const fullName = formatPersonFullName(customer.person);
 const birthDate = normalizeOptionalDate(customer.person?.dateOfBirth);
@@ -139,7 +139,7 @@ npm run build:watch  # watch mode
 npm run clean        # remove dist/
 ```
 
-TypeScript source lives in `src/`. The compiled output in `dist/` is gitignored — consumers run the build locally. Both repos reference this package via `"@ocramsoft/models": "file:../ocramsoft_models"` in their `package.json`.
+TypeScript source lives in `src/`. The compiled output in `dist/` is gitignored — consumers run the build locally. Both repos reference this package via `"@marcozam/models": "file:../ocramsoft_models"` in their `package.json`.
 
 ---
 

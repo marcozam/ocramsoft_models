@@ -1,5 +1,5 @@
 {
-  "name": "@ocramsoft/models",
+  "name": "@marcozam/models",
   "version": "2.6.0",
   "description": "Shared TypeScript models for OcramSoft POS system",
   "main": "dist/index.js",
@@ -7,6 +7,13 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcozam/ocramsoft_models.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
