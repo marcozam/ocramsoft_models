@@ -22,5 +22,17 @@ export interface Product extends BaseEntity {
     categoryId?: string;
     brandId?: string;
     groupId?: string;
+    /** Rich-text (HTML) product description. */
+    description?: string;
+    /** URL of the principal image, when one exists. */
+    mainImageUrl?: string;
+    /** All active images for the product (principal first). */
+    images?: ProductImage[];
+}
+export interface ProductImage {
+    id: string;
+    url: string;
+    isPrincipal: boolean;
+    order: number;
 }
 //# sourceMappingURL=product.d.ts.map
