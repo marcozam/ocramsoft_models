@@ -8,6 +8,7 @@ export * from './entities/product';
 export * from './entities/stock';
 export * from './entities/optica-examen';
 export * from './entities/sale-order';
+export * from './entities/sale-report';
 export * from './http/api-response';
 export * from './entities/payment';
 export * from './entities/pos-session';
