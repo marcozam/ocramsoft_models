@@ -24,6 +24,19 @@ export interface PosSessionExpectedAmount {
     paymentMethodName: string;
     expectedAmount: number;
 }
+/**
+ * Per-payment-method breakdown of a closed cash session, sourced from
+ * CorteCajaDetalle. One row per method: opening float, what the system
+ * expected, what the cashier counted, and the difference between them.
+ */
+export interface PosSessionPaymentBreakdown {
+    paymentMethodId: number;
+    paymentMethodName: string;
+    initialAmount: number;
+    expectedAmount: number;
+    receivedAmount: number;
+    difference: number;
+}
 export interface StartSessionRequest {
     branchId: string;
     initialCash: number;
