@@ -31,6 +31,8 @@ export interface Product extends BaseEntity {
   mainImageUrl?: string;
   /** All active images for the product (principal first). */
   images?: ProductImage[];
+  /** When true, the product is eligible to be sold on the online store. */
+  availableOnline?: boolean;
 }
 
 export interface ProductImage {
