@@ -23,6 +23,7 @@ __exportStar(require("./entities/customer"), exports);
 __exportStar(require("./entities/product"), exports);
 __exportStar(require("./entities/stock"), exports);
 __exportStar(require("./entities/optica-examen"), exports);
+__exportStar(require("./entities/appointment"), exports);
 __exportStar(require("./entities/sale-order"), exports);
 __exportStar(require("./entities/sale-report"), exports);
 __exportStar(require("./http/api-response"), exports);
