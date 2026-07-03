@@ -5,6 +5,7 @@ export * from './entities/user';
 export * from './entities/branch';
 export * from './entities/customer';
 export * from './entities/product';
+export * from './entities/online-store';
 export * from './entities/stock';
 export * from './entities/optica-examen';
 export * from './entities/sale-order';

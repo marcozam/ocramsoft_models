@@ -21,6 +21,7 @@ __exportStar(require("./entities/user"), exports);
 __exportStar(require("./entities/branch"), exports);
 __exportStar(require("./entities/customer"), exports);
 __exportStar(require("./entities/product"), exports);
+__exportStar(require("./entities/online-store"), exports);
 __exportStar(require("./entities/stock"), exports);
 __exportStar(require("./entities/optica-examen"), exports);
 __exportStar(require("./entities/sale-order"), exports);
