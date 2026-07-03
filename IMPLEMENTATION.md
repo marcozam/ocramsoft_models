@@ -99,6 +99,15 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 |---|---|
 | `OpticaSaleOrder` | `extends SaleOrder` + `examen: OpticaExamen \| null` — sale order with the exam linked via OpticaExamenVenta (GET /optica/sale/:saleId) |
 
+### `src/entities/product-sales-report.ts` (v3.1.1)
+| Export | Notes |
+|---|---|
+| `ReportDateRange` | Inclusive `from`/`to` calendar-day range (`YYYY-MM-DD` strings) |
+| `ProductSalesAggregate` | Per-product quantity/revenue/orders aggregate for one period |
+| `ProductSalesComparison` | Comparison-period figures + percent change (null when no prior sales) |
+| `BestSellingProduct` | Aggregate + `previousMonth`/`previousYear` comparisons |
+| `BestSellingProductsReport` | Full report: three periods, overall totals, top products (GET /pos/sale/report/best-selling-products) |
+
 ### `src/http/api-response.ts`
 | Export | Notes |
 |---|---|
