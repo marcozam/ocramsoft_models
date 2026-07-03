@@ -106,6 +106,18 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `HttpApiResponse<T>` | Single-item response envelope |
 | `HttpQueryResponse<T>` | List response envelope (new — was implied by FE's BaseRepository) |
 
+### `src/entities/rules-engine.ts`
+| Export | Notes |
+|---|---|
+| `RuleOperator` | `'eq'\|'ne'\|'lt'\|'lte'\|'gt'\|'gte'\|'between'\|'in'\|'nin'` |
+| `Rule` | `{ field, operator, value }` — one product condition |
+| `ProductRules` | `Rule[]` — a product's conditions (combined with AND) |
+| `ProductWithRules` | `{ productId, rules? }` — no rules ⇒ always matches |
+| `ProductEvaluation` | `{ productId, met }` |
+| `evaluateRule` / `evaluateRules` | Pure evaluators (single rule / product AND) |
+| `evaluateProducts` | Batch: evaluate many products vs the same input object |
+| `filterMatchingProducts` | Batch: return only products that match |
+
 ### `src/utils/person.utils.ts`
 | Export | Notes |
 |---|---|

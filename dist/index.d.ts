@@ -14,5 +14,6 @@ export * from './http/api-response';
 export * from './entities/payment';
 export * from './entities/pos-session';
 export * from './entities/pricing';
+export * from './entities/rules-engine';
 export * from './utils';
 //# sourceMappingURL=index.d.ts.map

@@ -30,5 +30,6 @@ __exportStar(require("./http/api-response"), exports);
 __exportStar(require("./entities/payment"), exports);
 __exportStar(require("./entities/pos-session"), exports);
 __exportStar(require("./entities/pricing"), exports);
+__exportStar(require("./entities/rules-engine"), exports);
 __exportStar(require("./utils"), exports);
 //# sourceMappingURL=index.js.map
