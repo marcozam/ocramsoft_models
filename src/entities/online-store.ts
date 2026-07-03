@@ -8,17 +8,18 @@
  */
 export interface OnlineStoreProduct {
   id: string;
-  sku?: string;
   name: string;
   description?: string;
   /** Unit price from the branch price list, in `currency`. */
   price: number;
   /** ISO 4217 currency (e.g. `MXN`). */
   currency: string;
-  /** Whether the product can currently be purchased. */
+  /**
+   * Whether the product can currently be purchased. Deliberately the only
+   * stock signal exposed to the storefront — the on-hand quantity is an
+   * internal detail and is never surfaced.
+   */
   available: boolean;
-  /** On-hand quantity when the product is inventory-tracked at the branch. */
-  quantity?: number;
   imageUrl?: string;
   brand?: string;
   categoryId?: string;
