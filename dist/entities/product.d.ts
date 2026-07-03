@@ -9,6 +9,8 @@ export interface ProductCategory extends BaseEntity {
     requiresProcessing?: boolean;
     isSupply?: boolean;
     brands?: ProductBrand[];
+    /** Inline SVG markup used as the category's visual reference in card views. */
+    svgImage?: string;
 }
 export interface ProductGroup extends SimpleEntity {
     categoryId?: string;
