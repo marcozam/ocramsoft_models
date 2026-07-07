@@ -28,7 +28,6 @@ export interface HttpApiResponse<T> {
 export interface ExistingEntitySummary {
   id: string;
   name: string;
-  sku?: string;
 }
 
 /** `data` payload shape for 409 `EXISTING` responses. */
