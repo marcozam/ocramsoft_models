@@ -20,6 +20,21 @@ export interface HttpApiResponse<T> {
   nextPageToken?: string | null;
 }
 
+/**
+ * Minimal reference to the record that caused a duplicate conflict.
+ * Returned as the `data` payload of a 409 `EXISTING` response so clients
+ * can link the user to the already-existing record.
+ */
+export interface ExistingEntitySummary {
+  id: string;
+  name: string;
+}
+
+/** `data` payload shape for 409 `EXISTING` responses. */
+export interface DuplicateEntityData {
+  existingEntity: ExistingEntitySummary;
+}
+
 export interface HttpQueryResponse<T> {
   success: boolean;
   data: T[];
