@@ -12,5 +12,6 @@ export interface User extends BaseEntity {
     roles?: UserRole[];
     isActive?: boolean;
     lastLogin?: Date;
+    accountId?: number;
 }
 //# sourceMappingURL=user.d.ts.map
