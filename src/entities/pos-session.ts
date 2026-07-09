@@ -22,10 +22,31 @@ export interface PosSession extends BaseEntity {
   cashDifference?: number;
 }
 
+/**
+ * Per-payment-method money for a session, as served by
+ * GET /pos/session/:id/expected-amounts — the single source of truth for the
+ * close dialog and the session-detail breakdown.
+ *
+ * `expectedAmount` is always live (sales payments + cash float).
+ * `receivedAmount`/`difference` come from the close record (CorteCajaDetalle)
+ * and are null/absent while the session is still open.
+ */
 export interface PosSessionExpectedAmount {
   paymentMethodId: number;
   paymentMethodName: string;
   expectedAmount: number;
+  receivedAmount?: number | null;
+  difference?: number | null;
+}
+
+/**
+ * Envelope of GET /pos/session/:id/expected-amounts: the per-method breakdown
+ * plus the corte's sales totals (cancelled orders excluded).
+ */
+export interface PosSessionExpectedAmounts {
+  expectedAmounts: PosSessionExpectedAmount[];
+  salesCount: number;
+  totalSales: number;
 }
 
 /**
