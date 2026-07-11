@@ -87,6 +87,17 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `StockItem` | Canonical inventory item: `quantity, name?, min?, max?, categoryId?, categoryName?` (extends `BaseEntity`). FE extends with required `id` + `product?`; BE extends with `locationId?` |
 | `IStockItem` | Type alias for `StockItem` — backward compat for the BE name |
 | `StockLocation` | `name, locationType?, locationTypeId?(string\|number), items?` (extends `BaseEntity`). BE narrows `locationTypeId` to required `number`; FE adds `itemsLoaded?, branchId?, branchName?` |
+| `Product.durationMinutes?` | Service duration in minutes (v4.1.0) — set (> 0) only for schedulable services |
+| `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services (v4.1.0) |
+
+### `src/entities/appointment.ts` (v4.1.0)
+| Export | Notes |
+|---|---|
+| `AppointmentStatus` | enum; values = CatStatus ids under IDUso 404 (40401 SCHEDULED … 40406 NO_SHOW) |
+| `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
+| `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (= Σ), status, notes?, resourceId?` (resource reserved for future) |
+| `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
+
 
 ### `src/entities/optica-examen.ts`
 | Export | Notes |
