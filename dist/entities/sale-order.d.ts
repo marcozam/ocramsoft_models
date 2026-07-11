@@ -10,7 +10,12 @@ export interface SaleOrderSummary extends BaseEntity {
     tax: number;
     total: number;
     totalPaid: number;
-    customerId: number | null;
+    /**
+     * Public GUID of the customer (Contacto.PublicId).
+     * The internal numeric contact ID is never exposed by the API.
+     * null = walk-in sale ("público en general").
+     */
+    customerId: string | null;
     customerName?: string;
     customerPhone?: string;
     branchId: number;
@@ -59,6 +64,7 @@ export interface SaleOrder extends SaleOrderSummary {
 export interface CreateSaleRequest {
     sessionId: string;
     branchId?: string;
+    /** Public GUID of the customer (Contacto.PublicId). Omit for walk-in sales. */
     customerId?: string;
     items: SaleOrderItem[];
     payments: Payment[];
