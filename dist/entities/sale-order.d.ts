@@ -10,7 +10,12 @@ export interface SaleOrderSummary extends BaseEntity {
     tax: number;
     total: number;
     totalPaid: number;
-    customerId: number | null;
+    /**
+     * Public GUID of the customer (Contacto.PublicId).
+     * The internal numeric contact ID is never exposed by the API.
+     * null = walk-in sale ("público en general").
+     */
+    customerId: string | null;
     customerName?: string;
     customerPhone?: string;
     branchId: number;
@@ -23,6 +28,10 @@ export interface SaleOrderSummary extends BaseEntity {
     sessionId: number | null;
     /** Computed by the API: total - totalPaid */
     balance: number;
+    /** Customer's own purchase-order reference (max 50 chars). */
+    customerPurchaseOrder?: string;
+    /** Estimated delivery date promised to the customer (YYYY-MM-DD). */
+    estimatedDeliveryDate?: string;
 }
 export interface SaleOrderItem {
     productId: number;
@@ -59,6 +68,7 @@ export interface SaleOrder extends SaleOrderSummary {
 export interface CreateSaleRequest {
     sessionId: string;
     branchId?: string;
+    /** Public GUID of the customer (Contacto.PublicId). Omit for walk-in sales. */
     customerId?: string;
     items: SaleOrderItem[];
     payments: Payment[];
@@ -67,6 +77,10 @@ export interface CreateSaleRequest {
     cashierId?: string;
     cashierName?: string;
     comment?: string;
+    /** Customer's own purchase-order reference (max 50 chars). */
+    customerPurchaseOrder?: string;
+    /** Estimated delivery date promised to the customer (YYYY-MM-DD). */
+    estimatedDeliveryDate?: string;
 }
 /** Extends CreateSaleRequest with optica exam linkage fields. */
 export interface CreateOpticaSaleRequest extends CreateSaleRequest {
