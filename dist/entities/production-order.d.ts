@@ -61,7 +61,12 @@ export interface ProductionOrder extends ProductionOrderSummary {
 }
 /** HTTP request body sent by the FE and received by the BE when creating a production order. */
 export interface CreateProductionOrderRequest {
-    locationId: number;
+    /**
+     * Branch the order is created for (the FE sends the branch selected in the
+     * session). The BE resolves the target stock location from the branch
+     * configuration — the FE never sends a stock location directly.
+     */
+    branchId: string;
     items: {
         productId: number;
         quantity: number;
