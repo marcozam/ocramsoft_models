@@ -28,6 +28,10 @@ export interface SaleOrderSummary extends BaseEntity {
     sessionId: number | null;
     /** Computed by the API: total - totalPaid */
     balance: number;
+    /** Customer's own purchase-order reference (max 50 chars). */
+    customerPurchaseOrder?: string;
+    /** Estimated delivery date promised to the customer (YYYY-MM-DD). */
+    estimatedDeliveryDate?: string;
 }
 export interface SaleOrderItem {
     productId: number;
@@ -73,6 +77,10 @@ export interface CreateSaleRequest {
     cashierId?: string;
     cashierName?: string;
     comment?: string;
+    /** Customer's own purchase-order reference (max 50 chars). */
+    customerPurchaseOrder?: string;
+    /** Estimated delivery date promised to the customer (YYYY-MM-DD). */
+    estimatedDeliveryDate?: string;
 }
 /** Extends CreateSaleRequest with optica exam linkage fields. */
 export interface CreateOpticaSaleRequest extends CreateSaleRequest {
