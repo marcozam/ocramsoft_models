@@ -28,8 +28,8 @@ export interface SaleOrderSummary extends BaseEntity {
     sessionId: number | null;
     /** Computed by the API: total - totalPaid */
     balance: number;
-    /** Customer's own purchase-order reference (max 50 chars). */
-    customerPurchaseOrder?: string;
+    /** Customer-provided reference — purchase order, contract number, etc. (max 50 chars). */
+    reference?: string;
     /** Estimated delivery date promised to the customer (YYYY-MM-DD). */
     estimatedDeliveryDate?: string;
 }
@@ -77,8 +77,8 @@ export interface CreateSaleRequest {
     cashierId?: string;
     cashierName?: string;
     comment?: string;
-    /** Customer's own purchase-order reference (max 50 chars). */
-    customerPurchaseOrder?: string;
+    /** Customer-provided reference — purchase order, contract number, etc. (max 50 chars). */
+    reference?: string;
     /** Estimated delivery date promised to the customer (YYYY-MM-DD). */
     estimatedDeliveryDate?: string;
 }
