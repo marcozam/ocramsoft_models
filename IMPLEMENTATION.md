@@ -99,6 +99,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 |---|---|
 | `OpticaSaleOrder` | `extends SaleOrder` + `examen: OpticaExamen \| null` — sale order with the exam linked via OpticaExamenVenta (GET /optica/sale/:saleId) |
 
+### `src/entities/sale-report.ts` (v4.3.0)
+| Export | Notes |
+|---|---|
+| `SaleSummaryIncomeByPaymentMethod` | Income aggregated by payment method for a period |
+| `SaleSummaryReport` | Monthly branch summary (GET /pos/sale/report/summary) |
+| `ProductSoldByBranchReportItem` | Row of the products-sold-by-branch report: per-branch/product quantity, revenue, current stock (GET /pos/sale/report/products-sold) |
+| `ProductsSoldReportFilters` | Query filters for the products-sold report (date range, branchId, categoryId, inStockOnly) |
+
 ### `src/http/api-response.ts`
 | Export | Notes |
 |---|---|
