@@ -50,7 +50,7 @@ export interface ProductsSoldReportFilters {
     branchId?: number;
     /** Omit for all product categories. */
     categoryId?: number;
-    /** true = only products with current stock > 0 in the row's branch. */
+    /** true = only products whose category manages inventory (stock-managed). */
     inStockOnly?: boolean;
 }
 //# sourceMappingURL=sale-report.d.ts.map
