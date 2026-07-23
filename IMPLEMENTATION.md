@@ -78,8 +78,9 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductBrand` | `extends SimpleEntity` — FE alias: `Brand` |
 | `ProductCategory` | Core category shape |
 | `ProductGroup` | `extends SimpleEntity` + `categoryId?` |
-| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) |
+| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) + `description?, mainImageUrl?, images?, availableOnline?` |
 | `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
+| `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item. BE re-exports it; FE keeps it via the `../products` barrel |
 
 ### `src/entities/appointment.ts`
 | Export | Notes |
@@ -89,6 +90,13 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
 | `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
+
+### `src/entities/stock.ts`
+| Export | Notes |
+|---|---|
+| `StockItem` | Canonical inventory item: `quantity, name?, min?, max?, categoryId?, categoryName?` (extends `BaseEntity`). FE extends with required `id` + `product?`; BE extends with `locationId?` |
+| `IStockItem` | Type alias for `StockItem` — backward compat for the BE name |
+| `StockLocation` | `name, locationType?, locationTypeId?(string\|number), items?` (extends `BaseEntity`). BE narrows `locationTypeId` to required `number`; FE adds `itemsLoaded?, branchId?, branchName?` |
 
 ### `src/entities/optica-examen.ts`
 | Export | Notes |
@@ -100,6 +108,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | Export | Notes |
 |---|---|
 | `OpticaSaleOrder` | `extends SaleOrder` + `examen: OpticaExamen \| null` — sale order with the exam linked via OpticaExamenVenta (GET /optica/sale/:saleId) |
+
+### `src/entities/sale-report.ts` (v4.3.0)
+| Export | Notes |
+|---|---|
+| `SaleSummaryIncomeByPaymentMethod` | Income aggregated by payment method for a period |
+| `SaleSummaryReport` | Monthly branch summary (GET /pos/sale/report/summary) |
+| `ProductSoldByBranchReportItem` | Row of the products-sold-by-branch report: per-branch/product quantity, revenue, current stock (GET /pos/sale/report/products-sold) |
+| `ProductsSoldReportFilters` | Query filters for the products-sold report (date range, branchId, categoryId, inStockOnly) |
 
 ### `src/http/api-response.ts`
 | Export | Notes |
@@ -149,7 +165,9 @@ This minimizes the diff and avoids touching controllers, services, repositories.
 | `src/modules/user/models/user.model.ts` | Import `UserRole` enum from shared; keep BE-specific `UserResponse`, `User`, request DTOs |
 | `src/modules/branch/models/branch.ts` | Import shared `Branch`, extend with BE fields (`code`, `coordinates`, `configuration`) |
 | `src/modules/customer/models/customer.ts` | Import shared `Customer`, `CustomerType`; extend with BE fields |
-| `src/modules/product/models/product.ts` | Import shared base types; extend `ProductCategory` and `Product` with BE fields |
+| `src/modules/product/models/product.ts` | Import shared base types; extend `ProductCategory` and `Product` with BE fields; re-export shared `ProductImage` (local dup removed, v2.6.0) |
+| `src/modules/stock/models/stock.ts` | `IStockItem` now extends shared `StockItem` + BE-only `locationId?`; `StockMovement`/`StockOperationType`/`StockValidation*` stay local (v2.6.0) |
+| `src/modules/stock/models/stock-location.ts` | `StockLocation` extends shared `StockLocation`, narrows `locationTypeId` to required `number` (v2.6.0) |
 
 ## FE File Changes
 
@@ -164,7 +182,8 @@ This minimizes the diff and avoids touching controllers, services, repositories.
 | `src/auth/models/user.model.ts` | Import shared `User`; extend with FE fields; rename `UserRole` interface to `RoleRecord` |
 | `src/app/system/models/branch.model.ts` | Import shared `Branch`; extend with FE fields |
 | `src/app/customers/models/customer.models.ts` | Import shared `Customer`; extend with FE-specific fields |
-| `src/app/products/models/product.models.ts` | Import shared base types; extend with FE-specific fields |
+| `src/app/products/models/product.models.ts` | Import shared base types; extend with FE-specific fields; re-export shared `ProductImage` (local dup + `description`/`mainImageUrl`/`images` removed, v2.6.0) |
+| `src/app/stock/models/index.ts` | `StockItem`/`StockLocation` extend shared types; FE keeps `BaseStockItem`, `StockMovement`, `NoStockProduct`, `LocationListResponse` local (v2.6.0) |
 
 ---
 
@@ -180,6 +199,19 @@ See `CLAUDE.md` for full instructions.
 
 ---
 
+## Evaluated but Kept Local (v2.6.0 Tier-1 review)
+
+These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted — no clean shared superset exists, or the guardrails apply.
+
+| Candidate | Why it stays local |
+|---|---|
+| `StockMovement` | BE shape is a write-command DTO (`{ productId, quantity, locationId? }`); FE shape is a transfer view-model (`extends StockItem { fromLocationId?, toLocationId? }`). Disjoint beyond `quantity`. Command/DTO guardrail → both stay local. |
+| `StockOperationType` (enum) | Used only by BE stock repos/services; no FE consumer. |
+| `StockValidationItem` / `StockValidationResult` / `IStockItem` extra fields | BE validation/repo-only shapes; not dual-consumed. |
+| Optica mica catalog (`TipoMica`/`OpticaMicaTipo`, `MaterialMica`, `TratamientoMica`, price shapes) | Not the same shape across repos: BE (MSSQL) uses English field names + price-detail recordsets (`name`, `tipoMica: string\|null`, `tipoMicaId`); FE (Firebase legacy) uses Spanish names + `keyFB` Firebase keys (`nombre`, `tipoMica: number`, `tipoMicaID`). Field-name + type conflicts and Firebase document shapes → guardrail (Firestore shapes stay local). No clean superset. |
+| `CustomerSearchFilters` | Disjoint field sets — BE `{ customerType?, isActive?, searchTerm?, hasAddress?, ageRange? }` vs FE `{ phone?, name?, email? }`. Filter/query shape, not identical/superset → kept local per the customer rule. |
+| Lock `Device` / `DeviceLock` | No common identity field (BE `DeviceLock` keys off `BaseEntity.id`; FE `Device` keys off `uuid` with no `id`). BE shape carries a behavior method `isLocked()` + lock-domain fields; FE is a 3-field read view with response wrappers. Overlap (`model`, `status`) too thin to justify a shared entity. BE `IDeviceLock`/`DeviceLogs` and FE `DeviceListResponse`/`OTPResponse` stay local regardless. |
+
 ## Breaking Change Log
 
 | Change | Reason |
@@ -188,3 +220,4 @@ See `CLAUDE.md` for full instructions.
 | `BaseEntity.id` is now `id?: string` in shared | BE always had it optional; FE narrows back to required locally |
 | `Address` gains `colonyId?`, `latitude?`, `longitude?` | BE had these fields; added to shared for completeness |
 | `Sexo` enum is now shared | Was FE-only; BE now references it too via shared package |
+| `SaleOrderSummary.customerId` is now `string \| null` (v4.0.0) | Customer IDs exposed by the API are now the contact's public GUID (`Contacto.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). `Customer.id` and `CreateSaleRequest.customerId` were already `string` and now carry the GUID. |
