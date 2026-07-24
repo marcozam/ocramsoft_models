@@ -78,10 +78,20 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductBrand` | `extends SimpleEntity` — FE alias: `Brand` |
 | `ProductCategory` | Core category shape |
 | `ProductGroup` | `extends SimpleEntity` + `categoryId?` |
-| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?` + `description?, mainImageUrl?, images?` (v2.6.0) |
-| `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item (v2.6.0). BE re-exports it; FE keeps it via the `../products` barrel |
+| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) + `description?, mainImageUrl?, images?, availableOnline?` |
+| `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
+| `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item. BE re-exports it; FE keeps it via the `../products` barrel |
 
-### `src/entities/stock.ts` (v2.6.0)
+### `src/entities/appointment.ts`
+| Export | Notes |
+|---|---|
+| `AppointmentStatus` | enum; values = CatStatus ids under IDUso 403 (40301 SCHEDULED … 40306 NO_SHOW) |
+| `BookingChannel` | enum; values = CatCanalAgenda ids (1 SELF_SERVICE, 2 ON_BEHALF, 3 API) — how a booking was made |
+| `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
+| `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
+| `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
+
+### `src/entities/stock.ts`
 | Export | Notes |
 |---|---|
 | `StockItem` | Canonical inventory item: `quantity, name?, min?, max?, categoryId?, categoryName?` (extends `BaseEntity`). FE extends with required `id` + `product?`; BE extends with `locationId?` |
