@@ -33,6 +33,8 @@ export interface SaleOrderSummary extends BaseEntity {
   reference?: string;
   /** Estimated delivery date promised to the customer (YYYY-MM-DD). */
   estimatedDeliveryDate?: string;
+  /** Delivery address chosen at sale time. Absent = no delivery address captured. */
+  deliveryAddress?: Address;
 }
 
 export interface SaleOrderItem {
