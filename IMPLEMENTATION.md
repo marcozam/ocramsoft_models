@@ -91,6 +91,17 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
 
+### `src/entities/booking.ts`
+| Export | Notes |
+|---|---|
+| `BookingOtpRequest` / `BookingOtpVerifyRequest` | Public OTP flow bodies: `{ phone }` and `{ phone, code }` — phone verified via WhatsApp OTP |
+| `BookingCustomer` | `{ exists, name? }` — identity resolved after OTP verify; FE asks for a name when `exists === false` |
+| `BookingOtpVerifyResponse` | `{ token, expiresIn, customer }` — short-lived booking-scoped bearer token |
+| `BookingAvailabilityDay` / `BookingAvailabilityWeek` | Week view of **open slots only** (`date` YYYY-MM-DD + `AppointmentSlot[]`; `weekStart`, `durationMinutes`) |
+| `BookingAppointment` | Customer's own appointment; `id` is the Cita PublicId GUID (internal int id never exposed) |
+| `CreateBookingRequest` | `{ start, customerName?, reason? }` — `customerName` required only for first-time customers |
+| `RescheduleBookingRequest` | `{ start }` — new slot start from the availability endpoint |
+
 ### `src/entities/stock.ts`
 | Export | Notes |
 |---|---|
