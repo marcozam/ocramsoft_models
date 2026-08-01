@@ -58,9 +58,9 @@ export interface BookingAvailabilityWeek {
 export interface BookingAppointment {
     id: string;
     branchName?: string;
-    /** Branch-local wall-clock start, ISO 8601 without timezone designator. */
+    /** ISO 8601 start datetime. */
     start: string;
-    /** Branch-local wall-clock end, ISO 8601 without timezone designator. */
+    /** ISO 8601 end datetime. */
     end: string;
     durationMinutes: number;
     status: AppointmentStatus;
