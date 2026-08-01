@@ -3,44 +3,11 @@ import { AppointmentSlot, AppointmentStatus } from './appointment';
 /**
  * Customer self-service booking flow (public storefront).
  *
- * Identity is a phone number verified through a WhatsApp OTP: the customer
- * requests a code, verifies it, and receives a short-lived booking token that
- * scopes every subsequent call to that verified phone. Internal integer ids
- * never appear here — appointments are addressed by their PublicId GUID.
+ * Identity comes from the generic customer-auth flow (`customer-auth.ts`):
+ * a WhatsApp-OTP-verified phone and its short-lived customer token authorize
+ * every call here. Internal integer ids never appear — appointments are
+ * addressed by their PublicId GUID.
  */
-
-/** Request body for POST /booking/otp/request. */
-export interface BookingOtpRequest {
-  /** Customer phone number in local digits (10-digit MX) — normalized server-side. */
-  phone: string;
-}
-
-/** Request body for POST /booking/otp/verify. */
-export interface BookingOtpVerifyRequest {
-  phone: string;
-  /** The 6-digit code received over WhatsApp. */
-  code: string;
-}
-
-/**
- * The customer identity resolved after OTP verification.
- * When `exists` is false the frontend must ask for the customer's name before
- * booking; the account is created with the first booking.
- */
-export interface BookingCustomer {
-  exists: boolean;
-  /** Display name, present only when the customer already exists. */
-  name?: string;
-}
-
-/** Response body for POST /booking/otp/verify. */
-export interface BookingOtpVerifyResponse {
-  /** Bearer token scoping subsequent booking calls to the verified phone. */
-  token: string;
-  /** Token lifetime in seconds. */
-  expiresIn: number;
-  customer: BookingCustomer;
-}
 
 /** Open slots for one day of the availability week view. */
 export interface BookingAvailabilityDay {
