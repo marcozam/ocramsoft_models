@@ -23,8 +23,9 @@ export interface CustomerOtpVerifyRequest {
 
 /**
  * The customer identity resolved after OTP verification.
- * When `exists` is false the frontend must ask for the customer's name before
- * the first write (booking, order, …); the account is created with it.
+ * When `exists` is false the frontend must collect the customer's name and
+ * call POST /customer-auth/register — the access token is only ever issued
+ * to an existing customer.
  */
 export interface VerifiedCustomer {
   exists: boolean;
@@ -32,11 +33,39 @@ export interface VerifiedCustomer {
   name?: string;
 }
 
-/** Response body for POST /customer-auth/otp/verify. */
-export interface CustomerOtpVerifyResponse {
-  /** Bearer token scoping subsequent customer-facing calls to the verified phone. */
+/**
+ * A full customer access grant. The token carries the customer identifier
+ * (PublicId GUID), so every customer-facing API extracts the customer from
+ * the token itself.
+ */
+export interface CustomerTokenGrant {
+  /** Bearer token scoped to the identified customer. */
   token: string;
   /** Token lifetime in seconds. */
   expiresIn: number;
   customer: VerifiedCustomer;
+}
+
+/**
+ * Response body for POST /customer-auth/otp/verify.
+ *
+ * Exactly one of the two grants is present:
+ * - existing customer → `token` + `expiresIn` (full access grant);
+ * - unknown phone → `registrationToken` + `registrationExpiresIn`, which only
+ *   authorizes POST /customer-auth/register.
+ */
+export interface CustomerOtpVerifyResponse {
+  customer: VerifiedCustomer;
+  /** Access token; present only when the customer exists. */
+  token?: string;
+  expiresIn?: number;
+  /** Registration-only token; present only when the customer does not exist. */
+  registrationToken?: string;
+  registrationExpiresIn?: number;
+}
+
+/** Request body for POST /customer-auth/register (registration token required). */
+export interface RegisterCustomerRequest {
+  /** Customer display name captured by the frontend after OTP verification. */
+  name: string;
 }

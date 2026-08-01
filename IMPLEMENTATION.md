@@ -95,8 +95,10 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | Export | Notes |
 |---|---|
 | `CustomerOtpRequest` / `CustomerOtpVerifyRequest` | Public OTP flow bodies: `{ phone }` and `{ phone, code }` — phone verified via WhatsApp OTP |
-| `VerifiedCustomer` | `{ exists, name? }` — identity resolved after OTP verify; FE asks for a name before the first write when `exists === false` |
-| `CustomerOtpVerifyResponse` | `{ token, expiresIn, customer }` — short-lived customer-scoped bearer token, shared by every customer-facing flow (booking today, online sales next) |
+| `VerifiedCustomer` | `{ exists, name? }` — identity resolved after OTP verify; when `exists === false` the FE collects a name and calls register |
+| `CustomerTokenGrant` | `{ token, expiresIn, customer }` — full access grant; the token carries the customer PublicId, shared by every customer-facing flow (booking today, online sales next) |
+| `CustomerOtpVerifyResponse` | `{ customer }` + either the access grant (existing customer) or `registrationToken`/`registrationExpiresIn` (unknown phone — only authorizes register) |
+| `RegisterCustomerRequest` | `{ name }` — creates the customer for the OTP-verified phone and returns the access grant |
 
 ### `src/entities/booking.ts`
 | Export | Notes |

@@ -47,11 +47,6 @@ export interface BookingAppointment {
 export interface CreateBookingRequest {
   /** Slot start exactly as returned by the availability endpoint. */
   start: string;
-  /**
-   * Customer display name. Required when the verified phone has no customer
-   * yet (BookingCustomer.exists === false); ignored otherwise.
-   */
-  customerName?: string;
   /** Free-text reason for the visit (e.g. the pet and symptom). */
   reason?: string;
 }
