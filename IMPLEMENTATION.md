@@ -221,3 +221,4 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `Address` gains `colonyId?`, `latitude?`, `longitude?` | BE had these fields; added to shared for completeness |
 | `Sexo` enum is now shared | Was FE-only; BE now references it too via shared package |
 | `SaleOrderSummary.customerId` is now `string \| null` (v4.0.0) | Customer IDs exposed by the API are now the contact's public GUID (`Contacto.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). `Customer.id` and `CreateSaleRequest.customerId` were already `string` and now carry the GUID. |
+| `SaleOrderSummary.id` documented as the sale's public GUID (v4.6.1) | Sale IDs exposed by the API are now the order's public GUID (`OrdenVenta.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). The type was already `id?: string`, so this is a doc-only clarification — no consumer code change required. |

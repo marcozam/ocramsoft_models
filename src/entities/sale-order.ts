@@ -5,6 +5,12 @@ import { MedidasArmazon, OpticaExamen } from './optica-examen';
 
 /** Eagle-view representation of a sale order — no line items or payment breakdown. */
 export interface SaleOrderSummary extends BaseEntity {
+  /**
+   * Public GUID of the sale (OrdenVenta.PublicId).
+   * The internal numeric order ID is never exposed by the API; all
+   * sale endpoints take and return this GUID.
+   */
+  id?: string;
   folioNumber: number;
   dateTime: string;
   subtotal: number;
