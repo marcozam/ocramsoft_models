@@ -78,10 +78,37 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductBrand` | `extends SimpleEntity` — FE alias: `Brand` |
 | `ProductCategory` | Core category shape |
 | `ProductGroup` | `extends SimpleEntity` + `categoryId?` |
-| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?` + `description?, mainImageUrl?, images?` (v2.6.0) |
-| `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item (v2.6.0). BE re-exports it; FE keeps it via the `../products` barrel |
+| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) + `description?, mainImageUrl?, images?, availableOnline?` |
+| `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
+| `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item. BE re-exports it; FE keeps it via the `../products` barrel |
 
-### `src/entities/stock.ts` (v2.6.0)
+### `src/entities/appointment.ts`
+| Export | Notes |
+|---|---|
+| `AppointmentStatus` | enum; values = CatStatus ids under IDUso 403 (40301 SCHEDULED … 40306 NO_SHOW) |
+| `BookingChannel` | enum; values = CatCanalAgenda ids (1 SELF_SERVICE, 2 ON_BEHALF, 3 API) — how a booking was made |
+| `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
+| `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
+| `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
+
+### `src/entities/customer-auth.ts`
+| Export | Notes |
+|---|---|
+| `CustomerOtpRequest` / `CustomerOtpVerifyRequest` | Public OTP flow bodies: `{ phone }` and `{ phone, code }` — phone verified via WhatsApp OTP |
+| `VerifiedCustomer` | `{ exists, name? }` — identity resolved after OTP verify; when `exists === false` the FE collects a name and calls register |
+| `CustomerTokenGrant` | `{ token, expiresIn, customer }` — full access grant; the token carries the customer PublicId, shared by every customer-facing flow (booking today, online sales next) |
+| `CustomerOtpVerifyResponse` | `{ customer }` + either the access grant (existing customer) or `registrationToken`/`registrationExpiresIn` (unknown phone — only authorizes register) |
+| `RegisterCustomerRequest` | `{ name }` — creates the customer for the OTP-verified phone and returns the access grant |
+
+### `src/entities/booking.ts`
+| Export | Notes |
+|---|---|
+| `BookingAvailabilityDay` / `BookingAvailabilityWeek` | Week view of **open slots only** (`date` YYYY-MM-DD + `AppointmentSlot[]`; `weekStart`, `durationMinutes`) |
+| `BookingAppointment` | Customer's own appointment; `id` is the Cita PublicId GUID (internal int id never exposed) |
+| `CreateBookingRequest` | `{ start, customerName?, reason? }` — `customerName` required only for first-time customers |
+| `RescheduleBookingRequest` | `{ start }` — new slot start from the availability endpoint |
+
+### `src/entities/stock.ts`
 | Export | Notes |
 |---|---|
 | `StockItem` | Canonical inventory item: `quantity, name?, min?, max?, categoryId?, categoryName?` (extends `BaseEntity`). FE extends with required `id` + `product?`; BE extends with `locationId?` |
@@ -98,6 +125,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | Export | Notes |
 |---|---|
 | `OpticaSaleOrder` | `extends SaleOrder` + `examen: OpticaExamen \| null` — sale order with the exam linked via OpticaExamenVenta (GET /optica/sale/:saleId) |
+
+### `src/entities/sale-report.ts` (v4.3.0)
+| Export | Notes |
+|---|---|
+| `SaleSummaryIncomeByPaymentMethod` | Income aggregated by payment method for a period |
+| `SaleSummaryReport` | Monthly branch summary (GET /pos/sale/report/summary) |
+| `ProductSoldByBranchReportItem` | Row of the products-sold-by-branch report: per-branch/product quantity, revenue, current stock (GET /pos/sale/report/products-sold) |
+| `ProductsSoldReportFilters` | Query filters for the products-sold report (date range, branchId, categoryId, inStockOnly) |
 
 ### `src/http/api-response.ts`
 | Export | Notes |
@@ -214,3 +249,4 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `BaseEntity.id` is now `id?: string` in shared | BE always had it optional; FE narrows back to required locally |
 | `Address` gains `colonyId?`, `latitude?`, `longitude?` | BE had these fields; added to shared for completeness |
 | `Sexo` enum is now shared | Was FE-only; BE now references it too via shared package |
+| `SaleOrderSummary.customerId` is now `string \| null` (v4.0.0) | Customer IDs exposed by the API are now the contact's public GUID (`Contacto.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). `Customer.id` and `CreateSaleRequest.customerId` were already `string` and now carry the GUID. |

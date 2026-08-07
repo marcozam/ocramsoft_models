@@ -115,11 +115,28 @@ export function areAddressesSimilar(
 export function validateAddress(address: Address): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
 
-  if (address.country && address.postalCode) {
+  if (!address.street?.trim()) {
+    errors.push('Street is required');
+  }
+  if (!address.city?.trim()) {
+    errors.push('City is required');
+  }
+  const hasStateId = typeof address.stateId === 'number' && address.stateId > 0;
+  if (!address.state?.trim() && !hasStateId) {
+    errors.push('State is required');
+  }
+
+  const postalCode = address.postalCode?.trim();
+  if (!postalCode) {
+    errors.push('Postal code is required');
+  } else if (address.country?.trim()) {
     const countryCode = getCountryCodeFromName(address.country);
-    if (countryCode && !validateZipCodeByCountry(address.postalCode, countryCode)) {
+    if (countryCode && !validateZipCodeByCountry(postalCode, countryCode)) {
       errors.push(`Invalid zip code format for ${address.country}`);
     }
+  } else if (!validateZipCodeByCountry(postalCode, CountryCodes.MX)) {
+    // No country provided — default market is Mexico (5-digit zip)
+    errors.push('Invalid zip code format');
   }
 
   return { isValid: errors.length === 0, errors };
