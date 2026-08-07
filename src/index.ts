@@ -17,5 +17,6 @@ export * from './entities/pos-session';
 export * from './entities/pricing';
 export * from './entities/appointment';
 export * from './entities/customer-auth';
+export * from './entities/customer-pet';
 export * from './entities/booking';
 export * from './utils';

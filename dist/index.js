@@ -33,6 +33,7 @@ __exportStar(require("./entities/pos-session"), exports);
 __exportStar(require("./entities/pricing"), exports);
 __exportStar(require("./entities/appointment"), exports);
 __exportStar(require("./entities/customer-auth"), exports);
+__exportStar(require("./entities/customer-pet"), exports);
 __exportStar(require("./entities/booking"), exports);
 __exportStar(require("./utils"), exports);
 //# sourceMappingURL=index.js.map

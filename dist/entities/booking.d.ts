@@ -37,13 +37,18 @@ export interface BookingAppointment {
     status: AppointmentStatus;
     statusName?: string;
     reason?: string;
+    /** PublicId of the pet receiving the service. */
+    petId?: string;
+    petName?: string;
 }
 /** Request body for POST /booking/appointments. */
 export interface CreateBookingRequest {
     /** Slot start exactly as returned by the availability endpoint. */
     start: string;
-    /** Free-text reason for the visit (e.g. the pet and symptom). */
+    /** Free-text reason for the visit (e.g. the symptom). */
     reason?: string;
+    /** PublicId of the customer's pet receiving the service. */
+    petId?: string;
 }
 /** Request body for PUT /booking/appointments/:id/reschedule. */
 export interface RescheduleBookingRequest {
