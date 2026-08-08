@@ -67,12 +67,6 @@ export interface Appointment extends BaseEntity {
    */
   reason?: string;
   notes?: string;
-  /**
-   * Names of the pets attending, aggregated from the CitaXMascotas link table
-   * ("Firulais, Michi"). Appointments are pet-agnostic; the association lives
-   * in its own table.
-   */
-  petNames?: string | null;
   /** Id of the user (staff or customer principal) who created the booking. */
   createdByUserId?: number;
   /**

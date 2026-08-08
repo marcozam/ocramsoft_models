@@ -41,8 +41,18 @@ export interface BookingAppointment {
   status: AppointmentStatus;
   statusName?: string;
   reason?: string;
-  /** Names of the pets attending, as a display summary ("Firulais, Michi"). */
-  petNames?: string;
+}
+
+/**
+ * A pet attending an appointment, fetched on demand when the appointment is
+ * selected (GET /booking/appointments/:id/pets) — appointment reads never
+ * embed pet data.
+ */
+export interface AppointmentPet {
+  /** Pet PublicId GUID. */
+  id: string;
+  name: string;
+  speciesName?: string;
 }
 
 /** Request body for POST /booking/appointments. */
