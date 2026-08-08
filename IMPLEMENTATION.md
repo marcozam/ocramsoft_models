@@ -91,6 +91,23 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
 
+### `src/entities/customer-auth.ts`
+| Export | Notes |
+|---|---|
+| `CustomerOtpRequest` / `CustomerOtpVerifyRequest` | Public OTP flow bodies: `{ phone }` and `{ phone, code }` — phone verified via WhatsApp OTP |
+| `VerifiedCustomer` | `{ exists, name? }` — identity resolved after OTP verify; when `exists === false` the FE collects a name and calls register |
+| `CustomerTokenGrant` | `{ token, expiresIn, customer }` — full access grant; the token carries the customer PublicId, shared by every customer-facing flow (booking today, online sales next) |
+| `CustomerOtpVerifyResponse` | `{ customer }` + either the access grant (existing customer) or `registrationToken`/`registrationExpiresIn` (unknown phone — only authorizes register) |
+| `RegisterCustomerRequest` | `{ name }` — creates the customer for the OTP-verified phone and returns the access grant |
+
+### `src/entities/booking.ts`
+| Export | Notes |
+|---|---|
+| `BookingAvailabilityDay` / `BookingAvailabilityWeek` | Week view of **open slots only** (`date` YYYY-MM-DD + `AppointmentSlot[]`; `weekStart`, `durationMinutes`) |
+| `BookingAppointment` | Customer's own appointment; `id` is the Cita PublicId GUID (internal int id never exposed) |
+| `CreateBookingRequest` | `{ start, customerName?, reason? }` — `customerName` required only for first-time customers |
+| `RescheduleBookingRequest` | `{ start }` — new slot start from the availability endpoint |
+
 ### `src/entities/stock.ts`
 | Export | Notes |
 |---|---|
@@ -221,4 +238,4 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `Address` gains `colonyId?`, `latitude?`, `longitude?` | BE had these fields; added to shared for completeness |
 | `Sexo` enum is now shared | Was FE-only; BE now references it too via shared package |
 | `SaleOrderSummary.customerId` is now `string \| null` (v4.0.0) | Customer IDs exposed by the API are now the contact's public GUID (`Contacto.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). `Customer.id` and `CreateSaleRequest.customerId` were already `string` and now carry the GUID. |
-| `SaleOrderSummary.id` documented as the sale's public GUID (v4.6.1) | Sale IDs exposed by the API are now the order's public GUID (`OrdenVenta.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). The type was already `id?: string`, so this is a doc-only clarification — no consumer code change required. |
+| `SaleOrderSummary.id` documented as the sale's public GUID (v4.7.1) | Sale IDs exposed by the API are now the order's public GUID (`OrdenVenta.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). The type was already `id?: string`, so this is a doc-only clarification — no consumer code change required. |
