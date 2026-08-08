@@ -63,11 +63,12 @@ export interface Appointment extends BaseEntity {
      */
     reason?: string;
     notes?: string;
-    /** Internal id of the pet (Mascota) receiving the service; staff APIs only. */
-    petId?: number | null;
-    /** Pet PublicId GUID — the only pet identifier serialized to public flows. */
-    petPublicId?: string | null;
-    petName?: string | null;
+    /**
+     * Names of the pets attending, aggregated from the CitaXMascotas link table
+     * ("Firulais, Michi"). Appointments are pet-agnostic; the association lives
+     * in its own table.
+     */
+    petNames?: string | null;
     /** Id of the user (staff or customer principal) who created the booking. */
     createdByUserId?: number;
     /**

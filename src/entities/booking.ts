@@ -41,9 +41,8 @@ export interface BookingAppointment {
   status: AppointmentStatus;
   statusName?: string;
   reason?: string;
-  /** PublicId of the pet receiving the service. */
-  petId?: string;
-  petName?: string;
+  /** Names of the pets attending, as a display summary ("Firulais, Michi"). */
+  petNames?: string;
 }
 
 /** Request body for POST /booking/appointments. */
@@ -52,8 +51,12 @@ export interface CreateBookingRequest {
   start: string;
   /** Free-text reason for the visit (e.g. the symptom). */
   reason?: string;
-  /** PublicId of the customer's pet receiving the service. */
-  petId?: string;
+  /**
+   * PublicIds of the customer's pets attending. Optional at the API level —
+   * appointments are pet-agnostic in storage (CitaXMascotas link table) —
+   * though the storefront flow requires at least one.
+   */
+  petIds?: string[];
 }
 
 /** Request body for PUT /booking/appointments/:id/reschedule. */
