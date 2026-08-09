@@ -26,10 +26,16 @@ __exportStar(require("./entities/stock"), exports);
 __exportStar(require("./entities/optica-examen"), exports);
 __exportStar(require("./entities/appointment"), exports);
 __exportStar(require("./entities/sale-order"), exports);
+__exportStar(require("./entities/production-order"), exports);
 __exportStar(require("./entities/sale-report"), exports);
 __exportStar(require("./http/api-response"), exports);
 __exportStar(require("./entities/payment"), exports);
 __exportStar(require("./entities/pos-session"), exports);
 __exportStar(require("./entities/pricing"), exports);
+__exportStar(require("./entities/appointment"), exports);
+__exportStar(require("./entities/customer-auth"), exports);
+__exportStar(require("./entities/customer-pet"), exports);
+__exportStar(require("./entities/booking"), exports);
+__exportStar(require("./entities/online-store-checkout"), exports);
 __exportStar(require("./utils"), exports);
 //# sourceMappingURL=index.js.map

@@ -9,6 +9,8 @@ export interface ProductCategory extends BaseEntity {
   hasGroups?: boolean;
   requiresProcessing?: boolean;
   isSupply?: boolean;
+  /** When true, products in this category are schedulable services and carry a duration. */
+  isSchedulable?: boolean;
   brands?: ProductBrand[];
   /** When true, products in this category can be scheduled/booked for appointments. */
   isSchedulable?: boolean;
@@ -27,6 +29,8 @@ export interface Product extends BaseEntity {
   categoryId?: string;
   brandId?: string;
   groupId?: string;
+  /** Service duration in minutes. Set (> 0) only for schedulable services. */
+  durationMinutes?: number;
   /** Rich-text (HTML) product description. */
   description?: string;
   /** URL of the principal image, when one exists. */

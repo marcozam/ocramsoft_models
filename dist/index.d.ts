@@ -10,10 +10,16 @@ export * from './entities/stock';
 export * from './entities/optica-examen';
 export * from './entities/appointment';
 export * from './entities/sale-order';
+export * from './entities/production-order';
 export * from './entities/sale-report';
 export * from './http/api-response';
 export * from './entities/payment';
 export * from './entities/pos-session';
 export * from './entities/pricing';
+export * from './entities/appointment';
+export * from './entities/customer-auth';
+export * from './entities/customer-pet';
+export * from './entities/booking';
+export * from './entities/online-store-checkout';
 export * from './utils';
 //# sourceMappingURL=index.d.ts.map

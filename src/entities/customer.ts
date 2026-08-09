@@ -7,6 +7,11 @@ export enum CustomerType {
   BUSINESS = 2,
 }
 
+/**
+ * Customer (CRM contact).
+ * `id` is the contact's public GUID (Contacto.PublicId) — the internal
+ * numeric contact ID is never exposed by the API.
+ */
 export interface Customer extends BaseEntity {
   phone: string;
   email?: string;

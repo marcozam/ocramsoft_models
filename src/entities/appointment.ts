@@ -42,6 +42,12 @@ export interface AppointmentService {
  * where durationMinutes is the sum of the booked services' durations.
  */
 export interface Appointment extends BaseEntity {
+  /**
+   * Frontend-safe GUID (Cita.PublicId). The customer self-service flow
+   * addresses appointments exclusively by this id; the internal integer `id`
+   * stays within staff-facing APIs.
+   */
+  publicId?: string;
   branchId: number;
   branchName?: string;
   customerId: number;
@@ -55,6 +61,11 @@ export interface Appointment extends BaseEntity {
   durationMinutes: number;
   status: AppointmentStatus;
   statusName?: string;
+  /**
+   * Free-text reason for the visit, captured at booking time (Phase 1 manual
+   * scheduler). Complements `services` — a booking may have either or both.
+   */
+  reason?: string;
   notes?: string;
   /** Id of the user (staff or customer principal) who created the booking. */
   createdByUserId?: number;
