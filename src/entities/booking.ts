@@ -43,12 +43,30 @@ export interface BookingAppointment {
   reason?: string;
 }
 
+/**
+ * A pet attending an appointment, fetched on demand when the appointment is
+ * selected (GET /booking/appointments/:id/pets) — appointment reads never
+ * embed pet data.
+ */
+export interface AppointmentPet {
+  /** Pet PublicId GUID. */
+  id: string;
+  name: string;
+  speciesName?: string;
+}
+
 /** Request body for POST /booking/appointments. */
 export interface CreateBookingRequest {
   /** Slot start exactly as returned by the availability endpoint. */
   start: string;
-  /** Free-text reason for the visit (e.g. the pet and symptom). */
+  /** Free-text reason for the visit (e.g. the symptom). */
   reason?: string;
+  /**
+   * PublicIds of the customer's pets attending. Optional at the API level —
+   * appointments are pet-agnostic in storage (CitaXMascotas link table) —
+   * though the storefront flow requires at least one.
+   */
+  petIds?: string[];
 }
 
 /** Request body for PUT /booking/appointments/:id/reschedule. */
