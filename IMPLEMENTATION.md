@@ -108,6 +108,17 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `CreateBookingRequest` | `{ start, customerName?, reason? }` — `customerName` required only for first-time customers |
 | `RescheduleBookingRequest` | `{ start }` — new slot start from the availability endpoint |
 
+### `src/entities/online-store-checkout.ts`
+| Export | Notes |
+|---|---|
+| `OnlineOrderPaymentMethod` | `'bank_transfer'` — the only online payment method today (SPEI, validated by staff) |
+| `OnlineOrderItemRequest` | `{ productId, quantity }` — cart line; prices are always resolved server-side |
+| `PlaceOnlineOrderRequest` | `{ items, shippingAddress: Address, shippingReferences?, paymentMethod, comment? }` — body of POST /online-store/orders; identity comes from the customer-auth bearer token, never the body |
+| `OnlineOrderStatus` | `'pending_payment' \| 'confirmed'` — pending until staff validate the transfer receipt |
+| `BankTransferInfo` | `{ bankName, accountHolder, clabe, cardNumber? }` — account the customer wires the total to |
+| `EstimatedShippingDays` | `{ min, max }` business days counted from payment confirmation |
+| `OnlineOrderConfirmation` | `{ orderId (OrdenVenta PublicId GUID), folio (transfer reference), status, total, currency, bankTransfer, estimatedShippingDays }` |
+
 ### `src/entities/stock.ts`
 | Export | Notes |
 |---|---|
