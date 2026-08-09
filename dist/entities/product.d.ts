@@ -11,8 +11,6 @@ export interface ProductCategory extends BaseEntity {
     /** When true, products in this category are schedulable services and carry a duration. */
     isSchedulable?: boolean;
     brands?: ProductBrand[];
-    /** When true, products in this category can be scheduled/booked for appointments. */
-    isSchedulable?: boolean;
 }
 export interface ProductGroup extends SimpleEntity {
     categoryId?: string;
@@ -36,8 +34,6 @@ export interface Product extends BaseEntity {
     images?: ProductImage[];
     /** When true, the product is eligible to be sold on the online store. */
     availableOnline?: boolean;
-    /** Default appointment/service duration in minutes, when the product is schedulable. */
-    durationMinutes?: number;
 }
 export interface ProductImage {
     id: string;
