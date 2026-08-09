@@ -108,6 +108,17 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `CreateBookingRequest` | `{ start, customerName?, reason? }` — `customerName` required only for first-time customers |
 | `RescheduleBookingRequest` | `{ start }` — new slot start from the availability endpoint |
 
+### `src/entities/online-store-checkout.ts`
+| Export | Notes |
+|---|---|
+| `OnlineOrderPaymentMethod` | `'bank_transfer'` — the only online payment method today (SPEI, validated by staff) |
+| `OnlineOrderItemRequest` | `{ productId, quantity }` — cart line; prices are always resolved server-side |
+| `PlaceOnlineOrderRequest` | `{ items, shippingAddress: Address, shippingReferences?, paymentMethod, comment? }` — body of POST /online-store/orders; identity comes from the customer-auth bearer token, never the body |
+| `OnlineOrderStatus` | `'pending_payment' \| 'confirmed'` — pending until staff validate the transfer receipt |
+| `BankTransferInfo` | `{ bankName, accountHolder, clabe, cardNumber? }` — account the customer wires the total to |
+| `EstimatedShippingDays` | `{ min, max }` business days counted from payment confirmation |
+| `OnlineOrderConfirmation` | `{ orderId (OrdenVenta PublicId GUID), folio (transfer reference), status, total, currency, bankTransfer, estimatedShippingDays }` |
+
 ### `src/entities/stock.ts`
 | Export | Notes |
 |---|---|
@@ -238,3 +249,4 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `Address` gains `colonyId?`, `latitude?`, `longitude?` | BE had these fields; added to shared for completeness |
 | `Sexo` enum is now shared | Was FE-only; BE now references it too via shared package |
 | `SaleOrderSummary.customerId` is now `string \| null` (v4.0.0) | Customer IDs exposed by the API are now the contact's public GUID (`Contacto.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). `Customer.id` and `CreateSaleRequest.customerId` were already `string` and now carry the GUID. |
+| `SaleOrderSummary.id` documented as the sale's public GUID (v4.7.1) | Sale IDs exposed by the API are now the order's public GUID (`OrdenVenta.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). The type was already `id?: string`, so this is a doc-only clarification — no consumer code change required. |
