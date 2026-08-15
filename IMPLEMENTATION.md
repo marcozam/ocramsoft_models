@@ -113,7 +113,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 |---|---|
 | `OnlineOrderPaymentMethod` | `'bank_transfer'` — the only online payment method today (SPEI, validated by staff) |
 | `OnlineOrderItemRequest` | `{ productId, quantity }` — cart line; prices are always resolved server-side |
-| `PlaceOnlineOrderRequest` | `{ items, shippingAddress: Address, shippingReferences?, paymentMethod, comment? }` — body of POST /online-store/orders; identity comes from the customer-auth bearer token, never the body |
+| `PlaceOnlineOrderRequest` | `{ items, shippingAddressId? \| shippingAddress?, shippingReferences?, paymentMethod, comment? }` — body of POST /online-store/orders; exactly one shipping destination (an address the customer already owns, or a new one linked as part of the order); identity comes from the customer-auth bearer token, never the body |
 | `OnlineOrderStatus` | `'pending_payment' \| 'confirmed'` — pending until staff validate the transfer receipt |
 | `BankTransferInfo` | `{ bankName, accountHolder, clabe, cardNumber? }` — account the customer wires the total to |
 | `EstimatedShippingDays` | `{ min, max }` business days counted from payment confirmation |
