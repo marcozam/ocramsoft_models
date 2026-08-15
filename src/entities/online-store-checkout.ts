@@ -26,11 +26,20 @@ export interface OnlineOrderItemRequest {
   quantity: number;
 }
 
-/** Request body for POST /online-store/orders (customer token required). */
+/**
+ * Request body for POST /online-store/orders (customer token required).
+ *
+ * Exactly one shipping destination must be given: `shippingAddressId` to reuse
+ * an address the customer already has (see `GET /online-store/addresses`), or
+ * `shippingAddress` to add a new one, which is linked to the customer as part
+ * of the order.
+ */
 export interface PlaceOnlineOrderRequest {
   items: OnlineOrderItemRequest[];
-  /** Shipping destination; validated with the shared address rules. */
-  shippingAddress: Address;
+  /** Id of an address already owned by the customer. */
+  shippingAddressId?: string;
+  /** New shipping destination; validated with the shared address rules. */
+  shippingAddress?: Address;
   /** Cross-streets, facade, reception hours — free text for the carrier. */
   shippingReferences?: string;
   paymentMethod: OnlineOrderPaymentMethod;
