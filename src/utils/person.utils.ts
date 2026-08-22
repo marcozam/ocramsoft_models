@@ -74,7 +74,7 @@ export function normalizeOptionalPositiveInt(value: unknown): number | undefined
   return parsed;
 }
 
-export function formatPersonFullName(person: Person): string {
+export function formatPersonFullName(person: Person | null | undefined): string {
   if (!person) {
     return '';
   }

@@ -69,7 +69,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/customer.ts`
 | Export | Notes |
 |---|---|
-| `Customer` | `phone, email?, person?, addresses?, isActive?, customerType?` |
+| `Customer` | `phone, email?, person?, businessName?, addresses?, isActive?, customerType?` — `person` for INDIVIDUAL, `businessName` for BUSINESS |
 | `CustomerType` | Enum `INDIVIDUAL=1, BUSINESS=2` |
 
 ### `src/entities/product.ts`
@@ -155,10 +155,16 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/utils/person.utils.ts`
 | Export | Notes |
 |---|---|
-| `formatPersonFullName` | Shared full-name composition for BE/FE |
+| `formatPersonFullName` | Shared full-name composition for BE/FE (accepts `undefined`, yielding `''`) |
 | `normalizeText` | Safe trim helper for optional text inputs |
 | `normalizeOptionalDate` | Parses optional date-like values to `Date \| undefined` |
 | `normalizeOptionalPositiveInt` | Shared positive integer parser/validator |
+
+### `src/utils/customer.utils.ts`
+| Export | Notes |
+|---|---|
+| `formatCustomerDisplayName` | Trade name for a BUSINESS customer, person full name otherwise — use instead of `formatPersonFullName(customer.person)`, which renders empty for businesses |
+| `isBusinessCustomer` | `customerType === CustomerType.BUSINESS` predicate |
 
 ### `src/utils/address.utils.ts`
 | Export | Notes |
