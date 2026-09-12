@@ -21,4 +21,5 @@ export * from './entities/customer-auth';
 export * from './entities/customer-pet';
 export * from './entities/booking';
 export * from './entities/online-store-checkout';
+export * from './entities/customer-purchase-order';
 export * from './utils';
