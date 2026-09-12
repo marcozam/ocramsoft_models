@@ -21,19 +21,19 @@ export declare enum CustomerPurchaseOrderSource {
     /** Captured directly in the ERP. */
     Manual = 5
 }
-/** Normalized PO status. Mirrors the CatStatus group IDUso = 403. */
+/** Normalized PO status. Mirrors the CatStatus group IDUso = 404. */
 export declare enum CustomerPurchaseOrderStatus {
     /** Received, nothing fulfilled yet. */
-    Open = 40301,
+    Open = 40401,
     /** Partially fulfilled by linked sales. */
-    InProgress = 40302,
+    InProgress = 40402,
     /** Every line has stock ready to ship. */
-    Ready = 40303,
+    Ready = 40403,
     /** Fully delivered / closed at the customer. */
-    Delivered = 40304,
-    Cancelled = 40305,
+    Delivered = 40404,
+    Cancelled = 40405,
     /** buyer_hold / supplier_hold / currency_hold in the source system. */
-    OnHold = 40306
+    OnHold = 40406
 }
 /**
  * Supplier-side confirmation state as the source reports it. Coupa calls this

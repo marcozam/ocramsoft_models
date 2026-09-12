@@ -24,19 +24,19 @@ var CustomerPurchaseOrderSource;
     /** Captured directly in the ERP. */
     CustomerPurchaseOrderSource[CustomerPurchaseOrderSource["Manual"] = 5] = "Manual";
 })(CustomerPurchaseOrderSource || (exports.CustomerPurchaseOrderSource = CustomerPurchaseOrderSource = {}));
-/** Normalized PO status. Mirrors the CatStatus group IDUso = 403. */
+/** Normalized PO status. Mirrors the CatStatus group IDUso = 404. */
 var CustomerPurchaseOrderStatus;
 (function (CustomerPurchaseOrderStatus) {
     /** Received, nothing fulfilled yet. */
-    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["Open"] = 40301] = "Open";
+    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["Open"] = 40401] = "Open";
     /** Partially fulfilled by linked sales. */
-    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["InProgress"] = 40302] = "InProgress";
+    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["InProgress"] = 40402] = "InProgress";
     /** Every line has stock ready to ship. */
-    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["Ready"] = 40303] = "Ready";
+    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["Ready"] = 40403] = "Ready";
     /** Fully delivered / closed at the customer. */
-    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["Delivered"] = 40304] = "Delivered";
-    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["Cancelled"] = 40305] = "Cancelled";
+    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["Delivered"] = 40404] = "Delivered";
+    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["Cancelled"] = 40405] = "Cancelled";
     /** buyer_hold / supplier_hold / currency_hold in the source system. */
-    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["OnHold"] = 40306] = "OnHold";
+    CustomerPurchaseOrderStatus[CustomerPurchaseOrderStatus["OnHold"] = 40406] = "OnHold";
 })(CustomerPurchaseOrderStatus || (exports.CustomerPurchaseOrderStatus = CustomerPurchaseOrderStatus = {}));
 //# sourceMappingURL=customer-purchase-order.js.map

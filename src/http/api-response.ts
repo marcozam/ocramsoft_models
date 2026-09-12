@@ -7,6 +7,12 @@ export enum ResponseCode {
   FORBIDDEN = 4030,
   UNAUTHORIZED = 4010,
   CONFLICT = 4090,
+  /**
+   * A dependency the request needs is not configured or not reachable — the
+   * request is valid and nothing is broken on our side, so it must not read as
+   * a 500. Used by integrations that are gated behind external provisioning.
+   */
+  SERVICE_UNAVAILABLE = 5030,
 }
 
 export interface HttpApiResponse<T> {
