@@ -11,11 +11,5 @@ var ResponseCode;
     ResponseCode[ResponseCode["FORBIDDEN"] = 4030] = "FORBIDDEN";
     ResponseCode[ResponseCode["UNAUTHORIZED"] = 4010] = "UNAUTHORIZED";
     ResponseCode[ResponseCode["CONFLICT"] = 4090] = "CONFLICT";
-    /**
-     * A dependency the request needs is not configured or not reachable — the
-     * request is valid and nothing is broken on our side, so it must not read as
-     * a 500. Used by integrations that are gated behind external provisioning.
-     */
-    ResponseCode[ResponseCode["SERVICE_UNAVAILABLE"] = 5030] = "SERVICE_UNAVAILABLE";
 })(ResponseCode || (exports.ResponseCode = ResponseCode = {}));
 //# sourceMappingURL=api-response.js.map

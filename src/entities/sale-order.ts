@@ -128,3 +128,31 @@ export interface RegisterSalePaymentsData {
   registeredPayments: number;
   totalAmount: number;
 }
+
+/**
+ * An existing sale already carrying a given reference for a customer.
+ *
+ * Returned by the duplicate check run before a sale is created from a customer
+ * purchase order: re-importing the same OC is easy to do and expensive to
+ * unwind, so the UI warns on the way in rather than after the fact.
+ */
+export interface SaleReferenceMatch {
+  /** Public GUID of the existing sale (OrdenVenta.PublicId). */
+  publicId: string;
+  /** Per-branch consecutive number shown to the user (folio). */
+  folioNumber: number;
+  dateTime?: string;
+  total: number;
+  statusId: number;
+  statusName?: string;
+  /**
+   * A cancelled sale is reported, not hidden — it is not a duplicate risk, but
+   * hiding it makes the warning confusing when someone deliberately re-enters
+   * an OC whose first sale was voided.
+   */
+  isCancelled: boolean;
+  branchId: number;
+  branchName?: string;
+  /** The reference as stored, so the caller can show what actually matched. */
+  reference: string;
+}
