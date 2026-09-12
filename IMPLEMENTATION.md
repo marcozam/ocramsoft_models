@@ -84,6 +84,17 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `Product.parentId?` | Grouper this product is a variation of — set only on variations |
 | `Product.isGrouper?` | Abstract grouper row: never sold on its own, only holds variations |
 | `Product.variationCount?` | Active variations hanging off a grouper (0 for a plain product) |
+| `Product.conditions?` | Rules deciding whether this product applies to a case; empty/absent = always applies |
+
+### `src/entities/rules-engine.ts`
+| Export | Notes |
+|---|---|
+| `RuleOperator` | `'eq'\|'ne'\|'lt'\|'lte'\|'gt'\|'gte'\|'between'\|'in'\|'nin'` |
+| `Rule` | `{ field, operator, value }` — one condition |
+| `ProductRules` | `Rule[]` — combined with a global AND; OR within a field via `in`/`nin` |
+| `ProductWithRules` / `ProductEvaluation` | Batch shapes: `{ productId, rules? }` → `{ productId, met }` |
+| `evaluateRule` / `evaluateRules` | Pure evaluators (single rule / product AND) |
+| `evaluateProducts` / `filterMatchingProducts` | Batch: evaluate many products against one input object |
 
 ### `src/entities/appointment.ts`
 | Export | Notes |
