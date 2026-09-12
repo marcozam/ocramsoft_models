@@ -37,6 +37,19 @@ export interface Product extends BaseEntity {
   images?: ProductImage[];
   /** When true, the product is eligible to be sold on the online store. */
   availableOnline?: boolean;
+  /**
+   * Parent grouper this product is a variation of. Set only on variations;
+   * `undefined` on standalone products and on groupers themselves.
+   */
+  parentId?: string;
+  /**
+   * When true, this row is an abstract grouper: it is never sold on its own and
+   * exists only to hold variations. Callers must resolve it to one of its
+   * variations before adding it to a sale.
+   */
+  isGrouper?: boolean;
+  /** Number of active variations hanging off this grouper. 0 for a plain product. */
+  variationCount?: number;
 }
 
 export interface ProductImage {

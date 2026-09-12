@@ -81,6 +81,9 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) + `description?, mainImageUrl?, images?, availableOnline?` |
 | `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
 | `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item. BE re-exports it; FE keeps it via the `../products` barrel |
+| `Product.parentId?` | Grouper this product is a variation of — set only on variations |
+| `Product.isGrouper?` | Abstract grouper row: never sold on its own, only holds variations |
+| `Product.variationCount?` | Active variations hanging off a grouper (0 for a plain product) |
 
 ### `src/entities/appointment.ts`
 | Export | Notes |
