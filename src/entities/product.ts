@@ -58,3 +58,28 @@ export interface ProductImage {
   isPrincipal: boolean;
   order: number;
 }
+
+/**
+ * A customer's own catalog number for one of our products.
+ *
+ * Customers order by their part number, which rarely matches our SKU. Recording
+ * the translation means a purchase order import only has to identify each item
+ * once, not on every file.
+ *
+ * Scoped per customer: two customers routinely use the same part number for
+ * different items.
+ */
+export interface CustomerProductMapping {
+  /** Internal mapping id — safe to expose, it identifies nothing else. */
+  id: number;
+  /** The customer's own catalog number, as it appears in their documents. */
+  customerPartNumber: string;
+  productId: number;
+  productName?: string;
+  /** Our SKU for the product, to make a wrong mapping obvious on screen. */
+  barcode?: string;
+  /** Retired mappings are kept for reference rather than deleted. */
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
