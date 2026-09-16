@@ -35,6 +35,7 @@ __exportStar(require("./entities/pricing"), exports);
 __exportStar(require("./entities/appointment"), exports);
 __exportStar(require("./entities/customer-auth"), exports);
 __exportStar(require("./entities/customer-pet"), exports);
+__exportStar(require("./entities/vet-appointment"), exports);
 __exportStar(require("./entities/booking"), exports);
 __exportStar(require("./entities/company-config"), exports);
 __exportStar(require("./entities/online-store-checkout"), exports);
