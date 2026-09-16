@@ -25,6 +25,13 @@ export interface QuoteSummary extends BaseEntity {
   validUntil?: string;
   /** Free-text NOTA block printed under the item table. */
   notes?: string;
+  /**
+   * Per-quote overrides for the printed copy. A generated quote is editable:
+   * the user rewords it for the customer in front of them. Absent means "not
+   * overridden" — the printed quote falls back to the deployment's brand copy.
+   */
+  introLine?: string;
+  closingLine?: string;
   /** false = soft-deleted; the quote stays reprintable but is hidden by default. */
   isActive: boolean;
   branchId: number;
@@ -97,4 +104,23 @@ export interface QuoteListFilters {
   isActive?: boolean;
   /** Matches folio number or customer name. */
   search?: string;
+}
+
+/**
+ * Edits to a stored quote's prose.
+ *
+ * Only copy is editable. Quantities, prices and totals are deliberately absent
+ * so the printed document can never drift from the amounts the quote was
+ * stored with. Every field is optional; a blank or omitted value clears the
+ * override and falls back to the deployment's brand copy.
+ */
+export interface UpdateQuoteTextRequest {
+  introLine?: string;
+  notes?: string;
+  closingLine?: string;
+  /** Per-line CARACTERÍSTICAS text, keyed by product. */
+  items?: Array<{
+    productId: number;
+    detailedDescription?: string;
+  }>;
 }
