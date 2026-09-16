@@ -33,6 +33,17 @@ export interface AppointmentService {
     durationMinutes: number;
 }
 /**
+ * A pet attending an appointment (CitaXMascotas link), as staff-facing reads
+ * expose it. The customer self-service flow uses `AppointmentPet` (booking.ts),
+ * which is PublicId-based; this one carries the internal pet id used by the
+ * staff/vet screens.
+ */
+export interface AppointmentPetRef {
+    petId: number;
+    petName: string;
+    speciesName?: string;
+}
+/**
  * A customer appointment for one or more services at a branch.
  * The appointment blocks a contiguous span: end - start === durationMinutes,
  * where durationMinutes is the sum of the booked services' durations.
@@ -49,6 +60,13 @@ export interface Appointment extends BaseEntity {
     customerId: number;
     customerName?: string;
     services: AppointmentService[];
+    /** Pets attending the appointment. Populated on detail reads only. */
+    pets?: AppointmentPetRef[];
+    /**
+     * Comma-separated names of the attending pets, provided by list/week reads
+     * so calendars and agendas can label blocks without a per-appointment fetch.
+     */
+    petNames?: string;
     /** ISO 8601 start datetime. */
     start: string;
     /** ISO 8601 end datetime (start + durationMinutes). */
