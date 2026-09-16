@@ -21,6 +21,7 @@ export * from './entities/appointment';
 export * from './entities/customer-auth';
 export * from './entities/customer-pet';
 export * from './entities/booking';
+export * from './entities/company-config';
 export * from './entities/online-store-checkout';
 export * from './utils';
 //# sourceMappingURL=index.d.ts.map
