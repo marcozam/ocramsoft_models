@@ -30,6 +30,13 @@ export interface QuoteSummary extends BaseEntity {
      */
     introLine?: string;
     closingLine?: string;
+    /** What is being quoted, printed above the item table (e.g. "TIENDA NOGALES"). */
+    title?: string;
+    /**
+     * Person the offer is addressed to, printed under the customer name. Not the
+     * registered contact: it is whoever asked for this particular quote.
+     */
+    attention?: string;
     /** false = soft-deleted; the quote stays reprintable but is hidden by default. */
     isActive: boolean;
     branchId: number;
@@ -89,6 +96,10 @@ export interface CreateQuoteRequest {
     validityDays?: number;
     /** Free-text NOTA block, max 1000 chars. */
     notes?: string;
+    /** What is being quoted, printed above the item table. */
+    title?: string;
+    /** Person the offer is addressed to. */
+    attention?: string;
 }
 /** Query filters accepted by GET /quotes. */
 export interface QuoteListFilters {
@@ -110,6 +121,8 @@ export interface UpdateQuoteTextRequest {
     introLine?: string;
     notes?: string;
     closingLine?: string;
+    title?: string;
+    attention?: string;
     /** Per-line CARACTERÍSTICAS text, keyed by product. */
     items?: Array<{
         productId: number;
