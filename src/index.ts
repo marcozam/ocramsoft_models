@@ -12,6 +12,7 @@ export * from './entities/optica-examen';
 export * from './entities/sale-order';
 export * from './entities/quote';
 export * from './entities/production-order';
+export * from './entities/production-recipe';
 export * from './entities/sale-report';
 export * from './http/api-response';
 export * from './entities/payment';
