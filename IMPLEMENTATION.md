@@ -170,7 +170,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 |---|---|
 | `ProductRecipe` | A finished product's bill of materials: own `lines` + the grouper's `inheritedLines` (variation recipes are additive) (GET/PUT /production/recipe/:productId) |
 | `ProductRecipeLine` | One insumo and its quantity per finished unit |
-| `ProductRecipeSummary` | List row of a product with its own active recipe (GET /production/recipe) |
+| `ProductRecipeSummary` | List row of a base recipe — grouper or standalone product, with `variationRecipeCount` rolled up from its variations (GET /production/recipe) |
 | `SaveProductRecipeRequest` / `SaveProductRecipeLine` | Body of PUT /production/recipe/:productId; empty `lines` clears the recipe |
 
 ### `src/http/api-response.ts`

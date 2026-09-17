@@ -29,17 +29,23 @@ export interface ProductRecipe {
     /** The grouper's active lines. Always empty when the product is not a variation. */
     inheritedLines: ProductRecipeLine[];
 }
-/** List row: a product that declares its own active recipe. */
+/**
+ * List row: a base recipe — a grouper or a standalone product. Variations are
+ * never listed on their own; their recipes roll up into the grouper, which is
+ * listed even when only its variations declare insumos.
+ */
 export interface ProductRecipeSummary {
     productId: string;
     productName: string;
     sku?: string;
     isGrouper: boolean;
-    parentId?: string;
-    parentName?: string;
+    /** Insumos the base product declares itself (0 when only variations have recipes). */
     lineCount: number;
+    /** Active version of the base product's own lines. 0 = no own recipe. */
     version: number;
-    /** ISO 8601 UTC instant the active version was saved. */
+    /** Variations that declare their own insumos. Always 0 for a standalone product. */
+    variationRecipeCount: number;
+    /** ISO 8601 UTC instant of the latest save across the base and its variations. */
     savedAt?: string;
 }
 /** Body of PUT /production/recipe/:productId. An empty `lines` array clears the recipe. */
