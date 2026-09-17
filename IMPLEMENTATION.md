@@ -165,6 +165,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductSoldByBranchReportItem` | Row of the products-sold-by-branch report: per-branch/product quantity, revenue, current stock (GET /pos/sale/report/products-sold) |
 | `ProductsSoldReportFilters` | Query filters for the products-sold report (date range, branchId, categoryId, inStockOnly) |
 
+### `src/entities/production-recipe.ts` (v4.13.2)
+| Export | Notes |
+|---|---|
+| `ProductRecipe` | A finished product's bill of materials: own `lines` + the grouper's `inheritedLines` (variation recipes are additive) (GET/PUT /production/recipe/:productId) |
+| `ProductRecipeLine` | One insumo and its quantity per finished unit |
+| `ProductRecipeSummary` | List row of a base recipe — grouper or standalone product, with `variationRecipeCount` rolled up from its variations (GET /production/recipe) |
+| `SaveProductRecipeRequest` / `SaveProductRecipeLine` | Body of PUT /production/recipe/:productId; empty `lines` clears the recipe |
+
 ### `src/http/api-response.ts`
 | Export | Notes |
 |---|---|
