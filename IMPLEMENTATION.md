@@ -104,6 +104,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
 | `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
+| `AppointmentPetLink` (vet-appointment.ts) | Vet vertical: pet attending an appointment (`appointmentId, petId, petName, speciesName?`). Kept OFF the generic `Appointment` — whitelabel scheduling never embeds pet data; only `/veterinarian` endpoints speak this type |
 
 ### `src/entities/customer-auth.ts`
 | Export | Notes |
