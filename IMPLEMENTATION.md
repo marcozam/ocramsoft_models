@@ -139,6 +139,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `EstimatedShippingDays` | `{ min, max }` business days counted from payment confirmation |
 | `OnlineOrderConfirmation` | `{ orderId (OrdenVenta PublicId GUID), folio (transfer reference), status, total, currency, bankTransfer, estimatedShippingDays }` |
 
+### `src/entities/online-store.ts`
+| Export | Notes |
+|---|---|
+| `OnlineStoreProductImage` | `{ url, isPrincipal? }` — one storefront-facing image |
+| `OnlineStoreProduct` | Channel-agnostic catalog row: price and availability already resolved for the configured online-store branch. Groupers carry `isGrouper`, `variationCount`, `priceFrom` (the price is the cheapest variation's) and, on the detail endpoint, `variations` |
+| `OnlineStoreProductVariation` | `{ id, name, description?, price, available, imageUrl?, images? }` — one selectable variation of a grouper; the storefront swaps the gallery to its `images` and appends its `description` to the grouper's (v4.14.0) |
+| `OnlineStoreProductPage` | `{ items, total, skipped, nextPageToken? }` — one catalog page; `skipped` counts products left out for want of a branch price |
+
 ### `src/entities/stock.ts`
 | Export | Notes |
 |---|---|
