@@ -23,6 +23,18 @@ export interface QuoteSummary extends BaseEntity {
     validUntil?: string;
     /** Free-text NOTA block printed under the item table. */
     notes?: string;
+    /**
+     * Per-quote overrides for the printed copy. A generated quote is editable:
+     * the user rewords it for the customer in front of them. Absent means "not
+     * overridden" — the printed quote falls back to the deployment's brand copy.
+     */
+    introLine?: string;
+    closingLine?: string;
+    /**
+     * Person the offer is addressed to, printed under the customer name. Not the
+     * registered contact: it is whoever asked for this particular quote.
+     */
+    attention?: string;
     /** false = soft-deleted; the quote stays reprintable but is hidden by default. */
     isActive: boolean;
     branchId: number;
@@ -46,6 +58,17 @@ export interface QuoteItem {
      * CARACTERÍSTICAS block at the bottom of the printed quote.
      */
     detailedDescription?: string;
+    /**
+     * The grouper this product is a variation of, snapshotted at quote time.
+     *
+     * A quote often carries several variations of one grouper. Their shared text
+     * belongs to the family, so the printed CARACTERÍSTICAS shows
+     * `parentDescription` once and then only what each line's own
+     * `detailedDescription` adds. Absent on standalone products.
+     */
+    parentProductId?: number;
+    parentName?: string;
+    parentDescription?: string;
     quantity: number;
     unitPrice: number;
     amount: number;
@@ -67,6 +90,13 @@ export interface CreateQuoteItem {
     description?: string;
     /** CARACTERÍSTICAS text to print. Omit to snapshot the product's long description. */
     detailedDescription?: string;
+    /**
+     * The grouper's name and long description, printed once for a family of
+     * variations. Omit on standalone products, or to snapshot what the product
+     * record currently says.
+     */
+    parentName?: string;
+    parentDescription?: string;
     quantity: number;
     /** The offered price — may differ from the price list (the user can override it). */
     unitPrice: number;
@@ -82,6 +112,8 @@ export interface CreateQuoteRequest {
     validityDays?: number;
     /** Free-text NOTA block, max 1000 chars. */
     notes?: string;
+    /** Person the offer is addressed to. */
+    attention?: string;
 }
 /** Query filters accepted by GET /quotes. */
 export interface QuoteListFilters {
@@ -90,5 +122,30 @@ export interface QuoteListFilters {
     isActive?: boolean;
     /** Matches folio number or customer name. */
     search?: string;
+}
+/**
+ * Edits to a stored quote's prose.
+ *
+ * Only copy is editable. Quantities, prices and totals are deliberately absent
+ * so the printed document can never drift from the amounts the quote was
+ * stored with. Every field is optional; a blank or omitted value clears the
+ * override and falls back to the deployment's brand copy.
+ */
+export interface UpdateQuoteTextRequest {
+    introLine?: string;
+    notes?: string;
+    closingLine?: string;
+    attention?: string;
+    /** Per-line CARACTERÍSTICAS text, keyed by product. */
+    items?: Array<{
+        productId: number;
+        detailedDescription?: string;
+        /**
+         * The family text printed above this line's own. Shared by every variation
+         * of one grouper, so an edit to it is sent for each of those lines. A key
+         * left out leaves the stored text alone; an empty string clears it.
+         */
+        parentDescription?: string;
+    }>;
 }
 //# sourceMappingURL=quote.d.ts.map
