@@ -1,4 +1,5 @@
 import { BaseEntity, SimpleEntity } from '../core/base-entity';
+import { Rule } from './rules-engine';
 
 export interface ProductBrand extends SimpleEntity {}
 
@@ -57,6 +58,13 @@ export interface Product extends BaseEntity {
   isGrouper?: boolean;
   /** Number of active variations hanging off this grouper. 0 for a plain product. */
   variationCount?: number;
+  /**
+   * Rules that decide whether this product applies to a given case (e.g. a
+   * grooming size that only applies above a weight). Evaluated with the
+   * rules engine in `rules-engine.ts`, so backend and frontend agree.
+   * Absent or empty means the product always applies.
+   */
+  conditions?: Rule[];
 }
 
 export interface ProductImage {

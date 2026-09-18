@@ -84,6 +84,17 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `Product.parentId?` | Grouper this product is a variation of — set only on variations |
 | `Product.isGrouper?` | Abstract grouper row: never sold on its own, only holds variations |
 | `Product.variationCount?` | Active variations hanging off a grouper (0 for a plain product) |
+| `Product.conditions?` | Rules deciding whether this product applies to a case; empty/absent = always applies |
+
+### `src/entities/rules-engine.ts`
+| Export | Notes |
+|---|---|
+| `RuleOperator` | `'eq'\|'ne'\|'lt'\|'lte'\|'gt'\|'gte'\|'between'\|'in'\|'nin'` |
+| `Rule` | `{ field, operator, value }` — one condition |
+| `ProductRules` | `Rule[]` — combined with a global AND; OR within a field via `in`/`nin` |
+| `ProductWithRules` / `ProductEvaluation` | Batch shapes: `{ productId, rules? }` → `{ productId, met }` |
+| `evaluateRule` / `evaluateRules` | Pure evaluators (single rule / product AND) |
+| `evaluateProducts` / `filterMatchingProducts` | Batch: evaluate many products against one input object |
 
 ### `src/entities/appointment.ts`
 | Export | Notes |
@@ -93,6 +104,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
 | `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
+| `AppointmentPetLink` (vet-appointment.ts) | Vet vertical: pet attending an appointment (`appointmentId, petId, petName, speciesName?`). Kept OFF the generic `Appointment` — whitelabel scheduling never embeds pet data; only `/veterinarian` endpoints speak this type |
 
 ### `src/entities/customer-auth.ts`
 | Export | Notes |
@@ -127,6 +139,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `EstimatedShippingDays` | `{ min, max }` business days counted from payment confirmation |
 | `OnlineOrderConfirmation` | `{ orderId (OrdenVenta PublicId GUID), folio (transfer reference), status, total, currency, bankTransfer, estimatedShippingDays }` |
 
+### `src/entities/online-store.ts`
+| Export | Notes |
+|---|---|
+| `OnlineStoreProductImage` | `{ url, isPrincipal? }` — one storefront-facing image |
+| `OnlineStoreProduct` | Channel-agnostic catalog row: price and availability already resolved for the configured online-store branch. Groupers carry `isGrouper`, `variationCount`, `priceFrom` (the price is the cheapest variation's) and, on the detail endpoint, `variations` |
+| `OnlineStoreProductVariation` | `{ id, name, description?, price, available, imageUrl?, images? }` — one selectable variation of a grouper; the storefront swaps the gallery to its `images` and appends its `description` to the grouper's (v4.14.0) |
+| `OnlineStoreProductPage` | `{ items, total, skipped, nextPageToken? }` — one catalog page; `skipped` counts products left out for want of a branch price |
+
 ### `src/entities/stock.ts`
 | Export | Notes |
 |---|---|
@@ -152,6 +172,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `SaleSummaryReport` | Monthly branch summary (GET /pos/sale/report/summary) |
 | `ProductSoldByBranchReportItem` | Row of the products-sold-by-branch report: per-branch/product quantity, revenue, current stock (GET /pos/sale/report/products-sold) |
 | `ProductsSoldReportFilters` | Query filters for the products-sold report (date range, branchId, categoryId, inStockOnly) |
+
+### `src/entities/production-recipe.ts` (v4.13.2)
+| Export | Notes |
+|---|---|
+| `ProductRecipe` | A finished product's bill of materials: own `lines` + the grouper's `inheritedLines` (variation recipes are additive) (GET/PUT /production/recipe/:productId) |
+| `ProductRecipeLine` | One insumo and its quantity per finished unit |
+| `ProductRecipeSummary` | List row of a base recipe — grouper or standalone product, with `variationRecipeCount` rolled up from its variations (GET /production/recipe) |
+| `SaveProductRecipeRequest` / `SaveProductRecipeLine` | Body of PUT /production/recipe/:productId; empty `lines` clears the recipe |
 
 ### `src/http/api-response.ts`
 | Export | Notes |
