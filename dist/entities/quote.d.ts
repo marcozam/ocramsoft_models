@@ -58,6 +58,17 @@ export interface QuoteItem {
      * CARACTERÍSTICAS block at the bottom of the printed quote.
      */
     detailedDescription?: string;
+    /**
+     * The grouper this product is a variation of, snapshotted at quote time.
+     *
+     * A quote often carries several variations of one grouper. Their shared text
+     * belongs to the family, so the printed CARACTERÍSTICAS shows
+     * `parentDescription` once and then only what each line's own
+     * `detailedDescription` adds. Absent on standalone products.
+     */
+    parentProductId?: number;
+    parentName?: string;
+    parentDescription?: string;
     quantity: number;
     unitPrice: number;
     amount: number;
@@ -79,6 +90,13 @@ export interface CreateQuoteItem {
     description?: string;
     /** CARACTERÍSTICAS text to print. Omit to snapshot the product's long description. */
     detailedDescription?: string;
+    /**
+     * The grouper's name and long description, printed once for a family of
+     * variations. Omit on standalone products, or to snapshot what the product
+     * record currently says.
+     */
+    parentName?: string;
+    parentDescription?: string;
     quantity: number;
     /** The offered price — may differ from the price list (the user can override it). */
     unitPrice: number;
@@ -122,6 +140,12 @@ export interface UpdateQuoteTextRequest {
     items?: Array<{
         productId: number;
         detailedDescription?: string;
+        /**
+         * The family text printed above this line's own. Shared by every variation
+         * of one grouper, so an edit to it is sent for each of those lines. A key
+         * left out leaves the stored text alone; an empty string clears it.
+         */
+        parentDescription?: string;
     }>;
 }
 //# sourceMappingURL=quote.d.ts.map

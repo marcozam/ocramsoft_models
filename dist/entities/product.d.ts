@@ -40,6 +40,13 @@ export interface Product extends BaseEntity {
      */
     parentId?: string;
     /**
+     * The grouper's own name and long description. Returned by the by-id read
+     * only — the catalog list leaves them out so a cached catalog does not carry
+     * every product's rich text.
+     */
+    parentName?: string;
+    parentDescription?: string;
+    /**
      * When true, this row is an abstract grouper: it is never sold on its own and
      * exists only to hold variations. Callers must resolve it to one of its
      * variations before adding it to a sale.
