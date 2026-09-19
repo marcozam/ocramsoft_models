@@ -69,4 +69,28 @@ export interface ProductImage {
     isPrincipal: boolean;
     order: number;
 }
+/**
+ * A contact's own catalog number for one of our products.
+ *
+ * Both directions have the same problem: a customer orders by their part
+ * number, a supplier invoices by theirs, and neither matches our SKU. Recording
+ * the translation means an import only has to identify each item once.
+ *
+ * Scoped per contact: two contacts routinely use the same part number for
+ * different items.
+ */
+export interface ContactProductMapping {
+    /** Internal mapping id — safe to expose, it identifies nothing else. */
+    id: number;
+    /** The contact's own catalog number, as it appears in their documents. */
+    partNumber: string;
+    productId: number;
+    productName?: string;
+    /** Our SKU for the product, to make a wrong mapping obvious on screen. */
+    barcode?: string;
+    /** Retired mappings are kept for reference rather than deleted. */
+    isActive: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+}
 //# sourceMappingURL=product.d.ts.map
