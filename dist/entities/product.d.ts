@@ -1,4 +1,5 @@
 import { BaseEntity, SimpleEntity } from '../core/base-entity';
+import { Rule } from './rules-engine';
 export interface ProductBrand extends SimpleEntity {
 }
 export interface ProductCategory extends BaseEntity {
@@ -40,6 +41,13 @@ export interface Product extends BaseEntity {
      */
     parentId?: string;
     /**
+     * The grouper's own name and long description. Returned by the by-id read
+     * only — the catalog list leaves them out so a cached catalog does not carry
+     * every product's rich text.
+     */
+    parentName?: string;
+    parentDescription?: string;
+    /**
      * When true, this row is an abstract grouper: it is never sold on its own and
      * exists only to hold variations. Callers must resolve it to one of its
      * variations before adding it to a sale.
@@ -47,6 +55,13 @@ export interface Product extends BaseEntity {
     isGrouper?: boolean;
     /** Number of active variations hanging off this grouper. 0 for a plain product. */
     variationCount?: number;
+    /**
+     * Rules that decide whether this product applies to a given case (e.g. a
+     * grooming size that only applies above a weight). Evaluated with the
+     * rules engine in `rules-engine.ts`, so backend and frontend agree.
+     * Absent or empty means the product always applies.
+     */
+    conditions?: Rule[];
 }
 export interface ProductImage {
     id: string;

@@ -1,0 +1,1 @@
+{"version":3,"file":"vet-appointment.d.ts","sourceRoot":"","sources":["../../src/entities/vet-appointment.ts"],"names":[],"mappings":"AAAA;;;;;;;GAOG;AAEH,8EAA8E;AAC9E,MAAM,WAAW,kBAAkB;IACjC,aAAa,EAAE,MAAM,CAAC;IACtB,KAAK,EAAE,MAAM,CAAC;IACd,OAAO,EAAE,MAAM,CAAC;IAChB,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB"}
