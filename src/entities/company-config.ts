@@ -23,4 +23,10 @@ export interface CompanyConfig {
   vetName?: string | null;
   /** Cédula profesional of `vetName`; null until configured. */
   vetLicense?: string | null;
+  /**
+   * Download URL of the clinic's logo, printed on letterhead documents; null
+   * until one is uploaded. Set through `POST /config/company/logo`, never by
+   * hand — a `PUT /config/company` that omits it leaves the stored value alone.
+   */
+  logoUrl?: string | null;
 }
