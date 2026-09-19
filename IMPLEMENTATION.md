@@ -126,7 +126,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/company-config.ts`
 | Export | Notes |
 |---|---|
-| `CompanyConfig` | `{ name, razonSocial, rfc, taxRegime }` — fiscal identity of the business (gateway `config/company` document, `GET/PUT /config/company`); `rfc` is upper case without separators, `taxRegime` is the SAT c_RegimenFiscal code or null until configured. Expense capture compares the CFDI receiver against it |
+| `CompanyConfig` | `{ name, razonSocial, rfc, taxRegime, vetName?, vetLicense? }` — fiscal identity of the business plus the clinic letterhead identity (gateway `config/company` document, `GET/PUT /config/company`); `rfc` is upper case without separators, `taxRegime` is the SAT c_RegimenFiscal code or null until configured. Expense capture compares the CFDI receiver against it; `vetName`/`vetLicense` (cédula profesional) are printed on veterinary certificates |
 
 ### `src/entities/online-store-checkout.ts`
 | Export | Notes |

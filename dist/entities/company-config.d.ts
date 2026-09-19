@@ -15,5 +15,13 @@ export interface CompanyConfig {
     rfc: string;
     /** SAT c_RegimenFiscal code (e.g. `601`); null until configured. */
     taxRegime: string | null;
+    /**
+     * Attending veterinarian printed on the clinic's letterhead documents; null
+     * until configured. Mexican airlines reject a pet travel health certificate
+     * that does not carry the vet's name and professional licence.
+     */
+    vetName?: string | null;
+    /** Cédula profesional of `vetName`; null until configured. */
+    vetLicense?: string | null;
 }
 //# sourceMappingURL=company-config.d.ts.map
