@@ -77,10 +77,11 @@ export interface MedicalTest {
 /**
  * A value as sent on create/update. The gateway routes it to the numeric or
  * text column from the attribute's `dataType`; `multioption` takes `string[]`.
+ * On update, `null` clears a previously captured value.
  */
 export interface MedicalTestValueInput {
   attributeId: number;
-  value: number | string | boolean | string[];
+  value: number | string | boolean | string[] | null;
   observation?: string;
 }
 
@@ -98,13 +99,14 @@ export interface CreateMedicalTestRequest {
 
 /**
  * Request body for PUT /veterinarian/tests/{testId}. The study type is
- * immutable; each value sent is upserted and values not sent are kept.
+ * immutable. A header field left out is kept; `null` or `''` clears it. Each
+ * value sent is upserted (or cleared when `null`); values not sent are kept.
  */
 export interface UpdateMedicalTestRequest {
   date?: string;
-  notes?: string;
-  interpretation?: string;
-  suggestions?: string;
+  notes?: string | null;
+  interpretation?: string | null;
+  suggestions?: string | null;
   professionalUserId?: number;
   values?: MedicalTestValueInput[];
 }
