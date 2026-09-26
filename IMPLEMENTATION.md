@@ -107,6 +107,17 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
 | `AppointmentPetLink` (vet-appointment.ts) | Vet vertical: pet attending an appointment (`appointmentId, petId, petName, speciesName?`). Kept OFF the generic `Appointment` — whitelabel scheduling never embeds pet data; only `/veterinarian` endpoints speak this type |
 
+### `src/entities/medical-test.ts`
+| Export | Notes |
+|---|---|
+| `TestAttributeDataType` | `'numeric' \| 'text' \| 'boolean' \| 'option' \| 'multioption'` — SQL `TipoDato` 1–5 (v4.17.1) |
+| `TestType` | Study type from the catalog (`id, name`), e.g. Reporte Citológico |
+| `TestAttribute` | One capturable attribute of a type: `attributeId, name, dataType, unit, refMin, refMax, options[], section, order` |
+| `MedicalTestValue` | Captured value: `numericValue` / `textValue` (multioption `\|`-joined) / `boolValue`, plus `outOfRange` and per-value `observation` |
+| `MedicalTest` | A patient's study with its `values[]`; `healthRecordId` links the originating visit |
+| `MedicalTestValueInput` | Value on create/update: `value: number \| string \| boolean \| string[]` — the gateway routes it by `dataType` |
+| `CreateMedicalTestRequest` / `UpdateMedicalTestRequest` | Bodies of POST /veterinarian/pets/{petId}/tests and PUT /veterinarian/tests/{testId}; the study type is immutable on update |
+
 ### `src/entities/customer-auth.ts`
 | Export | Notes |
 |---|---|
