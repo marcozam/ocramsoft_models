@@ -114,9 +114,10 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `TestType` | Study type from the catalog (`id, name`), e.g. Reporte Citológico |
 | `TestAttribute` | One capturable attribute of a type: `attributeId, name, dataType, unit, refMin, refMax, options[], section, order` |
 | `MedicalTestValue` | Captured value: `numericValue` / `textValue` (multioption `\|`-joined) / `boolValue`, plus `outOfRange` and per-value `observation` |
-| `MedicalTest` | A patient's study with its `values[]`; `healthRecordId` links the originating visit |
+| `MedicalTest` | A patient's study with its `values[]`; `healthRecordId` links the originating visit; `fileCount` counts its attached files; `isDraft` marks a study started without results (type + photos) to be completed later |
+| `MedicalTestFile` / `MedicalTestFileKind` | A photo or PDF attached to a study (`kind: 'image' \| 'pdf'`); bytes are private and served only by the authenticated `.../files/{id}/content` endpoint |
 | `MedicalTestValueInput` | Value on create/update: `value: number \| string \| boolean \| string[] \| null` — the gateway routes it by `dataType`; `null` on update clears the value |
-| `CreateMedicalTestRequest` / `UpdateMedicalTestRequest` | Bodies of POST /veterinarian/pets/{petId}/tests and PUT /veterinarian/tests/{testId}; the study type is immutable on update, and on update a header text field sent as `null` or `''` is cleared |
+| `CreateMedicalTestRequest` / `UpdateMedicalTestRequest` | Bodies of POST /veterinarian/pets/{petId}/tests and PUT /veterinarian/tests/{testId}; the study type is immutable on update, and on update a header text field sent as `null` or `''` is cleared; `isDraft` creates a draft (values optional) and `isDraft: false` completes it |
 
 ### `src/entities/customer-auth.ts`
 | Export | Notes |

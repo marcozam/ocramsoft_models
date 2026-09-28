@@ -61,7 +61,32 @@ export interface MedicalTest {
     suggestions: string | null;
     professionalUserId: number | null;
     isActive: boolean;
+    /**
+     * Started without results (type + photos, e.g. from the phone); the values
+     * are captured later. A completed study never goes back to draft.
+     */
+    isDraft?: boolean;
+    /** Active files (photos, PDFs) attached to the study. */
+    fileCount?: number;
     values: MedicalTestValue[];
+}
+/** How an attached study file is shown: an inline photo or a PDF document. */
+export type MedicalTestFileKind = 'image' | 'pdf';
+/**
+ * A file attached to a study (microscope photo, lab PDF). Files are private:
+ * the bytes are only served by GET /veterinarian/tests/{testId}/files/{id}/content
+ * to an authenticated user, never through a public URL.
+ */
+export interface MedicalTestFile {
+    /** Public GUID of the file. */
+    id: string;
+    testId: string;
+    fileName: string;
+    contentType: string;
+    kind: MedicalTestFileKind;
+    /** Size in bytes. */
+    size: number;
+    uploadedAt: string | null;
 }
 /**
  * A value as sent on create/update. The gateway routes it to the numeric or
@@ -82,7 +107,10 @@ export interface CreateMedicalTestRequest {
     interpretation?: string;
     suggestions?: string;
     professionalUserId?: number;
-    values: MedicalTestValueInput[];
+    /** Creates a draft: `values` may then be empty or omitted. */
+    isDraft?: boolean;
+    /** Required (non-empty) unless `isDraft`. */
+    values?: MedicalTestValueInput[];
 }
 /**
  * Request body for PUT /veterinarian/tests/{testId}. The study type is
@@ -95,6 +123,11 @@ export interface UpdateMedicalTestRequest {
     interpretation?: string | null;
     suggestions?: string | null;
     professionalUserId?: number;
+    /**
+     * `false` completes a draft (it must end up with at least one value);
+     * `true` is only accepted while the study is still a draft.
+     */
+    isDraft?: boolean;
     values?: MedicalTestValueInput[];
 }
 //# sourceMappingURL=medical-test.d.ts.map
