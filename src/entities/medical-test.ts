@@ -21,6 +21,8 @@ export type TestAttributeDataType =
 export interface TestType {
   id: number;
   name: string;
+  /** The type is configured for AI analysis of its photos. */
+  aiAnalysis?: boolean;
 }
 
 /** One capturable attribute of a study type, in report order. */
@@ -144,4 +146,35 @@ export interface UpdateMedicalTestRequest {
    */
   isDraft?: boolean;
   values?: MedicalTestValueInput[];
+}
+
+/** How sure the model is of one suggested value. */
+export type MedicalTestAiConfidence = 'high' | 'medium' | 'low';
+
+/**
+ * A value the model suggests from the study's photos. `value` has the shape
+ * `MedicalTestValueInput.value` takes for the attribute's `dataType`.
+ */
+export interface MedicalTestAiSuggestion {
+  attributeId: number;
+  value: number | string | boolean | string[];
+  observation: string | null;
+  confidence: MedicalTestAiConfidence;
+}
+
+/**
+ * Answer of POST /veterinarian/tests/{testId}/ai-analysis. Nothing is saved:
+ * the vet reviews the suggestions in the form and saves the study.
+ */
+export interface MedicalTestAiAnalysis {
+  testId: string;
+  suggestions: MedicalTestAiSuggestion[];
+  interpretation: string | null;
+  /** Clinical suggestions (the report's SUGERENCIAS block). */
+  recommendations: string | null;
+  /** What the model could not judge, or suggestions it gave that were dropped. */
+  warnings: string[];
+  /** Files the model looked at. */
+  analyzedFileIds: string[];
+  model: string;
 }
