@@ -71,6 +71,11 @@ export interface MedicalTest {
   suggestions: string | null;
   professionalUserId: number | null;
   isActive: boolean;
+  /**
+   * Started without results (type + photos, e.g. from the phone); the values
+   * are captured later. A completed study never goes back to draft.
+   */
+  isDraft?: boolean;
   /** Active files (photos, PDFs) attached to the study. */
   fileCount?: number;
   values: MedicalTestValue[];
@@ -116,7 +121,10 @@ export interface CreateMedicalTestRequest {
   interpretation?: string;
   suggestions?: string;
   professionalUserId?: number;
-  values: MedicalTestValueInput[];
+  /** Creates a draft: `values` may then be empty or omitted. */
+  isDraft?: boolean;
+  /** Required (non-empty) unless `isDraft`. */
+  values?: MedicalTestValueInput[];
 }
 
 /**
@@ -130,5 +138,10 @@ export interface UpdateMedicalTestRequest {
   interpretation?: string | null;
   suggestions?: string | null;
   professionalUserId?: number;
+  /**
+   * `false` completes a draft (it must end up with at least one value);
+   * `true` is only accepted while the study is still a draft.
+   */
+  isDraft?: boolean;
   values?: MedicalTestValueInput[];
 }
