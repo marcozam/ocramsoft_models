@@ -71,7 +71,29 @@ export interface MedicalTest {
   suggestions: string | null;
   professionalUserId: number | null;
   isActive: boolean;
+  /** Active files (photos, PDFs) attached to the study. */
+  fileCount?: number;
   values: MedicalTestValue[];
+}
+
+/** How an attached study file is shown: an inline photo or a PDF document. */
+export type MedicalTestFileKind = 'image' | 'pdf';
+
+/**
+ * A file attached to a study (microscope photo, lab PDF). Files are private:
+ * the bytes are only served by GET /veterinarian/tests/{testId}/files/{id}/content
+ * to an authenticated user, never through a public URL.
+ */
+export interface MedicalTestFile {
+  /** Public GUID of the file. */
+  id: string;
+  testId: string;
+  fileName: string;
+  contentType: string;
+  kind: MedicalTestFileKind;
+  /** Size in bytes. */
+  size: number;
+  uploadedAt: string | null;
 }
 
 /**
