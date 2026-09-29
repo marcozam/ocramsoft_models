@@ -127,7 +127,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `HealthRecord` / `CreateHealthRecordRequest` | A consultation (dated clinical note of a visit) and the body of POST /veterinarian/pets/{petId}/records |
 | `HealthApplicationKind` | `'vaccine' \| 'rabies' \| 'dewormer'` — fixed when the product is applied, so re-grouping the catalog does not rewrite history |
 | `HealthRecordApplication` | A sanitary product applied to a patient; `recordId` is the consultation it was applied in, `null` when applied outside one |
-| `CreateHealthApplicationRequest` / `UpdateHealthApplicationRequest` / `LinkHealthApplicationRequest` | Bodies of POST /veterinarian/pets/{petId}/applications, PUT /veterinarian/applications/{id} and PUT /veterinarian/applications/{id}/record (`recordId: null` unlinks) |
+| `CreateHealthApplicationRequest` / `UpdateHealthApplicationRequest` / `LinkHealthApplicationRequest` | Bodies of POST /veterinarian/pets/{petId}/applications, PUT /veterinarian/pets/{petId}/applications/{id} and PUT /veterinarian/pets/{petId}/applications/{id}/record (`recordId: null` unlinks) |
 
 ### `src/entities/customer-auth.ts`
 | Export | Notes |

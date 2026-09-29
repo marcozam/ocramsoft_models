@@ -90,7 +90,7 @@ export interface CreateHealthApplicationRequest {
 }
 
 /**
- * Body of PUT /applications/:id. Product, date and professional keep their
+ * Body of PUT /pets/:petId/applications/:id. Product, date and professional keep their
  * value when omitted; the vial fields (batch, validUntil, route, dose, notes)
  * are replaced as sent, so omitting one clears it.
  */
@@ -105,7 +105,7 @@ export interface UpdateHealthApplicationRequest {
   professionalUserId?: number | null;
 }
 
-/** Body of PUT /applications/:id/record: `null` unlinks the application. */
+/** Body of PUT /pets/:petId/applications/:id/record: `null` unlinks the application. */
 export interface LinkHealthApplicationRequest {
   recordId: number | string | null;
 }
