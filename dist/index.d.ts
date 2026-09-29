@@ -26,5 +26,6 @@ export * from './entities/medical-test';
 export * from './entities/booking';
 export * from './entities/company-config';
 export * from './entities/online-store-checkout';
+export * from './entities/purchase-order-preview';
 export * from './utils';
 //# sourceMappingURL=index.d.ts.map

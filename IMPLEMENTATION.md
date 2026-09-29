@@ -196,6 +196,16 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductRecipeSummary` | List row of a base recipe — grouper or standalone product, with `variationRecipeCount` rolled up from its variations (GET /production/recipe) |
 | `SaveProductRecipeRequest` / `SaveProductRecipeLine` | Body of PUT /production/recipe/:productId; empty `lines` clears the recipe |
 
+### `src/entities/purchase-order-preview.ts` (v4.19.0)
+| Export | Notes |
+|---|---|
+| `PurchaseOrderPreviewParameters` | Tunable inputs of the replenishment formula (coverage days, lead time, periods, safety factor, minimum stock of active products, on-order window) |
+| `PurchaseOrderPreviewQuery` | Query of GET /purchasing/order-preview: `branchId` + optional parameters, `categoryId`, `supplierId`, `asOfDate` |
+| `PurchaseOrderPreview` | Suggested orders grouped by supplier, products without supplier, dead stock and totals |
+| `PurchaseOrderPreviewSupplierOrder` / `PurchaseOrderPreviewTotals` | One supplier's suggested order and its totals |
+| `PurchaseSuggestionLine` | Per product: sales per period, forecast, safety stock, target, on hand/on order, suggested quantity, cost and flags |
+| `PurchaseSupplierCost` / `PurchaseSuggestionFlag` | Latest purchase cost per supplier; line warnings |
+
 ### `src/http/api-response.ts`
 | Export | Notes |
 |---|---|
