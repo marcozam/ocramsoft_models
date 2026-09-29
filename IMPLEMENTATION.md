@@ -120,6 +120,15 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `MedicalTestValueInput` | Value on create/update: `value: number \| string \| boolean \| string[] \| null` — the gateway routes it by `dataType`; `null` on update clears the value |
 | `CreateMedicalTestRequest` / `UpdateMedicalTestRequest` | Bodies of POST /veterinarian/pets/{petId}/tests and PUT /veterinarian/tests/{testId}; the study type is immutable on update, and on update a header text field sent as `null` or `''` is cleared; `isDraft` creates a draft (values optional) and `isDraft: false` completes it |
 
+### `src/entities/health-record.ts` (v4.20.0)
+| Export | Notes |
+|---|---|
+| `HealthRecordType` | Consultation type from `CatTiposRegistroSalud` (`id, name`) |
+| `HealthRecord` / `CreateHealthRecordRequest` | A consultation (dated clinical note of a visit) and the body of POST /veterinarian/pets/{petId}/records |
+| `HealthApplicationKind` | `'vaccine' \| 'rabies' \| 'dewormer'` — fixed when the product is applied, so re-grouping the catalog does not rewrite history |
+| `HealthRecordApplication` | A sanitary product applied to a patient; `recordId` is the consultation it was applied in, `null` when applied outside one |
+| `CreateHealthApplicationRequest` / `UpdateHealthApplicationRequest` / `LinkHealthApplicationRequest` | Bodies of POST /veterinarian/pets/{petId}/applications, PUT /veterinarian/applications/{id} and PUT /veterinarian/applications/{id}/record (`recordId: null` unlinks) |
+
 ### `src/entities/customer-auth.ts`
 | Export | Notes |
 |---|---|
