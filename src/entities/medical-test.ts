@@ -103,8 +103,15 @@ export interface MedicalTest {
   fileCount?: number;
   /** Defaults to `internal` for studies created before origins existed. */
   origin?: MedicalTestOrigin;
-  /** External studies: free-text laboratory name. */
-  laboratory?: string | null;
+  /**
+   * What the study is charged as: the product configured for its study type
+   * and origin (`config/veterinary`), fixed when the study is ordered.
+   */
+  productId?: string | null;
+  productName?: string | null;
+  /** External studies: the laboratory, a supplier (its public id). */
+  laboratoryId?: string | null;
+  laboratoryName?: string | null;
   /** External studies: when the sample was sent (ISO instant). */
   sentAt?: string | null;
   /** External studies: when the results are expected (`yyyy-MM-dd`). */
@@ -172,7 +179,8 @@ export interface CreateMedicalTestRequest {
   values?: MedicalTestValueInput[];
   /** Defaults to `internal`; the shipment fields only apply to `external`. */
   origin?: MedicalTestOrigin;
-  laboratory?: string;
+  /** Supplier public id of the laboratory. */
+  laboratoryId?: string;
   sentAt?: string;
   /** `yyyy-MM-dd`. */
   expectedResultsAt?: string;
@@ -195,10 +203,13 @@ export interface UpdateMedicalTestRequest {
    */
   isDraft?: boolean;
   values?: MedicalTestValueInput[];
-  /** Switching to `internal` clears the shipment fields. */
+  /**
+   * Switching origin clears the shipment when it becomes `internal` and
+   * re-prices the study with the product of the new origin.
+   */
   origin?: MedicalTestOrigin;
-  /** `null` or `''` clears it. */
-  laboratory?: string | null;
+  /** Supplier public id of the laboratory; `null` clears it. */
+  laboratoryId?: string | null;
   /** `null` clears the sent and expected dates. */
   sentAt?: string | null;
   /** `yyyy-MM-dd`; cleared together with `sentAt`. */
