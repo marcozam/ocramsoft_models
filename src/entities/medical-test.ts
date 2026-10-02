@@ -59,6 +59,27 @@ export interface MedicalTestValue {
   observation: string | null;
 }
 
+/**
+ * Who produces the results: `internal` — the vet captures them;
+ * `external` — the sample goes to a laboratory and the results come back.
+ */
+export type MedicalTestOrigin = 'internal' | 'external';
+
+/**
+ * Where a study stands, derived by the gateway (never stored):
+ * - `pending_results` — internal draft, results not captured yet.
+ * - `to_send` — external draft whose sample has not been sent.
+ * - `at_lab` — external draft, sample sent, results not back.
+ * - `to_interpret` — external draft, results arrived, not interpreted.
+ * - `completed` — not a draft.
+ */
+export type MedicalTestStatus =
+  | 'pending_results'
+  | 'to_send'
+  | 'at_lab'
+  | 'to_interpret'
+  | 'completed';
+
 /** A study performed on a patient, with its captured values. */
 export interface MedicalTest {
   id: string;
@@ -80,7 +101,36 @@ export interface MedicalTest {
   isDraft?: boolean;
   /** Active files (photos, PDFs) attached to the study. */
   fileCount?: number;
+  /** Defaults to `internal` for studies created before origins existed. */
+  origin?: MedicalTestOrigin;
+  /**
+   * What the study is charged as: the product configured for its study type
+   * and origin (`config/veterinary`), fixed when the study is ordered.
+   */
+  productId?: string | null;
+  productName?: string | null;
+  /** External studies: the laboratory, a supplier (its public id). */
+  laboratoryId?: string | null;
+  laboratoryName?: string | null;
+  /** External studies: when the sample was sent (ISO instant). */
+  sentAt?: string | null;
+  /** External studies: when the results are expected (`yyyy-MM-dd`). */
+  expectedResultsAt?: string | null;
+  /** External studies: when the results arrived (ISO instant). */
+  resultsReceivedAt?: string | null;
+  status?: MedicalTestStatus;
   values: MedicalTestValue[];
+}
+
+/** A study of the clinic's pending tray, with the pet and its primary tutor. */
+export interface PendingMedicalTest extends MedicalTest {
+  petId: string;
+  petName: string;
+  speciesName: string | null;
+  tutorName: string | null;
+  tutorPhone: string | null;
+  /** External study whose expected results date has passed. */
+  overdue: boolean;
 }
 
 /** How an attached study file is shown: an inline photo or a PDF document. */
@@ -127,6 +177,13 @@ export interface CreateMedicalTestRequest {
   isDraft?: boolean;
   /** Required (non-empty) unless `isDraft`. */
   values?: MedicalTestValueInput[];
+  /** Defaults to `internal`; the shipment fields only apply to `external`. */
+  origin?: MedicalTestOrigin;
+  /** Supplier public id of the laboratory. */
+  laboratoryId?: string;
+  sentAt?: string;
+  /** `yyyy-MM-dd`. */
+  expectedResultsAt?: string;
 }
 
 /**
@@ -146,6 +203,19 @@ export interface UpdateMedicalTestRequest {
    */
   isDraft?: boolean;
   values?: MedicalTestValueInput[];
+  /**
+   * Switching origin clears the shipment when it becomes `internal` and
+   * re-prices the study with the product of the new origin.
+   */
+  origin?: MedicalTestOrigin;
+  /** Supplier public id of the laboratory; `null` clears it. */
+  laboratoryId?: string | null;
+  /** `null` clears the sent and expected dates. */
+  sentAt?: string | null;
+  /** `yyyy-MM-dd`; cleared together with `sentAt`. */
+  expectedResultsAt?: string;
+  /** `null` clears it (results not back after all). */
+  resultsReceivedAt?: string | null;
 }
 
 /** How sure the model is of one suggested value. */
