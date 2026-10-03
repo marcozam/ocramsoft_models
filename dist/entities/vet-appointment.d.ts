@@ -13,4 +13,10 @@ export interface AppointmentPetLink {
     petName: string;
     speciesName?: string;
 }
+/** A consultation started from an appointment, one per attending pet at most. */
+export interface AppointmentRecordLink {
+    appointmentId: number;
+    petId: number;
+    recordId: string;
+}
 //# sourceMappingURL=vet-appointment.d.ts.map
