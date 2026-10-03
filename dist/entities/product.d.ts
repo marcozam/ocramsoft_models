@@ -12,6 +12,15 @@ export interface ProductCategory extends BaseEntity {
     /** When true, products in this category are schedulable services and carry a duration. */
     isSchedulable?: boolean;
     brands?: ProductBrand[];
+    /**
+     * Material icon ligature name (e.g. `pets`, `local_pharmacy`) shown next to
+     * the category. Absent when the category has no custom look.
+     */
+    icon?: string;
+    /** Icon colour as `#RRGGBB`. Absent means "use the default colour". */
+    iconColor?: string;
+    /** Background colour behind the icon as `#RRGGBB`. Absent means "use the default". */
+    backgroundColor?: string;
 }
 export interface ProductGroup extends SimpleEntity {
     categoryId?: string;
