@@ -98,3 +98,21 @@ export interface OnlineStoreProductPage {
   skipped: number;
   nextPageToken?: string | null;
 }
+
+/**
+ * A category the online store has something to sell in, with the look the
+ * back office gave it. The appearance fields are absent when the category has
+ * no custom look; the storefront falls back to its own default.
+ */
+export interface OnlineStoreCategory {
+  id: string;
+  name: string;
+  /** Material icon ligature name (e.g. `pets`). */
+  icon?: string;
+  /** Icon colour as `#RRGGBB`. */
+  iconColor?: string;
+  /** Background colour behind the icon as `#RRGGBB`. */
+  backgroundColor?: string;
+  /** How many catalog rows (groupers count once) fall in this category. */
+  productCount: number;
+}

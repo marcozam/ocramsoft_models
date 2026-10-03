@@ -159,7 +159,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | Export | Notes |
 |---|---|
 | `OnlineOrderPaymentMethod` | `'bank_transfer'` — the only online payment method today (SPEI, validated by staff) |
-| `OnlineOrderItemRequest` | `{ productId, quantity }` — cart line; prices are always resolved server-side |
+| `OnlineOrderItemRequest` | `{ productId, quantity }` — cart line; prices are always resolved server-side. `productId` is a plain product or a variation of a grouper — never the grouper itself |
 | `PlaceOnlineOrderRequest` | `{ items, shippingAddressId? \| shippingAddress?, shippingReferences?, paymentMethod, comment? }` — body of POST /online-store/orders; exactly one shipping destination (an address the customer already owns, or a new one linked as part of the order); identity comes from the customer-auth bearer token, never the body |
 | `OnlineOrderStatus` | `'pending_payment' \| 'confirmed'` — pending until staff validate the transfer receipt |
 | `BankTransferInfo` | `{ bankName, accountHolder, clabe, cardNumber? }` — account the customer wires the total to |
@@ -173,6 +173,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `OnlineStoreProduct` | Channel-agnostic catalog row: price and availability already resolved for the configured online-store branch. Groupers carry `isGrouper`, `variationCount`, `priceFrom` (the price is the cheapest variation's) and, on the detail endpoint, `variations` |
 | `OnlineStoreProductVariation` | `{ id, name, description?, price, available, imageUrl?, images? }` — one selectable variation of a grouper; the storefront swaps the gallery to its `images` and appends its `description` to the grouper's (v4.14.0) |
 | `OnlineStoreProductPage` | `{ items, total, skipped, nextPageToken? }` — one catalog page; `skipped` counts products left out for want of a branch price |
+| `OnlineStoreCategory` | `{ id, name, icon?, iconColor?, backgroundColor?, productCount }` — item of GET /online-store/categories: a category the store has something to sell in, with its back-office look (v4.24.0) |
 
 ### `src/entities/stock.ts`
 | Export | Notes |
