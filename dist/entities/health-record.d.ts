@@ -23,6 +23,8 @@ export interface HealthRecord {
     treatment?: string | null;
     notes?: string | null;
     professionalUserId?: number | null;
+    /** The appointment the consultation was started from, if any. */
+    appointmentId?: string | null;
     isActive: boolean;
 }
 /** Body of POST /pets/:petId/records; PUT /records/:id takes it partially. */
@@ -34,6 +36,11 @@ export interface CreateHealthRecordRequest {
     treatment?: string;
     notes?: string;
     professionalUserId?: number;
+    /**
+     * Start the consultation from this appointment (create only): the pet must
+     * attend it, and each pet gets at most one consultation per appointment.
+     */
+    appointmentId?: string;
 }
 /**
  * What an applied product is, fixed when it is applied. `rabies` is a vaccine

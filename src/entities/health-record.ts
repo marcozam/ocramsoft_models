@@ -25,6 +25,8 @@ export interface HealthRecord {
   treatment?: string | null;
   notes?: string | null;
   professionalUserId?: number | null;
+  /** The appointment the consultation was started from, if any. */
+  appointmentId?: string | null;
   isActive: boolean;
 }
 
@@ -37,6 +39,11 @@ export interface CreateHealthRecordRequest {
   treatment?: string;
   notes?: string;
   professionalUserId?: number;
+  /**
+   * Start the consultation from this appointment (create only): the pet must
+   * attend it, and each pet gets at most one consultation per appointment.
+   */
+  appointmentId?: string;
 }
 
 /**
