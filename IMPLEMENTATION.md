@@ -80,7 +80,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductGroup` | `extends SimpleEntity` + `categoryId?` |
 | `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) + `description?, mainImageUrl?, images?, availableOnline?` |
 | `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
-| `ProductCategory.icon?` / `iconColor?` / `backgroundColor?` | Category appearance (v4.22.0): Material icon name and `#RRGGBB` colours, all optional. Set and edited from the FE category form; the BE validates the hex format |
+| `ProductCategory.icon?` / `iconColor?` / `backgroundColor?` | Category appearance (v4.23.0): Material icon name and `#RRGGBB` colours, all optional. Set and edited from the FE category form; the BE validates the hex format |
 | `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item. BE re-exports it; FE keeps it via the `../products` barrel |
 | `Product.parentId?` | Grouper this product is a variation of — set only on variations |
 | `Product.isGrouper?` | Abstract grouper row: never sold on its own, only holds variations |
