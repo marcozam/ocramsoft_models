@@ -72,6 +72,8 @@ export interface HealthRecordApplication {
   validUntil?: string | null;
   route?: string | null;
   dose?: string | null;
+  /** Doses of the product applied (what the visit charges); 1 when absent. */
+  quantity?: number;
   notes?: string | null;
   professionalUserId?: number | null;
   isActive: boolean;
@@ -92,12 +94,14 @@ export interface CreateHealthApplicationRequest {
   validUntil?: string | null;
   route?: string | null;
   dose?: string | null;
+  /** Doses applied, a positive integer; defaults to 1. */
+  quantity?: number;
   notes?: string | null;
   professionalUserId?: number | null;
 }
 
 /**
- * Body of PUT /pets/:petId/applications/:id. Product, date and professional keep their
+ * Body of PUT /pets/:petId/applications/:id. Product, date, quantity and professional keep their
  * value when omitted; the vial fields (batch, validUntil, route, dose, notes)
  * are replaced as sent, so omitting one clears it.
  */
@@ -108,6 +112,7 @@ export interface UpdateHealthApplicationRequest {
   validUntil?: string | null;
   route?: string | null;
   dose?: string | null;
+  quantity?: number;
   notes?: string | null;
   professionalUserId?: number | null;
 }
