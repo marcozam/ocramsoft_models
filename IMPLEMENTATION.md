@@ -130,7 +130,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `HealthRecordType` | Consultation type from `CatTiposRegistroSalud` (`id, name`) |
 | `HealthRecord` / `CreateHealthRecordRequest` | A consultation (dated clinical note of a visit) and the body of POST /veterinarian/pets/{petId}/records. `appointmentId` (v4.22.0): the appointment it was started from — create only, the pet must attend it, one consultation per pet and appointment |
 | `HealthApplicationKind` | `'vaccine' \| 'rabies' \| 'dewormer'` — fixed when the product is applied, so re-grouping the catalog does not rewrite history |
-| `HealthRecordApplication` | A sanitary product applied to a patient; `recordId` is the consultation it was applied in, `null` when applied outside one; `quantity` is the doses applied (1 when absent; also on the create/update requests, v4.26.0) |
+| `HealthRecordApplication` | A sanitary product applied to a patient; `recordId` is the consultation it was applied in, `null` when applied outside one; `quantity` is the doses applied (1 when absent; also on the create/update requests, v4.26.0); `productImageUrl` is the product's principal photo (v4.27.0) |
 | `CreateHealthApplicationRequest` / `UpdateHealthApplicationRequest` / `LinkHealthApplicationRequest` | Bodies of POST /veterinarian/pets/{petId}/applications, PUT /veterinarian/pets/{petId}/applications/{id} and PUT /veterinarian/pets/{petId}/applications/{id}/record (`recordId: null` unlinks) |
 
 ### `src/entities/customer-auth.ts`

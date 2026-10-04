@@ -67,6 +67,8 @@ export interface HealthRecordApplication {
   category?: string;
   /** Product brand — the laboratory the airline asks for. */
   brand?: string | null;
+  /** The product's principal photo; `null` when it has none. */
+  productImageUrl?: string | null;
   batch?: string | null;
   /** Expiry of the applied vial, not a booster date. */
   validUntil?: string | null;
