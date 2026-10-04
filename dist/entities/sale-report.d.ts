@@ -1,4 +1,5 @@
 import { SaleOrderSummary } from './sale-order';
+import type { PurchaseSupplierCost } from './purchase-order-preview';
 /** Income aggregated by payment method for a reporting period. */
 export interface SaleSummaryIncomeByPaymentMethod {
     paymentMethodId: number;
@@ -34,11 +35,37 @@ export interface ProductSoldByBranchReportItem {
     categoryId: number;
     categoryName: string;
     quantitySold: number;
+    /** Amount sold, after discounts and before taxes. */
     totalAmount: number;
+    /** totalAmount / quantitySold: the price per unit actually charged (pre-tax), rounded to cents. */
+    averagePrice: number;
     /** 0 when the product has no inventory record in the branch's location. */
     currentStock: number;
     /** false = service category (no inventory) — render stock as N/A, not 0. */
     managesStock: boolean;
+    /**
+     * Cost of one unit: the product's latest purchase (non-cancelled expense line)
+     * on or before the range end, net of discount, before taxes, in MXN.
+     * null when the product was never bought on an expense.
+     */
+    unitCost: number | null;
+    /** unitCost × quantitySold, rounded to cents; null without a cost. */
+    totalCost: number | null;
+    /** Date of the purchase the cost comes from; null without a cost. */
+    lastPurchaseDate: string | null;
+    /**
+     * Supplier of that same purchase (supplier public id), so the products can be
+     * grouped by whom to reorder them from. null without a cost, or when the
+     * purchase was a ticket from a store not registered as supplier.
+     */
+    supplierId: string | null;
+    /** Name on that purchase; null without a cost. */
+    supplierName: string | null;
+    /**
+     * Every supplier the product was bought from up to the range end, each with
+     * its latest price, cheapest first; empty when never bought.
+     */
+    supplierOptions: PurchaseSupplierCost[];
 }
 /** Query filters accepted by GET /pos/sale/report/products-sold. */
 export interface ProductsSoldReportFilters {
