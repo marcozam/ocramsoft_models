@@ -39,6 +39,24 @@ export interface ProductSoldByBranchReportItem {
     currentStock: number;
     /** false = service category (no inventory) — render stock as N/A, not 0. */
     managesStock: boolean;
+    /**
+     * Cost of one unit: the product's latest purchase (non-cancelled expense line)
+     * on or before the range end, net of discount, before taxes, in MXN.
+     * null when the product was never bought on an expense.
+     */
+    unitCost: number | null;
+    /** unitCost × quantitySold, rounded to cents; null without a cost. */
+    totalCost: number | null;
+    /** Date of the purchase the cost comes from; null without a cost. */
+    lastPurchaseDate: string | null;
+    /**
+     * Supplier of that same purchase (supplier public id), so the products can be
+     * grouped by whom to reorder them from. null without a cost, or when the
+     * purchase was a ticket from a store not registered as supplier.
+     */
+    supplierId: string | null;
+    /** Name on that purchase; null without a cost. */
+    supplierName: string | null;
 }
 /** Query filters accepted by GET /pos/sale/report/products-sold. */
 export interface ProductsSoldReportFilters {

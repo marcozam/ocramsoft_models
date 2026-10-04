@@ -199,7 +199,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 |---|---|
 | `SaleSummaryIncomeByPaymentMethod` | Income aggregated by payment method for a period |
 | `SaleSummaryReport` | Monthly branch summary (GET /pos/sale/report/summary) |
-| `ProductSoldByBranchReportItem` | Row of the products-sold-by-branch report: per-branch/product quantity, revenue, current stock (GET /pos/sale/report/products-sold) |
+| `ProductSoldByBranchReportItem` | Row of the products-sold-by-branch report: per-branch/product quantity, revenue, current stock, and `unitCost`/`totalCost`/`lastPurchaseDate`/`supplierId`/`supplierName` from the latest purchase on or before the range end, all null when never bought (v4.25.0) (GET /pos/sale/report/products-sold) |
 | `ProductsSoldReportFilters` | Query filters for the products-sold report (date range, branchId, categoryId, inStockOnly) |
 
 ### `src/entities/production-recipe.ts` (v4.13.2)
