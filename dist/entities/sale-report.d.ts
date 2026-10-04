@@ -1,4 +1,5 @@
 import { SaleOrderSummary } from './sale-order';
+import type { PurchaseSupplierCost } from './purchase-order-preview';
 /** Income aggregated by payment method for a reporting period. */
 export interface SaleSummaryIncomeByPaymentMethod {
     paymentMethodId: number;
@@ -34,7 +35,10 @@ export interface ProductSoldByBranchReportItem {
     categoryId: number;
     categoryName: string;
     quantitySold: number;
+    /** Amount sold, after discounts and before taxes. */
     totalAmount: number;
+    /** totalAmount / quantitySold: the price per unit actually charged (pre-tax), rounded to cents. */
+    averagePrice: number;
     /** 0 when the product has no inventory record in the branch's location. */
     currentStock: number;
     /** false = service category (no inventory) — render stock as N/A, not 0. */
@@ -57,6 +61,11 @@ export interface ProductSoldByBranchReportItem {
     supplierId: string | null;
     /** Name on that purchase; null without a cost. */
     supplierName: string | null;
+    /**
+     * Every supplier the product was bought from up to the range end, each with
+     * its latest price, cheapest first; empty when never bought.
+     */
+    supplierOptions: PurchaseSupplierCost[];
 }
 /** Query filters accepted by GET /pos/sale/report/products-sold. */
 export interface ProductsSoldReportFilters {
