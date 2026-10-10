@@ -6,6 +6,7 @@ export enum UserRole {
   USER = 'user',
   LOCK = 'lock',
   MANAGER = 'manager',
+  CUSTOMER = 'customer',
 }
 
 export interface User extends BaseEntity {
