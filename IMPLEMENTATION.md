@@ -104,7 +104,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `AppointmentStatus` | enum; values = CatStatus ids under IDUso 403 (40301 SCHEDULED … 40306 NO_SHOW) |
 | `BookingChannel` | enum; values = CatCanalAgenda ids (1 SELF_SERVICE, 2 ON_BEHALF, 3 API) — how a booking was made |
 | `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
-| `Appointment` | Customer appointment: `branchId, customerId, services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
+| `Appointment` | Customer appointment: `branchId, customerId, customerPublicId? (Contacto.PublicId), services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
 | `AppointmentRecordLink` (vet-appointment.ts, v4.22.0) | Item of GET /veterinarian/appointments/{id}/records: the consultation (`recordId`) a pet of the appointment already has, so the agenda offers «Ver consulta» instead of starting another |
 | `AppointmentPetLink` (vet-appointment.ts) | Vet vertical: pet attending an appointment (`appointmentId, petId, petName, speciesName?`). Kept OFF the generic `Appointment` — whitelabel scheduling never embeds pet data; only `/veterinarian` endpoints speak this type |
