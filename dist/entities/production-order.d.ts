@@ -1,14 +1,15 @@
 import { BaseEntity } from '../core/base-entity';
 /**
- * Production order statuses — CatStatus usage group 403 (IDUso = 403).
+ * Production order statuses — CatStatus usage group 404 (IDUso = 404).
+ * (Moved off 403, which belongs to the agenda — see AppointmentStatus.)
  * Values are the CatStatus IDs seeded by
  * SQL_Scripts/08_Inventario/004_OrdenProduccion/OrdenProduccion_01_InitialData.sql
  */
 export declare enum ProductionOrderStatus {
-    Requested = 40301,
-    InProduction = 40302,
-    Completed = 40303,
-    Cancelled = 40304
+    Requested = 40401,
+    InProduction = 40402,
+    Completed = 40403,
+    Cancelled = 40404
 }
 /** Eagle-view representation of a production order — no line items or batch log. */
 export interface ProductionOrderSummary extends BaseEntity {
