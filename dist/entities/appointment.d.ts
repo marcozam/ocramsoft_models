@@ -47,6 +47,8 @@ export interface Appointment extends BaseEntity {
     branchId: number;
     branchName?: string;
     customerId: number;
+    /** The customer's frontend-safe GUID (Contacto.PublicId); use it to load the customer. */
+    customerPublicId?: string;
     customerName?: string;
     services: AppointmentService[];
     /** ISO 8601 start datetime. */
