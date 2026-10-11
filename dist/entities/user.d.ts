@@ -4,7 +4,8 @@ export declare enum UserRole {
     ADMIN = "admin",
     USER = "user",
     LOCK = "lock",
-    MANAGER = "manager"
+    MANAGER = "manager",
+    CUSTOMER = "customer"
 }
 export interface User extends BaseEntity {
     userName: string;
