@@ -2,15 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductionOrderStatus = void 0;
 /**
- * Production order statuses — CatStatus usage group 403 (IDUso = 403).
+ * Production order statuses — CatStatus usage group 404 (IDUso = 404).
+ * (Moved off 403, which belongs to the agenda — see AppointmentStatus.)
  * Values are the CatStatus IDs seeded by
  * SQL_Scripts/08_Inventario/004_OrdenProduccion/OrdenProduccion_01_InitialData.sql
  */
 var ProductionOrderStatus;
 (function (ProductionOrderStatus) {
-    ProductionOrderStatus[ProductionOrderStatus["Requested"] = 40301] = "Requested";
-    ProductionOrderStatus[ProductionOrderStatus["InProduction"] = 40302] = "InProduction";
-    ProductionOrderStatus[ProductionOrderStatus["Completed"] = 40303] = "Completed";
-    ProductionOrderStatus[ProductionOrderStatus["Cancelled"] = 40304] = "Cancelled";
+    ProductionOrderStatus[ProductionOrderStatus["Requested"] = 40401] = "Requested";
+    ProductionOrderStatus[ProductionOrderStatus["InProduction"] = 40402] = "InProduction";
+    ProductionOrderStatus[ProductionOrderStatus["Completed"] = 40403] = "Completed";
+    ProductionOrderStatus[ProductionOrderStatus["Cancelled"] = 40404] = "Cancelled";
 })(ProductionOrderStatus || (exports.ProductionOrderStatus = ProductionOrderStatus = {}));
 //# sourceMappingURL=production-order.js.map
