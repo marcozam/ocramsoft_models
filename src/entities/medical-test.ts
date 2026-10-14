@@ -25,12 +25,23 @@ export interface TestType {
   aiAnalysis?: boolean;
 }
 
-/** One capturable attribute of a study type, in report order. */
+/**
+ * One capturable attribute of a study type or a consultation type, in order.
+ * `refMin`/`refMax` are the normal range, resolved for the patient's species
+ * when the catalog has one for it.
+ */
 export interface TestAttribute {
   attributeId: number;
+  /** Stable code for attributes the apps look up by name (e.g. `peso`). */
+  key?: string | null;
   name: string;
   dataType: TestAttributeDataType;
   unit: string | null;
+  /** Decimal places a numeric value may have; `0` = whole numbers. */
+  decimals?: number | null;
+  /** Physically possible bounds: a numeric value outside them is rejected. */
+  limitMin?: number | null;
+  limitMax?: number | null;
   refMin: number | null;
   refMax: number | null;
   /** Valid choices for `option` / `multioption`; empty for other types. */
@@ -43,6 +54,7 @@ export interface TestAttribute {
 /** A captured value of one attribute within a study. */
 export interface MedicalTestValue {
   attributeId: number;
+  key?: string | null;
   attributeName: string;
   dataType: TestAttributeDataType;
   unit: string | null;

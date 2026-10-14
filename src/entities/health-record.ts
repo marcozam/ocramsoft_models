@@ -1,3 +1,5 @@
+import type { MedicalTestValue, MedicalTestValueInput } from './medical-test';
+
 /**
  * Veterinary vertical — the clinical file (expediente) of a patient.
  *
@@ -41,8 +43,11 @@ export interface HealthRecord {
   professionalUserId?: number | null;
   /** The appointment the consultation was started from, if any. */
   appointmentId?: string | null;
-  /** Vital signs taken in the consultation; `null` when none were taken. */
-  vitals?: HealthRecordVitals | null;
+  /**
+   * The consultation's captured attributes (vital signs and any extra ones its
+   * type asks for), in the type's order.
+   */
+  vitals?: MedicalTestValue[];
   isActive: boolean;
 }
 
@@ -61,35 +66,17 @@ export interface CreateHealthRecordRequest {
    */
   appointmentId?: string;
   /**
-   * On PUT: omitted keeps the stored vitals, `null` clears them, an object
-   * replaces all of them (a field missing from it is cleared).
+   * Values of the attributes linked to the consultation type. Each entry is
+   * upserted; `value: null` clears it; attributes left out are untouched.
    */
-  vitals?: HealthRecordVitals | null;
+  vitals?: MedicalTestValueInput[];
 }
 
-/** Colour of the mucous membranes. */
-export type MucousMembraneColor = 'pink' | 'pale' | 'hyperemic' | 'cyanotic' | 'icteric';
-
-/** Vital signs taken in a consultation. Every value is optional. */
-export interface HealthRecordVitals {
-  weightKg?: number | null;
-  temperatureC?: number | null;
-  /** Beats per minute. */
-  heartRate?: number | null;
-  /** Breaths per minute. */
-  respiratoryRate?: number | null;
-  capillaryRefillSec?: number | null;
-  mucousMembranes?: MucousMembraneColor | null;
-  dehydrationPct?: number | null;
-  /** 1 (very thin) – 5 (obese). */
-  bodyCondition?: number | null;
-}
-
-/** One consultation's vitals in a pet's history (GET /veterinarian/pets/:petId/vitals). */
+/** One consultation's captured attributes in a pet's history (GET /veterinarian/pets/:petId/vitals). */
 export interface PetVitalsEntry {
   healthRecordId: string;
   date: string;
-  vitals: HealthRecordVitals;
+  values: MedicalTestValue[];
 }
 
 /**
