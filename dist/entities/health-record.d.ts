@@ -10,6 +10,20 @@
 export interface HealthRecordType {
     id: number;
     name: string;
+    /**
+     * Product the vet POS charges for a consultation of this type («Cobrar»)
+     * for the caller's account; `null` when the type is not charged.
+     */
+    productId?: string | null;
+    productName?: string | null;
+}
+/**
+ * Body of PUT /veterinarian/record-types/:id/product. When the account has
+ * consultation categories (`config/veterinary`), the product must belong to
+ * one; `null` clears it. Same per-account setting as `VisitTypeSetting.productId`.
+ */
+export interface SetHealthRecordTypeProductRequest {
+    productId: number | null;
 }
 /** A consultation: the dated clinical note of a visit. */
 export interface HealthRecord {
