@@ -38,6 +38,8 @@ export interface HealthRecord {
     professionalUserId?: number | null;
     /** The appointment the consultation was started from, if any. */
     appointmentId?: string | null;
+    /** Vital signs taken in the consultation; `null` when none were taken. */
+    vitals?: HealthRecordVitals | null;
     isActive: boolean;
 }
 /** Body of POST /pets/:petId/records; PUT /records/:id takes it partially. */
@@ -54,6 +56,33 @@ export interface CreateHealthRecordRequest {
      * attend it, and each pet gets at most one consultation per appointment.
      */
     appointmentId?: string;
+    /**
+     * On PUT: omitted keeps the stored vitals, `null` clears them, an object
+     * replaces all of them (a field missing from it is cleared).
+     */
+    vitals?: HealthRecordVitals | null;
+}
+/** Colour of the mucous membranes. */
+export type MucousMembraneColor = 'pink' | 'pale' | 'hyperemic' | 'cyanotic' | 'icteric';
+/** Vital signs taken in a consultation. Every value is optional. */
+export interface HealthRecordVitals {
+    weightKg?: number | null;
+    temperatureC?: number | null;
+    /** Beats per minute. */
+    heartRate?: number | null;
+    /** Breaths per minute. */
+    respiratoryRate?: number | null;
+    capillaryRefillSec?: number | null;
+    mucousMembranes?: MucousMembraneColor | null;
+    dehydrationPct?: number | null;
+    /** 1 (very thin) – 5 (obese). */
+    bodyCondition?: number | null;
+}
+/** One consultation's vitals in a pet's history (GET /veterinarian/pets/:petId/vitals). */
+export interface PetVitalsEntry {
+    healthRecordId: string;
+    date: string;
+    vitals: HealthRecordVitals;
 }
 /**
  * What an applied product is, fixed when it is applied. `rabies` is a vaccine
