@@ -1,3 +1,5 @@
+import type { MedicalTestValue, MedicalTestValueInput } from './medical-test';
+
 /**
  * Veterinary vertical — the clinical file (expediente) of a patient.
  *
@@ -41,6 +43,11 @@ export interface HealthRecord {
   professionalUserId?: number | null;
   /** The appointment the consultation was started from, if any. */
   appointmentId?: string | null;
+  /**
+   * The consultation's captured attributes (vital signs and any extra ones its
+   * type asks for), in the type's order.
+   */
+  vitals?: MedicalTestValue[];
   isActive: boolean;
 }
 
@@ -58,6 +65,18 @@ export interface CreateHealthRecordRequest {
    * attend it, and each pet gets at most one consultation per appointment.
    */
   appointmentId?: string;
+  /**
+   * Values of the attributes linked to the consultation type. Each entry is
+   * upserted; `value: null` clears it; attributes left out are untouched.
+   */
+  vitals?: MedicalTestValueInput[];
+}
+
+/** One consultation's captured attributes in a pet's history (GET /veterinarian/pets/:petId/vitals). */
+export interface PetVitalsEntry {
+  healthRecordId: string;
+  date: string;
+  values: MedicalTestValue[];
 }
 
 /**
