@@ -28,8 +28,13 @@ export interface VisitTypeSetting {
   durationMinutes: number | null;
 }
 
-/** Body of PUT /veterinarian/settings/visit-types/:id (toggle / reorder). */
+/**
+ * Body of PUT /veterinarian/settings/visit-types/:id: the clinic's settings
+ * for any visit type, plus `name` for a type the clinic owns.
+ */
 export interface UpdateVisitTypeSettingRequest {
+  /** Only for clinic-private types; a global type cannot be renamed. */
+  name?: string;
   enabled?: boolean;
   order?: number;
   productId?: string | null;
