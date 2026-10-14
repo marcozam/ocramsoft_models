@@ -127,7 +127,8 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/health-record.ts` (v4.20.0)
 | Export | Notes |
 |---|---|
-| `HealthRecordType` | Consultation type from `CatTiposRegistroSalud` (`id, name`) |
+| `HealthRecordType` | Consultation type from `CatTiposRegistroSalud` (`id, name`); `productId` / `productName` (v4.29.0): the product the vet POS charges for it, `null` when unmapped |
+| `SetHealthRecordTypeProductRequest` | Body of PUT /veterinarian/record-types/{id}/product (v4.29.0): `productId` must be in a consultation category of `config/veterinary`; `null` clears it |
 | `HealthRecord` / `CreateHealthRecordRequest` | A consultation (dated clinical note of a visit) and the body of POST /veterinarian/pets/{petId}/records. `appointmentId` (v4.22.0): the appointment it was started from — create only, the pet must attend it, one consultation per pet and appointment |
 | `HealthApplicationKind` | `'vaccine' \| 'rabies' \| 'dewormer'` — fixed when the product is applied, so re-grouping the catalog does not rewrite history |
 | `HealthRecordApplication` | A sanitary product applied to a patient; `recordId` is the consultation it was applied in, `null` when applied outside one; `quantity` is the doses applied (1 when absent; also on the create/update requests, v4.27.0); `productImageUrl` is the product's principal photo (v4.27.0) |
