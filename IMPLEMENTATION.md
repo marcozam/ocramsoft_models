@@ -321,6 +321,23 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `CustomerSearchFilters` | Disjoint field sets — BE `{ customerType?, isActive?, searchTerm?, hasAddress?, ageRange? }` vs FE `{ phone?, name?, email? }`. Filter/query shape, not identical/superset → kept local per the customer rule. |
 | Lock `Device` / `DeviceLock` | No common identity field (BE `DeviceLock` keys off `BaseEntity.id`; FE `Device` keys off `uuid` with no `id`). BE shape carries a behavior method `isLocked()` + lock-domain fields; FE is a 3-field read view with response wrappers. Overlap (`model`, `status`) too thin to justify a shared entity. BE `IDeviceLock`/`DeviceLogs` and FE `DeviceListResponse`/`OTPResponse` stay local regardless. |
 
+### `src/entities/vet-settings.ts` (v4.29.0)
+| Export | Notes |
+|---|---|
+| `VisitTypeSetting` | Visit type with per-account settings: `id, name, isGlobal, enabled, order, productId, durationMinutes` |
+| `UpdateVisitTypeSettingRequest` | Body of PUT /veterinarian/settings/visit-types/:id |
+| `CreateVisitTypeRequest` | Body of POST /veterinarian/settings/visit-types (private type) |
+| `TestTypeSetting` | Test type with per-account settings: `id, name, enabled, order, internalProductId, externalProductId` |
+| `UpdateTestTypeSettingRequest` | Body of PUT /veterinarian/settings/test-types/:id |
+| `SpeciesSetting` | Species with per-account settings: `id, name, enabled, order` |
+| `UpdateSpeciesSettingRequest` | Body of PUT /veterinarian/settings/species/:id |
+| `TimeZoneOption` | IANA time zone option for branch picker: `id, iana, name` |
+
+### `src/entities/branch.ts` (v4.29.0 update)
+| Export | Notes |
+|---|---|
+| `Branch.timeZone?` | IANA time zone string added to the existing Branch interface (optional, backward compatible) |
+
 ## Breaking Change Log
 
 | Change | Reason |
