@@ -12,15 +12,16 @@ export interface HealthRecordType {
     id: number;
     name: string;
     /**
-     * Product the vet POS charges for a consultation of this type («Cobrar»);
-     * `null` when the type is not charged.
+     * Product the vet POS charges for a consultation of this type («Cobrar»)
+     * for the caller's account; `null` when the type is not charged.
      */
     productId?: string | null;
     productName?: string | null;
 }
 /**
- * Body of PUT /veterinarian/record-types/:id/product. The product must belong
- * to a consultation category (`config/veterinary`); `null` clears it.
+ * Body of PUT /veterinarian/record-types/:id/product. When the account has
+ * consultation categories (`config/veterinary`), the product must belong to
+ * one; `null` clears it. Same per-account setting as `VisitTypeSetting.productId`.
  */
 export interface SetHealthRecordTypeProductRequest {
     productId: number | null;
@@ -65,6 +66,29 @@ export interface CreateHealthRecordRequest {
      * upserted; `value: null` clears it; attributes left out are untouched.
      */
     vitals?: MedicalTestValueInput[];
+}
+/**
+ * One attribute a clinic captures in a consultation type
+ * (PUT /veterinarian/record-types/:typeId/attributes).
+ */
+export interface RecordTypeAttributeSetting {
+    /** A health attribute (GET /veterinarian/health-attributes). */
+    attributeId: number;
+    /** Capture order (integer >= 0); omitted = its position in the list, from 1. */
+    order?: number;
+    /**
+     * Section header (max 100 characters); `''` = none; omitted or `null` keeps
+     * the one it had (or, for a new attribute, the platform default of the type).
+     */
+    section?: string | null;
+}
+/**
+ * Body of PUT /veterinarian/record-types/:typeId/attributes: the complete list
+ * of attributes the clinic captures in the type (it replaces the previous one;
+ * `[]` captures nothing). Values already captured keep reading back.
+ */
+export interface SetRecordTypeAttributesRequest {
+    attributes: RecordTypeAttributeSetting[];
 }
 /** One consultation's captured attributes in a pet's history (GET /veterinarian/pets/:petId/vitals). */
 export interface PetVitalsEntry {

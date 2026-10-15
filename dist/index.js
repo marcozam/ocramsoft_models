@@ -44,5 +44,6 @@ __exportStar(require("./entities/booking"), exports);
 __exportStar(require("./entities/company-config"), exports);
 __exportStar(require("./entities/online-store-checkout"), exports);
 __exportStar(require("./entities/purchase-order-preview"), exports);
+__exportStar(require("./entities/vet-settings"), exports);
 __exportStar(require("./utils"), exports);
 //# sourceMappingURL=index.js.map

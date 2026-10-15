@@ -114,7 +114,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 |---|---|
 | `TestAttributeDataType` | `'numeric' \| 'text' \| 'boolean' \| 'option' \| 'multioption'` — SQL `TipoDato` 1–5 (v4.17.1) |
 | `TestType` | Study type from the catalog (`id, name`), e.g. Reporte Citológico |
-| `TestAttribute` | One capturable attribute of a study or consultation type: `attributeId, name, dataType, unit, refMin, refMax, options[], section, order`; v4.30.0 adds optional `key` (stable code such as `peso`), `decimals` and the physical `limitMin`/`limitMax`; `refMin`/`refMax` are resolved for the patient's species when the catalog has a species range |
+| `TestAttribute` | One capturable attribute of a study or consultation type: `attributeId, name, dataType, unit, refMin, refMax, options[], section, order`; main v4.30.0 (MVP 4.32.0) adds optional `key` (stable code such as `peso`), `decimals` and the physical `limitMin`/`limitMax`; `refMin`/`refMax` are resolved for the patient's species when the catalog has a species range; MVP 4.33.0 added an optional `required`, removed in MVP 4.34.0 before any release (no vital is ever required; product decision 2026-10-15) |
 | `MedicalTestValue` | Captured value: `numericValue` / `textValue` (multioption `\|`-joined) / `boolValue`, plus `outOfRange` and per-value `observation` |
 | `MedicalTest` | A patient's study with its `values[]`; `healthRecordId` links the originating visit; `fileCount` counts its attached files; `isDraft` marks a study started without results (type + photos) to be completed later |
 | `MedicalTestOrigin` / `MedicalTestStatus` (v4.21.0) | `internal` (the vet captures the results) or `external` (sample sent to a lab: `laboratoryId` — a supplier — `sentAt`, `expectedResultsAt`, `resultsReceivedAt` on `MedicalTest` and its create/update bodies). `productId`/`productName` is what the study is charged as, from the product configured per study type and origin. `status` is derived by the gateway: `pending_results`, `to_send`, `at_lab`, `to_interpret`, `completed` |
@@ -127,11 +127,12 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/health-record.ts` (v4.20.0)
 | Export | Notes |
 |---|---|
-| `HealthRecordType` | Consultation type from `CatTiposRegistroSalud` (`id, name`); `productId` / `productName` (v4.29.0): the product the vet POS charges for it, `null` when unmapped |
-| `SetHealthRecordTypeProductRequest` | Body of PUT /veterinarian/record-types/{id}/product (v4.29.0): `productId` must be in a consultation category of `config/veterinary`; `null` clears it |
+| `HealthRecordType` | Consultation type from `CatTiposRegistroSalud` (`id, name`); `productId` / `productName` (main 4.29.0, released with the multi-tenancy MVP as 4.31.0): the product the vet POS charges for it **for the caller's account** (`CatTiposRegistroSaludXCuenta.IDProducto`, the same value as `VisitTypeSetting.productId`), `null` when unmapped |
+| `SetHealthRecordTypeProductRequest` | Body of PUT /veterinarian/record-types/{id}/product (main 4.29.0 / 4.31.0): `productId` must be in a consultation category of `config/veterinary` when the account has any; `null` clears it. Writes the same per-account setting as PUT /veterinarian/settings/visit-types/{id} |
 | `HealthRecord` / `CreateHealthRecordRequest` | A consultation (dated clinical note of a visit) and the body of POST /veterinarian/pets/{petId}/records. `appointmentId` (v4.22.0): the appointment it was started from — create only, the pet must attend it, one consultation per pet and appointment |
-| `HealthRecord.vitals` / `CreateHealthRecordRequest.vitals` | The consultation's attributes (v4.30.0): vital signs and any extra attributes its type links (`CatTiposRegistroSaludAtributos`), as `MedicalTestValue[]` / `MedicalTestValueInput[]` — the same shapes as study values. Each input is upserted, `value: null` clears it, attributes left out are untouched |
-| `PetVitalsEntry` | One consultation's attribute values in a pet's history, newest first (GET /veterinarian/pets/{petId}/vitals, v4.30.0) |
+| `HealthRecord.vitals` / `CreateHealthRecordRequest.vitals` | The consultation's attributes (main v4.30.0, released with the multi-tenancy MVP as 4.32.0): vital signs and any extra attributes its type links (`CatTiposRegistroSaludAtributos`), as `MedicalTestValue[]` / `MedicalTestValueInput[]` — the same shapes as study values. Each input is upserted, `value: null` clears it, attributes left out are untouched |
+| `RecordTypeAttributeSetting` / `SetRecordTypeAttributesRequest` | Body of PUT /veterinarian/record-types/{typeId}/attributes (MVP 4.33.0): the complete list of attributes the caller's account captures in a consultation type (`attributeId`, optional `order` and `section`; the `required` flag of 4.33.0 was removed in 4.34.0 before any release: every vital is optional), replacing the previous one. Only SYSTEM users may send it (403 otherwise). Per account (`CatTiposRegistroSaludAtributosXCuenta`); the platform links are only the template a new clinic starts from |
+| `PetVitalsEntry` | One consultation's attribute values in a pet's history, newest first (GET /veterinarian/pets/{petId}/vitals, main v4.30.0 / MVP 4.32.0). In a pool gateway `date` is anchored to the zone of the consultation's appointment branch (the SP's `ZonaHoraria` column), as `HealthRecord.date` |
 | `HealthApplicationKind` | `'vaccine' \| 'rabies' \| 'dewormer'` — fixed when the product is applied, so re-grouping the catalog does not rewrite history |
 | `HealthRecordApplication` | A sanitary product applied to a patient; `recordId` is the consultation it was applied in, `null` when applied outside one; `quantity` is the doses applied (1 when absent; also on the create/update requests, v4.27.0); `productImageUrl` is the product's principal photo (v4.27.0) |
 | `CreateHealthApplicationRequest` / `UpdateHealthApplicationRequest` / `LinkHealthApplicationRequest` | Bodies of POST /veterinarian/pets/{petId}/applications, PUT /veterinarian/pets/{petId}/applications/{id} and PUT /veterinarian/pets/{petId}/applications/{id}/record (`recordId: null` unlinks) |
@@ -323,6 +324,23 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | Optica mica catalog (`TipoMica`/`OpticaMicaTipo`, `MaterialMica`, `TratamientoMica`, price shapes) | Not the same shape across repos: BE (MSSQL) uses English field names + price-detail recordsets (`name`, `tipoMica: string\|null`, `tipoMicaId`); FE (Firebase legacy) uses Spanish names + `keyFB` Firebase keys (`nombre`, `tipoMica: number`, `tipoMicaID`). Field-name + type conflicts and Firebase document shapes → guardrail (Firestore shapes stay local). No clean superset. |
 | `CustomerSearchFilters` | Disjoint field sets — BE `{ customerType?, isActive?, searchTerm?, hasAddress?, ageRange? }` vs FE `{ phone?, name?, email? }`. Filter/query shape, not identical/superset → kept local per the customer rule. |
 | Lock `Device` / `DeviceLock` | No common identity field (BE `DeviceLock` keys off `BaseEntity.id`; FE `Device` keys off `uuid` with no `id`). BE shape carries a behavior method `isLocked()` + lock-domain fields; FE is a 3-field read view with response wrappers. Overlap (`model`, `status`) too thin to justify a shared entity. BE `IDeviceLock`/`DeviceLogs` and FE `DeviceListResponse`/`OTPResponse` stay local regardless. |
+
+### `src/entities/vet-settings.ts` (v4.29.0)
+| Export | Notes |
+|---|---|
+| `VisitTypeSetting` | Visit type with per-account settings: `id, name, isGlobal, enabled, order, productId, durationMinutes` |
+| `UpdateVisitTypeSettingRequest` | Body of PUT /veterinarian/settings/visit-types/:id |
+| `CreateVisitTypeRequest` | Body of POST /veterinarian/settings/visit-types (private type) |
+| `TestTypeSetting` | Test type with per-account settings: `id, name, enabled, order, internalProductId, externalProductId` |
+| `UpdateTestTypeSettingRequest` | Body of PUT /veterinarian/settings/test-types/:id |
+| `SpeciesSetting` | Species with per-account settings: `id, name, enabled, order` |
+| `UpdateSpeciesSettingRequest` | Body of PUT /veterinarian/settings/species/:id |
+| `TimeZoneOption` | IANA time zone option for branch picker: `id, iana, name` |
+
+### `src/entities/branch.ts` (v4.29.0 update)
+| Export | Notes |
+|---|---|
+| `Branch.timeZone?` | IANA time zone string added to the existing Branch interface (optional, backward compatible) |
 
 ## Breaking Change Log
 
