@@ -49,11 +49,6 @@ export interface TestAttribute {
   /** Report section header the attribute is printed under. */
   section: string | null;
   order: number;
-  /**
-   * Consultation types only: the clinic asks for a value of this attribute
-   * (GET /veterinarian/record-types/:typeId/attributes). Absent elsewhere.
-   */
-  required?: boolean;
 }
 
 /** A captured value of one attribute within a study. */

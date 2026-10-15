@@ -82,8 +82,6 @@ export interface RecordTypeAttributeSetting {
   attributeId: number;
   /** Capture order (integer >= 0); omitted = its position in the list, from 1. */
   order?: number;
-  /** The capture screen asks for a value; omitted = `false`. */
-  required?: boolean;
   /**
    * Section header (max 100 characters); `''` = none; omitted or `null` keeps
    * the one it had (or, for a new attribute, the platform default of the type).
