@@ -67,6 +67,31 @@ export interface CreateHealthRecordRequest {
      */
     vitals?: MedicalTestValueInput[];
 }
+/**
+ * One attribute a clinic captures in a consultation type
+ * (PUT /veterinarian/record-types/:typeId/attributes).
+ */
+export interface RecordTypeAttributeSetting {
+    /** A health attribute (GET /veterinarian/health-attributes). */
+    attributeId: number;
+    /** Capture order (integer >= 0); omitted = its position in the list, from 1. */
+    order?: number;
+    /** The capture screen asks for a value; omitted = `false`. */
+    required?: boolean;
+    /**
+     * Section header (max 100 characters); `''` = none; omitted or `null` keeps
+     * the one it had (or, for a new attribute, the platform default of the type).
+     */
+    section?: string | null;
+}
+/**
+ * Body of PUT /veterinarian/record-types/:typeId/attributes: the complete list
+ * of attributes the clinic captures in the type (it replaces the previous one;
+ * `[]` captures nothing). Values already captured keep reading back.
+ */
+export interface SetRecordTypeAttributesRequest {
+    attributes: RecordTypeAttributeSetting[];
+}
 /** One consultation's captured attributes in a pet's history (GET /veterinarian/pets/:petId/vitals). */
 export interface PetVitalsEntry {
     healthRecordId: string;
