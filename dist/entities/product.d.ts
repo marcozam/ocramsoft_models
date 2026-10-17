@@ -34,8 +34,12 @@ export interface Product extends BaseEntity {
     categoryId?: string;
     brandId?: string;
     groupId?: string;
-    /** Service duration in minutes. Set (> 0) only for schedulable services. */
-    durationMinutes?: number;
+    /**
+     * Service length in minutes (1..1440); absent when the product is not a
+     * timed service. A visit type takes its appointment length from the product
+     * it charges. On update, `null` clears it.
+     */
+    durationMinutes?: number | null;
     /** Rich-text (HTML) product description. */
     description?: string;
     /** URL of the principal image, when one exists. */
