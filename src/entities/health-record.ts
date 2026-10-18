@@ -1,4 +1,8 @@
-import type { MedicalTestValue, MedicalTestValueInput } from './medical-test';
+import type {
+  MedicalTestFileKind,
+  MedicalTestValue,
+  MedicalTestValueInput,
+} from './medical-test';
 
 /**
  * Veterinary vertical — the clinical file (expediente) of a patient.
@@ -19,6 +23,8 @@ export interface HealthRecordType {
    */
   productId?: string | null;
   productName?: string | null;
+  /** Agenda default for a visit of this type (minutes); `null` when the account set none. */
+  durationMinutes?: number | null;
 }
 
 /**
@@ -44,6 +50,12 @@ export interface HealthRecord {
   professionalUserId?: number | null;
   /** The appointment the consultation was started from, if any. */
   appointmentId?: string | null;
+  /** When the complaint began (`yyyy-MM-dd`), as the tutor reports it. */
+  onsetDate?: string | null;
+  /** Diagnosis confirmed after the studies; `diagnosis` holds the presumptive one. */
+  finalDiagnosis?: string | null;
+  /** Active files (photos, PDFs) attached to the consultation. */
+  filesCount?: number;
   /**
    * The consultation's captured attributes (vital signs and any extra ones its
    * type asks for), in the type's order.
@@ -61,6 +73,12 @@ export interface CreateHealthRecordRequest {
   treatment?: string;
   notes?: string;
   professionalUserId?: number;
+  /**
+   * `yyyy-MM-dd`. On update, omitted keeps it and `null` clears it (the
+   * same rule applies to `finalDiagnosis`).
+   */
+  onsetDate?: string | null;
+  finalDiagnosis?: string | null;
   /**
    * Start the consultation from this appointment (create only): the pet must
    * attend it, and each pet gets at most one consultation per appointment.
@@ -96,6 +114,34 @@ export interface RecordTypeAttributeSetting {
  */
 export interface SetRecordTypeAttributesRequest {
   attributes: RecordTypeAttributeSetting[];
+}
+
+/**
+ * A file attached to a consultation (clinical photo, external report). Files
+ * are private: the bytes are only served by
+ * GET /veterinarian/records/{recordId}/files/{id}/content to an authenticated
+ * user, never through a public URL.
+ */
+export interface HealthRecordFile {
+  /** Public GUID of the file. */
+  id: string;
+  recordId: string;
+  fileName: string;
+  contentType: string;
+  kind: MedicalTestFileKind;
+  /** Size in bytes. */
+  size: number;
+  uploadedAt: string | null;
+  /** Caption (up to 200 characters), e.g. the lesion the photo shows. */
+  description?: string | null;
+}
+
+/**
+ * Body of PATCH /veterinarian/records/{recordId}/files/{fileId}: `null` or
+ * `''` clears the caption.
+ */
+export interface UpdateHealthRecordFileRequest {
+  description: string | null;
 }
 
 /** One consultation's captured attributes in a pet's history (GET /veterinarian/pets/:petId/vitals). */
