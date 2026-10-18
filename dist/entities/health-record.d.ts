@@ -1,4 +1,4 @@
-import type { MedicalTestFileKind, MedicalTestValue, MedicalTestValueInput } from './medical-test';
+import type { MedicalTestFileKind, MedicalTestValue, MedicalTestValueInput, TestAttribute } from './medical-test';
 /**
  * Veterinary vertical — the clinical file (expediente) of a patient.
  *
@@ -135,6 +135,38 @@ export interface PetVitalsEntry {
     healthRecordId: string;
     date: string;
     values: MedicalTestValue[];
+}
+/**
+ * One line of a pet's clinical sheet (GET /veterinarian/pets/:petId/sheet):
+ * a health attribute flagged for the sheet (weight, diet, lives with other
+ * animals, environment...) with the pet's latest value. The sheet is kept by
+ * the database: a consultation that captures the attribute, its date change
+ * or its deletion updates the line (newest by date wins); a value captured on
+ * the sheet itself (PUT) counts as captured now.
+ */
+export interface PetSheetEntry extends TestAttribute {
+    /**
+     * The latest value, decoded by `dataType` the way `MedicalTestValueInput`
+     * takes it: number, text, boolean, an option label or the labels of a
+     * multioption. `null` when the pet has no value yet.
+     */
+    value: number | string | boolean | string[] | null;
+    /** When the value was captured (ISO); `null` without a value. */
+    capturedAt: string | null;
+    /**
+     * Consultation the value comes from; `null` when it was captured on the
+     * sheet (or there is no value).
+     */
+    recordId: string | null;
+}
+/**
+ * Body of PUT /veterinarian/pets/:petId/sheet. Each entry is captured on the
+ * sheet against the attribute's definition (same rules as a consultation's
+ * `vitals`); `value: null` clears the sheet capture, after which the line
+ * falls back to the latest consultation value. Attributes left out are kept.
+ */
+export interface UpdatePetSheetRequest {
+    values: MedicalTestValueInput[];
 }
 /**
  * What an applied product is, fixed when it is applied. `rabies` is a vaccine
