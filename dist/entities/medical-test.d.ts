@@ -41,6 +41,8 @@ export interface TestAttribute {
     /** Report section header the attribute is printed under. */
     section: string | null;
     order: number;
+    /** The apps chart this attribute over time (`CatAtributosSalud.Tendencia`). */
+    trend?: boolean;
 }
 /** A captured value of one attribute within a study. */
 export interface MedicalTestValue {
@@ -60,6 +62,8 @@ export interface MedicalTestValue {
     /** Numeric values only: the value falls outside a reference bound. */
     outOfRange: boolean;
     observation: string | null;
+    /** The apps chart this attribute over time; sent in a pet's vitals history. */
+    trend?: boolean;
 }
 /**
  * Who produces the results: `internal` — the vet captures them;

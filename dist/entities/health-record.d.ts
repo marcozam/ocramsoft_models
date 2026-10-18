@@ -1,4 +1,4 @@
-import type { MedicalTestValue, MedicalTestValueInput } from './medical-test';
+import type { MedicalTestFileKind, MedicalTestValue, MedicalTestValueInput, TestAttribute } from './medical-test';
 /**
  * Veterinary vertical — the clinical file (expediente) of a patient.
  *
@@ -17,6 +17,8 @@ export interface HealthRecordType {
      */
     productId?: string | null;
     productName?: string | null;
+    /** Agenda default for a visit of this type (minutes); `null` when the account set none. */
+    durationMinutes?: number | null;
 }
 /**
  * Body of PUT /veterinarian/record-types/:id/product. When the account has
@@ -40,6 +42,12 @@ export interface HealthRecord {
     professionalUserId?: number | null;
     /** The appointment the consultation was started from, if any. */
     appointmentId?: string | null;
+    /** When the complaint began (`yyyy-MM-dd`), as the tutor reports it. */
+    onsetDate?: string | null;
+    /** Diagnosis confirmed after the studies; `diagnosis` holds the presumptive one. */
+    finalDiagnosis?: string | null;
+    /** Active files (photos, PDFs) attached to the consultation. */
+    filesCount?: number;
     /**
      * The consultation's captured attributes (vital signs and any extra ones its
      * type asks for), in the type's order.
@@ -56,6 +64,12 @@ export interface CreateHealthRecordRequest {
     treatment?: string;
     notes?: string;
     professionalUserId?: number;
+    /**
+     * `yyyy-MM-dd`. On update, omitted keeps it and `null` clears it (the
+     * same rule applies to `finalDiagnosis`).
+     */
+    onsetDate?: string | null;
+    finalDiagnosis?: string | null;
     /**
      * Start the consultation from this appointment (create only): the pet must
      * attend it, and each pet gets at most one consultation per appointment.
@@ -90,11 +104,69 @@ export interface RecordTypeAttributeSetting {
 export interface SetRecordTypeAttributesRequest {
     attributes: RecordTypeAttributeSetting[];
 }
+/**
+ * A file attached to a consultation (clinical photo, external report). Files
+ * are private: the bytes are only served by
+ * GET /veterinarian/records/{recordId}/files/{id}/content to an authenticated
+ * user, never through a public URL.
+ */
+export interface HealthRecordFile {
+    /** Public GUID of the file. */
+    id: string;
+    recordId: string;
+    fileName: string;
+    contentType: string;
+    kind: MedicalTestFileKind;
+    /** Size in bytes. */
+    size: number;
+    uploadedAt: string | null;
+    /** Caption (up to 200 characters), e.g. the lesion the photo shows. */
+    description?: string | null;
+}
+/**
+ * Body of PATCH /veterinarian/records/{recordId}/files/{fileId}: `null` or
+ * `''` clears the caption.
+ */
+export interface UpdateHealthRecordFileRequest {
+    description: string | null;
+}
 /** One consultation's captured attributes in a pet's history (GET /veterinarian/pets/:petId/vitals). */
 export interface PetVitalsEntry {
     healthRecordId: string;
     date: string;
     values: MedicalTestValue[];
+}
+/**
+ * One line of a pet's clinical sheet (GET /veterinarian/pets/:petId/sheet):
+ * a health attribute flagged for the sheet (weight, diet, lives with other
+ * animals, environment...) with the pet's latest value. The sheet is kept by
+ * the database: a consultation that captures the attribute, its date change
+ * or its deletion updates the line (newest by date wins); a value captured on
+ * the sheet itself (PUT) counts as captured now.
+ */
+export interface PetSheetEntry extends TestAttribute {
+    /**
+     * The latest value, decoded by `dataType` the way `MedicalTestValueInput`
+     * takes it: number, text, boolean, an option label or the labels of a
+     * multioption. `null` when the pet has no value yet.
+     */
+    value: number | string | boolean | string[] | null;
+    /** When the value was captured (ISO); `null` without a value. */
+    capturedAt: string | null;
+    /**
+     * Consultation the value comes from; `null` when it was captured on the
+     * sheet (or there is no value).
+     */
+    recordId: string | null;
+}
+/**
+ * Body of PUT /veterinarian/pets/:petId/sheet. Each entry is captured on the
+ * sheet against the attribute's definition (same rules as a consultation's
+ * `vitals`); `value: null` clears the sheet capture, after which the line
+ * falls back to the latest consultation value. Attributes left out are kept.
+ */
+export interface UpdatePetSheetRequest {
+    values: MedicalTestValueInput[];
 }
 /**
  * What an applied product is, fixed when it is applied. `rabies` is a vaccine
