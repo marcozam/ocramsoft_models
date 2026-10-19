@@ -64,6 +64,8 @@ export interface PetConsent {
   /** `data:image/png;base64,…` */
   signature?: string | null;
   hasSignature: boolean;
+  /** Type `General`: version of the privacy notice the owner accepted. */
+  noticeVersion?: string | null;
   professionalUserId?: number | null;
   createdAt?: string | null;
 }
@@ -82,7 +84,18 @@ export interface CreatePetConsentRequest {
   signerRelationship?: string | null;
   /** `data:image/png;base64,…`, at most 300 KB. */
   signature?: string | null;
+  noticeVersion?: string | null;
   professionalUserId?: number | null;
+}
+
+/**
+ * Body of PUT /veterinarian/pets/{petId}/death: records a natural death
+ * (`yyyy-MM-dd`); `null` clears it. Refused while a euthanasia record exists,
+ * which owns the date of death.
+ */
+export interface UpdatePetDeathRequest {
+  dateOfDeath: string | null;
+  causeOfDeath?: string | null;
 }
 
 /**
