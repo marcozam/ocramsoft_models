@@ -8,14 +8,43 @@
 
 /**
  * How an attribute is captured. Maps the SQL `TipoDato`:
- * 1 numeric, 2 text, 3 boolean, 4 option, 5 multioption.
+ * 1 numeric, 2 text, 3 boolean, 4 option, 5 multioption, 6 bodymap.
  */
 export type TestAttributeDataType =
   | 'numeric'
   | 'text'
   | 'boolean'
   | 'option'
-  | 'multioption';
+  | 'multioption'
+  | 'bodymap';
+
+/** Silhouette a body map is drawn on. */
+export type BodyMapSilhouette = 'canine' | 'feline';
+
+/** View of the silhouette a marker sits on. */
+export type BodyMapView = 'lateral_left' | 'lateral_right' | 'dorsal' | 'ventral';
+
+/** One lesion site marked on the body map; `x`/`y` are fractions (0..1) of the view. */
+export interface BodyMapMarker {
+  /** Stable within the value (max 40 chars). */
+  id: string;
+  view: BodyMapView;
+  x: number;
+  y: number;
+  /** Lesion type, usually one of the lesion options of the visit (max 60 chars). */
+  label?: string | null;
+  /** Max 200 chars. */
+  note?: string | null;
+}
+
+/**
+ * Value of a `bodymap` attribute (stored as JSON text). At most 100 markers.
+ */
+export interface BodyMapValue {
+  version: 1;
+  silhouette: BodyMapSilhouette;
+  markers: BodyMapMarker[];
+}
 
 /** A study type from the catalog; its attributes are fetched per type. */
 export interface TestType {
@@ -23,6 +52,13 @@ export interface TestType {
   name: string;
   /** The type is configured for AI analysis of its photos. */
   aiAnalysis?: boolean;
+  /**
+   * Only when the list was requested for a visit type (`?recordTypeId=`):
+   * the visit type suggests this study; suggested types come first.
+   */
+  suggested?: boolean;
+  /** Position among the suggested types; `null` when not suggested. */
+  suggestedOrder?: number | null;
 }
 
 /**
@@ -62,8 +98,10 @@ export interface MedicalTestValue {
   unit: string | null;
   section: string | null;
   numericValue: number | null;
-  /** For `multioption`, the chosen labels joined with `|`. */
+  /** For `multioption`, the chosen labels joined with `|`; for `bodymap`, the raw JSON. */
   textValue: string | null;
+  /** Set only when `dataType` is `bodymap`: `textValue` parsed. */
+  bodyMapValue?: BodyMapValue | null;
   /** Set only when `dataType` is `boolean`. */
   boolValue: boolean | null;
   refMin: number | null;
@@ -142,6 +180,28 @@ export interface MedicalTest {
   resultsReceivedAt?: string | null;
   status?: MedicalTestStatus;
   values: MedicalTestValue[];
+  /** Single-study reads only: results flagged as zoonotic or notifiable. */
+  notifiableFindings?: NotifiableFinding[];
+}
+
+/**
+ * A result of a study that matches the catalog of zoonotic / notifiable
+ * findings (e.g. a skin scraping positive for Sarcoptes). The vet decides
+ * whether to report it; the app only warns.
+ */
+export interface NotifiableFinding {
+  attributeId: number;
+  attributeName: string;
+  /** The captured option that triggered the flag. */
+  value: string;
+  disease: string;
+  /** Transmissible to people: warn the owner and use protection. */
+  zoonosis: boolean;
+  /** Reportable to the authority. */
+  notifiable: boolean;
+  /** e.g. `SENASICA`. */
+  authority: string | null;
+  note: string | null;
 }
 
 /** A study of the clinic's pending tray, with the pet and its primary tutor. */
@@ -182,7 +242,7 @@ export interface MedicalTestFile {
  */
 export interface MedicalTestValueInput {
   attributeId: number;
-  value: number | string | boolean | string[] | null;
+  value: number | string | boolean | string[] | BodyMapValue | null;
   observation?: string;
   /** Consultation values only: prefilled from the previous visit of the case and not touched. */
   copied?: boolean;
@@ -278,6 +338,8 @@ export interface MedicalTestAiDiagnosisReview {
   suggestedChanges: string[];
   /** Complementary tests that would settle the doubt. */
   suggestedNextTests: string[];
+  /** The study's visit belongs to a clinical case and its history was considered. */
+  usedCaseHistory?: boolean;
 }
 
 /**
