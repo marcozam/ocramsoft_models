@@ -78,7 +78,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductBrand` | `extends SimpleEntity` — FE alias: `Brand` |
 | `ProductCategory` | Core category shape |
 | `ProductGroup` | `extends SimpleEntity` + `categoryId?` |
-| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) + `description?, mainImageUrl?, images?, availableOnline?` |
+| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration, `number \| null`: `null` clears it on update; 4.41.0: the source of a visit type's duration) + `description?, mainImageUrl?, images?, availableOnline?` |
 | `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
 | `ProductCategory.icon?` / `iconColor?` / `backgroundColor?` | Category appearance (v4.23.0): Material icon name and `#RRGGBB` colours, all optional. Set and edited from the FE category form; the BE validates the hex format |
 | `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item. BE re-exports it; FE keeps it via the `../products` barrel |
@@ -339,7 +339,7 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 ### `src/entities/vet-settings.ts` (v4.29.0)
 | Export | Notes |
 |---|---|
-| `VisitTypeSetting` | Visit type with per-account settings: `id, name, isGlobal, enabled, order, productId, durationMinutes` |
+| `VisitTypeSetting` | Visit type with per-account settings: `id, name, isGlobal, enabled, order, productId, durationMinutes` (4.41.0: `durationMinutes` is the linked product's, read-only; the request types' `durationMinutes` is deprecated and refused by the gateway) |
 | `UpdateVisitTypeSettingRequest` | Body of PUT /veterinarian/settings/visit-types/:id |
 | `CreateVisitTypeRequest` | Body of POST /veterinarian/settings/visit-types (private type) |
 | `TestTypeSetting` | Test type with per-account settings: `id, name, enabled, order, internalProductId, externalProductId` |
