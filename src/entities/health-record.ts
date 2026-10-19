@@ -212,6 +212,8 @@ export interface HealthRecordApplication {
   batch?: string | null;
   /** Expiry of the applied vial, not a booster date. */
   validUntil?: string | null;
+  /** Stock lot (PublicId) the applied product came from. */
+  lotId?: string | null;
   route?: string | null;
   dose?: string | null;
   /** Doses of the product applied (what the visit charges); 1 when absent. */
@@ -233,6 +235,8 @@ export interface CreateHealthApplicationRequest {
   /** Defaults to now; back-dating is allowed. */
   date?: string;
   batch?: string | null;
+  /** Stock lot (PublicId) the applied product came from. */
+  lotId?: string | null;
   validUntil?: string | null;
   route?: string | null;
   dose?: string | null;
@@ -251,6 +255,8 @@ export interface UpdateHealthApplicationRequest {
   productId?: number;
   date?: string;
   batch?: string | null;
+  /** Stock lot (PublicId) the applied product came from. */
+  lotId?: string | null;
   validUntil?: string | null;
   route?: string | null;
   dose?: string | null;
