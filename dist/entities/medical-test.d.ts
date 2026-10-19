@@ -231,6 +231,28 @@ export interface MedicalTestAiSuggestion {
     confidence: MedicalTestAiConfidence;
 }
 /**
+ * How the slide findings relate to the vet's presumptive diagnosis:
+ * `apoya` (they support it), `parcial` (partly, or not enough to tell),
+ * `no_apoya` (they point elsewhere).
+ */
+export type MedicalTestAiConcordance = 'apoya' | 'parcial' | 'no_apoya';
+/**
+ * Feedback on the consultation's presumptive diagnosis, produced in a second,
+ * text-only step after the blind slide reading (which never sees the
+ * diagnosis). Every statement cites slide findings; the vet decides.
+ */
+export interface MedicalTestAiDiagnosisReview {
+    concordance: MedicalTestAiConcordance;
+    /** Why, in Spanish, citing the findings of the reading. */
+    rationale: string;
+    /** Slide findings that do not fit the diagnosis. */
+    contradictingFindings: string[];
+    /** Changes to consider in the treatment or the plan. */
+    suggestedChanges: string[];
+    /** Complementary tests that would settle the doubt. */
+    suggestedNextTests: string[];
+}
+/**
  * Answer of POST /veterinarian/tests/{testId}/ai-analysis. Nothing is saved:
  * the vet reviews the suggestions in the form and saves the study.
  */
@@ -245,5 +267,11 @@ export interface MedicalTestAiAnalysis {
     /** Files the model looked at. */
     analyzedFileIds: string[];
     model: string;
+    /**
+     * Contrast of the reading with the presumptive diagnosis of the study's
+     * consultation; `null` when the study has no consultation or it has no
+     * presumptive diagnosis (a warning says so), or the step failed.
+     */
+    diagnosisReview: MedicalTestAiDiagnosisReview | null;
 }
 //# sourceMappingURL=medical-test.d.ts.map
