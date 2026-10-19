@@ -22,6 +22,11 @@ export interface ProductCategory extends BaseEntity {
   iconColor?: string;
   /** Background colour behind the icon as `#RRGGBB`. Absent means "use the default". */
   backgroundColor?: string;
+  /** Stock of products in this category is tracked by lot. */
+  lotControl?: boolean;
+  manualLotSelection?: boolean;
+  /** Overrides the account's `InventoryConfig.expiryAlertDays`; `null` = use the account's. */
+  expiryAlertDays?: number | null;
 }
 
 export interface ProductGroup extends SimpleEntity {
@@ -74,6 +79,9 @@ export interface Product extends BaseEntity {
    * Absent or empty means the product always applies.
    */
   conditions?: Rule[];
+  /** Inherited from the product's category. */
+  lotControl?: boolean;
+  manualLotSelection?: boolean;
 }
 
 export interface ProductImage {
