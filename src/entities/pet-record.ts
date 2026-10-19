@@ -152,3 +152,206 @@ export interface CreatePetEuthanasiaRequest {
   notes?: string | null;
   professionalUserId: number;
 }
+
+/**
+ * A professional of the account as printed on clinical documents: name,
+ * cédula and signature (`ProfesionalSalud`). `userId` is the local user id
+ * used by `professionalUserId` on records.
+ */
+export interface VetProfessional {
+  userId: number;
+  printedName: string;
+  license?: string | null;
+  specialty?: string | null;
+  specialtyLicense?: string | null;
+  /** `data:image/png;base64,…`; only on GET /professionals/{userId}. */
+  signature?: string | null;
+  hasSignature: boolean;
+  isActive: boolean;
+}
+
+/** Body of PUT /veterinarian/professionals/{userId}; `''` clears a text, `signature: null` keeps, `clearSignature` removes it. */
+export interface UpsertVetProfessionalRequest {
+  printedName: string;
+  license?: string | null;
+  specialty?: string | null;
+  specialtyLicense?: string | null;
+  signature?: string | null;
+  clearSignature?: boolean;
+  isActive?: boolean;
+}
+
+/** `ProblemaClinico.Estado`. */
+export enum ClinicalProblemStatus {
+  Active = 1,
+  Controlled = 2,
+  Resolved = 3,
+}
+
+export const CLINICAL_PROBLEM_STATUS_LABELS: Record<ClinicalProblemStatus, string> = {
+  [ClinicalProblemStatus.Active]: 'Activo',
+  [ClinicalProblemStatus.Controlled]: 'Controlado',
+  [ClinicalProblemStatus.Resolved]: 'Resuelto',
+};
+
+/** An entry of the pet's problem list. */
+export interface ClinicalProblem {
+  /** Public GUID. */
+  id: string;
+  petId: string;
+  name: string;
+  status: ClinicalProblemStatus;
+  /** `yyyy-MM-dd`. */
+  onsetDate?: string | null;
+  resolvedDate?: string | null;
+  recordId?: string | null;
+  caseId?: string | null;
+  notes?: string | null;
+}
+
+/** Body of POST /pets/{petId}/problems; PUT takes it partially. */
+export interface SaveClinicalProblemRequest {
+  name?: string;
+  status?: ClinicalProblemStatus;
+  onsetDate?: string | null;
+  resolvedDate?: string | null;
+  recordId?: string | null;
+  caseId?: string | null;
+  notes?: string | null;
+}
+
+/** `ObservacionMordedura.Estado` (NOM-011-SSA2-2011, 10-day observation). */
+export enum BiteObservationStatus {
+  Observing = 1,
+  ClosedHealthy = 2,
+  Referred = 3,
+  DeadSampleSent = 4,
+}
+
+export const BITE_OBSERVATION_STATUS_LABELS: Record<BiteObservationStatus, string> = {
+  [BiteObservationStatus.Observing]: 'En observación',
+  [BiteObservationStatus.ClosedHealthy]: 'Concluida sin signos',
+  [BiteObservationStatus.Referred]: 'Signos compatibles, remitido',
+  [BiteObservationStatus.DeadSampleSent]: 'Muerte, muestra enviada',
+};
+
+/** One daily check of a bite observation (day 1 to 10). */
+export interface BiteObservationDay {
+  day: number;
+  /** `yyyy-MM-dd`. */
+  date: string;
+  noSigns: boolean;
+  notes?: string | null;
+}
+
+export interface BiteObservation {
+  /** Public GUID. */
+  id: string;
+  petId: string;
+  /** `yyyy-MM-dd`. */
+  biteDate: string;
+  startDate: string;
+  victim: string;
+  victimContact?: string | null;
+  physician?: string | null;
+  physicianContact?: string | null;
+  /** 1 clinic, 2 home. */
+  place: 1 | 2;
+  rabiesVaccineCurrent?: boolean | null;
+  status: BiteObservationStatus;
+  closedDate?: string | null;
+  outcome?: string | null;
+  notes?: string | null;
+  professionalUserId?: number | null;
+  /** Only on GET one. */
+  days?: BiteObservationDay[];
+}
+
+/** Body of POST /pets/{petId}/bite-observations. */
+export interface CreateBiteObservationRequest {
+  biteDate: string;
+  startDate?: string;
+  victim: string;
+  victimContact?: string | null;
+  physician?: string | null;
+  physicianContact?: string | null;
+  place: 1 | 2;
+  rabiesVaccineCurrent?: boolean | null;
+  notes?: string | null;
+  professionalUserId?: number | null;
+}
+
+/** Body of PUT /pets/{petId}/bite-observations/{id}/days/{day}. */
+export interface SetBiteObservationDayRequest {
+  date?: string;
+  noSigns: boolean;
+  notes?: string | null;
+}
+
+/** Body of POST /pets/{petId}/bite-observations/{id}/close. */
+export interface CloseBiteObservationRequest {
+  status: BiteObservationStatus.ClosedHealthy | BiteObservationStatus.Referred | BiteObservationStatus.DeadSampleSent;
+  outcome: string;
+  closedDate?: string;
+}
+
+/** `CertificadoSalud.Tipo`. */
+export enum HealthCertificateType {
+  NationalTravel = 1,
+  InternationalTravel = 2,
+  Rabies = 3,
+  TravelSummary = 4,
+}
+
+export const HEALTH_CERTIFICATE_TYPE_LABELS: Record<HealthCertificateType, string> = {
+  [HealthCertificateType.NationalTravel]: 'Certificado de salud (viaje nacional)',
+  [HealthCertificateType.InternationalTravel]: 'Certificado de salud internacional',
+  [HealthCertificateType.Rabies]: 'Certificado de vacunación antirrábica',
+  [HealthCertificateType.TravelSummary]: 'Resumen sanitario para viaje',
+};
+
+/**
+ * A certificate the clinic issued, with its consecutive folio. `data` is the
+ * snapshot of what was printed, so a reprint is identical; only on GET one
+ * and on the POST that issues it.
+ */
+export interface HealthCertificate {
+  /** Public GUID. */
+  id: string;
+  petId: string;
+  type: HealthCertificateType;
+  folio: string;
+  /** ISO 8601 UTC. */
+  date: string;
+  destination?: string | null;
+  data?: Record<string, unknown>;
+  applicationId?: string | null;
+  professionalUserId?: number | null;
+  voided: boolean;
+  voidReason?: string | null;
+}
+
+/** Body of POST /pets/{petId}/certificates. */
+export interface CreateHealthCertificateRequest {
+  type: HealthCertificateType;
+  date?: string;
+  destination?: string | null;
+  data: Record<string, unknown>;
+  applicationId?: string | null;
+  professionalUserId?: number | null;
+}
+
+/** One change to the clinical record (`ExpedienteAuditoria`). */
+export interface RecordChange {
+  id: string;
+  /** Source table, e.g. `ExpedienteClinico`. */
+  table: string;
+  recordId: number;
+  action: 'I' | 'U' | 'D';
+  /** ISO 8601 UTC. */
+  date: string;
+  userId?: number | null;
+  userName?: string | null;
+  before?: Record<string, unknown> | null;
+  after?: Record<string, unknown> | null;
+}
