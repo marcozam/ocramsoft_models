@@ -137,6 +137,17 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `HealthRecordApplication` | A sanitary product applied to a patient; `recordId` is the consultation it was applied in, `null` when applied outside one; `quantity` is the doses applied (1 when absent; also on the create/update requests, v4.27.0); `productImageUrl` is the product's principal photo (v4.27.0) |
 | `CreateHealthApplicationRequest` / `UpdateHealthApplicationRequest` / `LinkHealthApplicationRequest` | Bodies of POST /veterinarian/pets/{petId}/applications, PUT /veterinarian/pets/{petId}/applications/{id} and PUT /veterinarian/pets/{petId}/applications/{id}/record (`recordId: null` unlinks) |
 
+### `src/entities/clinical-case.ts` (v4.40.0)
+| Export | Notes |
+|---|---|
+| `ClinicalCaseStatus` | enum; values = CatStatus ids under IDUso 405 (40501 OPEN, 40502 FOLLOW_UP, 40503 RESOLVED, 40504 CHRONIC, 40505 CANCELLED); `ClinicalCaseClosingStatus` the three closing ones |
+| `ClinicalCase` | A case (several visits of a pet under one problem): `id, publicId, petId, title, recordTypeId (specialty), status, onsetDate, openedAt, closedAt, presumptiveDiagnosis, finalDiagnosis, closingOutcome, professionalUserId, visitsCount, lastVisitId/Date/Evolution, nextAppointmentAt/PublicId, inactive`. Item of GET /veterinarian/pets/{petId}/cases (open first) |
+| `ClinicalCaseDetail` / `CaseVisitSummary` / `CasePendingAppointment` | GET /veterinarian/cases/{publicId}: the header plus the visits (date, type, evolution, diagnoses, treatment, photos and tests counts) and the pending follow-up appointments |
+| `CaseProgress` / `CaseProgressVisit` / `CaseTrendPoint` / `CaseVisitPhoto` / `CaseVisitTest` | GET /veterinarian/cases/{publicId}/progress: per-visit trend points (`trend` attributes, with `copied`), photos per visit (`description` = anatomical zone, for side-by-side), treatment per visit, studies per visit |
+| `CaseLastVisit` | GET /veterinarian/cases/{publicId}/last-visit: the last visit as a `HealthRecord` with its `vitals` (each with `copied`), to prefill the follow-up; `null` without visits |
+| `CreateClinicalCaseRequest` / `UpdateClinicalCaseRequest` / `CloseClinicalCaseRequest` | Bodies of POST /veterinarian/pets/{petId}/cases (`firstRecordId` links the visit the case opens from and lends its reason, onset date and diagnosis), PUT /veterinarian/cases/{publicId}, POST /veterinarian/cases/{publicId}/close (`cancelAppointments` cancels the pending follow-ups that otherwise block the close) |
+| `HealthRecord.caseId/casePublicId/caseTitle`, `CreateHealthRecordRequest.caseId`, `Appointment.caseId/casePublicId/caseTitle`, `MedicalTestValue.copied` / `MedicalTestValueInput.copied` | v4.40.0: the case a visit or a follow-up appointment belongs to (the visit started from the appointment inherits it; a closed case refuses new visits and appointments), and the per-value "prefilled, not touched" flag |
+
 ### `src/entities/customer-auth.ts`
 | Export | Notes |
 |---|---|

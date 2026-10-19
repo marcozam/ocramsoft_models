@@ -64,6 +64,12 @@ export interface MedicalTestValue {
     observation: string | null;
     /** The apps chart this attribute over time; sent in a pet's vitals history. */
     trend?: boolean;
+    /**
+     * Consultation values only: the value was prefilled from the previous visit
+     * of the case and not touched (it is stored, but the pet sheet ignores it
+     * and the case progress greys it out).
+     */
+    copied?: boolean;
 }
 /**
  * Who produces the results: `internal` — the vet captures them;
@@ -157,6 +163,8 @@ export interface MedicalTestValueInput {
     attributeId: number;
     value: number | string | boolean | string[] | null;
     observation?: string;
+    /** Consultation values only: prefilled from the previous visit of the case and not touched. */
+    copied?: boolean;
 }
 /** Request body for POST /veterinarian/pets/{petId}/tests. */
 export interface CreateMedicalTestRequest {

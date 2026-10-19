@@ -48,6 +48,10 @@ export interface HealthRecord {
     finalDiagnosis?: string | null;
     /** Active files (photos, PDFs) attached to the consultation. */
     filesCount?: number;
+    /** The clinical case the visit belongs to (`ClinicalCase`); `null` for a loose visit. */
+    caseId?: string | null;
+    casePublicId?: string | null;
+    caseTitle?: string | null;
     /**
      * The consultation's captured attributes (vital signs and any extra ones its
      * type asks for), in the type's order.
@@ -75,6 +79,14 @@ export interface CreateHealthRecordRequest {
      * attend it, and each pet gets at most one consultation per appointment.
      */
     appointmentId?: string;
+    /**
+     * The clinical case the visit belongs to (internal id or public GUID, as a
+     * string). On create it defaults to the appointment's case when
+     * `appointmentId` is given; on update `null` unlinks the visit. The case
+     * must be the pet's and open: a closed case refuses the visit (409) until
+     * it is reopened.
+     */
+    caseId?: string | null;
     /**
      * Values of the attributes linked to the consultation type. Each entry is
      * upserted; `value: null` clears it; attributes left out are untouched.
