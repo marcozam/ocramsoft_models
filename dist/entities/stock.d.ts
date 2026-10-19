@@ -1,4 +1,5 @@
 import { BaseEntity } from '../core/base-entity';
+import { StockLotStatus } from './stock-lot';
 /**
  * A single inventory item: a product quantity tracked at a stock location.
  * Shared canonical shape consumed by BE (`IStockItem` alias) and FE (`StockItem`).
@@ -11,6 +12,13 @@ export interface StockItem extends BaseEntity {
     max?: number;
     categoryId?: string;
     categoryName?: string;
+    lotControl?: boolean;
+    manualLotSelection?: boolean;
+    /** Part of `quantity` not assigned to any lot (stock that predates lot control). */
+    unassignedQuantity?: number;
+    /** Earliest expiration among the lots with stock here (`yyyy-MM-dd`). */
+    nextExpirationDate?: string | null;
+    expiryStatus?: StockLotStatus | null;
 }
 /** Backward-compat alias for the BE-side name (`IStockItem`). */
 export type IStockItem = StockItem;

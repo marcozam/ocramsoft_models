@@ -137,7 +137,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `HealthRecordApplication` | A sanitary product applied to a patient; `recordId` is the consultation it was applied in, `null` when applied outside one; `quantity` is the doses applied (1 when absent; also on the create/update requests, v4.27.0); `productImageUrl` is the product's principal photo (v4.27.0) |
 | `CreateHealthApplicationRequest` / `UpdateHealthApplicationRequest` / `LinkHealthApplicationRequest` | Bodies of POST /veterinarian/pets/{petId}/applications, PUT /veterinarian/pets/{petId}/applications/{id} and PUT /veterinarian/pets/{petId}/applications/{id}/record (`recordId: null` unlinks) |
 
-### `src/entities/clinical-case.ts` (v4.38.0)
+### `src/entities/clinical-case.ts` (v4.40.0)
 | Export | Notes |
 |---|---|
 | `ClinicalCaseStatus` | enum; values = CatStatus ids under IDUso 405 (40501 OPEN, 40502 FOLLOW_UP, 40503 RESOLVED, 40504 CHRONIC, 40505 CANCELLED); `ClinicalCaseClosingStatus` the three closing ones |
@@ -146,7 +146,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `CaseProgress` / `CaseProgressVisit` / `CaseTrendPoint` / `CaseVisitPhoto` / `CaseVisitTest` | GET /veterinarian/cases/{publicId}/progress: per-visit trend points (`trend` attributes, with `copied`), photos per visit (`description` = anatomical zone, for side-by-side), treatment per visit, studies per visit |
 | `CaseLastVisit` | GET /veterinarian/cases/{publicId}/last-visit: the last visit as a `HealthRecord` with its `vitals` (each with `copied`), to prefill the follow-up; `null` without visits |
 | `CreateClinicalCaseRequest` / `UpdateClinicalCaseRequest` / `CloseClinicalCaseRequest` | Bodies of POST /veterinarian/pets/{petId}/cases (`firstRecordId` links the visit the case opens from and lends its reason, onset date and diagnosis), PUT /veterinarian/cases/{publicId}, POST /veterinarian/cases/{publicId}/close (`cancelAppointments` cancels the pending follow-ups that otherwise block the close) |
-| `HealthRecord.caseId/casePublicId/caseTitle`, `CreateHealthRecordRequest.caseId`, `Appointment.caseId/casePublicId/caseTitle`, `MedicalTestValue.copied` / `MedicalTestValueInput.copied` | v4.38.0: the case a visit or a follow-up appointment belongs to (the visit started from the appointment inherits it; a closed case refuses new visits and appointments), and the per-value "prefilled, not touched" flag |
+| `HealthRecord.caseId/casePublicId/caseTitle`, `CreateHealthRecordRequest.caseId`, `Appointment.caseId/casePublicId/caseTitle`, `MedicalTestValue.copied` / `MedicalTestValueInput.copied` | v4.40.0: the case a visit or a follow-up appointment belongs to (the visit started from the appointment inherits it; a closed case refuses new visits and appointments), and the per-value "prefilled, not touched" flag |
 
 ### `src/entities/customer-auth.ts`
 | Export | Notes |
@@ -352,6 +352,28 @@ These Tier-1 candidates were diffed BEâ†”FE and deliberately **not** promoted â€
 | Export | Notes |
 |---|---|
 | `Branch.timeZone?` | IANA time zone string added to the existing Branch interface (optional, backward compatible) |
+
+### `src/entities/stock-lot.ts` (v4.39.0, lots and expiry)
+| Export | Notes |
+|---|---|
+| `StockLotStatus` | `'valid' \| 'expiring' \| 'expired' \| 'no-expiry'`; `expiring` = within the account's alert days |
+| `StockLot` | A lot of a product: `id` (PublicId), `productId`, `code`, `expirationDate?` (`yyyy-MM-dd`, `null` = no expiry), `supplierId?` |
+| `StockLotBalance` | `StockLot` + `locationId`, `quantity`, `status`, `daysToExpiry?`, display names (`productName?`, `categoryName?`, `branchName?`) |
+| `StockLotDetail` | A lot with its `productName` and per-location `balances` |
+| `StockLotMovement` | One movement of a lot: `id, dateTime` (ISO UTC), `movementTypeId, movementType, quantity, reference, locationId`, `locationName?`, `userName?` |
+| `LotRef` | Lot on a stock operation: `lotId?` or `lotCode?` + `expirationDate?` |
+| `LotQuantity` | Quantity of one lot on a purchase line: `lotCode, expirationDate?, quantity` |
+| `ExpiredLotWarning` | An expired lot a sale consumed: `productId, productName?, lotId, lotCode, expirationDate, quantity` |
+| `InventoryConfig` | Account inventory settings: `expiryAlertDays` (default 30) |
+
+### Lot fields on existing types (v4.39.0, all optional)
+| Type | Fields |
+|---|---|
+| `ProductCategory` (`product.ts`) | `lotControl?`, `manualLotSelection?`, `expiryAlertDays?` (`null` = account default) |
+| `Product` (`product.ts`) | `lotControl?`, `manualLotSelection?` |
+| `StockItem` (`stock.ts`) | `lotControl?`, `manualLotSelection?`, `unassignedQuantity?`, `nextExpirationDate?`, `expiryStatus?` |
+| `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?` |
+| `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
 
 ## Breaking Change Log
 

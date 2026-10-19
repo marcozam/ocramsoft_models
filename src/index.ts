@@ -8,6 +8,7 @@ export * from './entities/product';
 export * from './entities/rules-engine';
 export * from './entities/online-store';
 export * from './entities/stock';
+export * from './entities/stock-lot';
 export * from './entities/optica-examen';
 export * from './entities/sale-order';
 export * from './entities/quote';
