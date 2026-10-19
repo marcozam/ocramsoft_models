@@ -90,12 +90,13 @@ export interface CreateHealthRecordRequest {
    */
   appointmentId?: string;
   /**
-   * The clinical case the visit belongs to (internal id or public GUID). On
-   * create it defaults to the appointment's case when `appointmentId` is
-   * given; on update `null` unlinks the visit. The case must be the pet's and
-   * open: a closed case refuses the visit (409) until it is reopened.
+   * The clinical case the visit belongs to (internal id or public GUID, as a
+   * string). On create it defaults to the appointment's case when
+   * `appointmentId` is given; on update `null` unlinks the visit. The case
+   * must be the pet's and open: a closed case refuses the visit (409) until
+   * it is reopened.
    */
-  caseId?: number | string | null;
+  caseId?: string | null;
   /**
    * Values of the attributes linked to the consultation type. Each entry is
    * upserted; `value: null` clears it; attributes left out are untouched.

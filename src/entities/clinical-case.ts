@@ -191,7 +191,8 @@ export interface CreateClinicalCaseRequest {
   /** `yyyy-MM-dd`. */
   onsetDate?: string;
   presumptiveDiagnosis?: string;
-  firstRecordId?: number | string;
+  /** Internal id of the opening visit, as a string. */
+  firstRecordId?: string;
 }
 
 /**
