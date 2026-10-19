@@ -42,6 +42,7 @@ __exportStar(require("./entities/vet-appointment"), exports);
 __exportStar(require("./entities/medical-test"), exports);
 __exportStar(require("./entities/health-record"), exports);
 __exportStar(require("./entities/clinical-case"), exports);
+__exportStar(require("./entities/pet-record"), exports);
 __exportStar(require("./entities/booking"), exports);
 __exportStar(require("./entities/company-config"), exports);
 __exportStar(require("./entities/online-store-checkout"), exports);

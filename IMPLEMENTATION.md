@@ -375,6 +375,14 @@ These Tier-1 candidates were diffed BEâ†”FE and deliberately **not** promoted â€
 | `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?` |
 | `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
 
+### Pet record: reproductive status, consents, euthanasia (v4.42.0, `pet-record.ts`)
+| Type | Purpose |
+|---|---|
+| `ReproductiveStatus` + `REPRODUCTIVE_STATUS_LABELS` | `Mascotas.IDEstadoReproductivo`: 1 Entero, 2 Esterilizado, 3 Gestante, 4 Lactancia |
+| `ConsentType` + `CONSENT_TYPE_LABELS` | 1 general/privacy, 2 anesthesia, 3 surgery, 4 hospitalization, 5 euthanasia, 6 recording |
+| `PetConsent`, `CreatePetConsentRequest` | Signed consent (`/veterinarian/pets/{petId}/consents`); frozen `text`, PNG data-URL `signature` |
+| `PetEuthanasia`, `CreatePetEuthanasiaRequest` | NOM-033 euthanasia record (`/veterinarian/pets/{petId}/euthanasia`); needs a type-5 consent, optional inventory `lotId` |
+
 ## Breaking Change Log
 
 | Change | Reason |
