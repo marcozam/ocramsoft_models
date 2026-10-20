@@ -104,8 +104,9 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `AppointmentStatus` | enum; values = CatStatus ids under IDUso 403 (40301 SCHEDULED … 40306 NO_SHOW) |
 | `BookingChannel` | enum; values = CatCanalAgenda ids (1 SELF_SERVICE, 2 ON_BEHALF, 3 API) — how a booking was made |
 | `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
-| `Appointment` | Customer appointment: `branchId, customerId, customerPublicId? (Contacto.PublicId), services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
+| `Appointment` | Customer appointment: `branchId, customerId, customerPublicId? (Contacto.PublicId), services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?, resourceName?` (4.51.0: the agenda it is booked on, `null` = the branch's main agenda) |
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
+| `AppointmentResource` / `AppointmentResourceKind` (4.51.0) | A bookable agenda of a branch besides its main one (`kind: 'grooming'` = a groomer): `id, branchId, kind, name, isActive, order`. Item of GET /appointments/resources; overlaps are checked per agenda |
 | `AppointmentRecordLink` (vet-appointment.ts, v4.22.0) | Item of GET /veterinarian/appointments/{id}/records: the consultation (`recordId`) a pet of the appointment already has, so the agenda offers «Ver consulta» instead of starting another |
 | `AppointmentPetLink` (vet-appointment.ts) | Vet vertical: pet attending an appointment (`appointmentId, petId, petName, speciesName?`). Kept OFF the generic `Appointment` — whitelabel scheduling never embeds pet data; only `/veterinarian` endpoints speak this type |
 
