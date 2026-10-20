@@ -378,6 +378,20 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?` |
 | `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
 
+### Pet record: reproductive status, consents, euthanasia (v4.46.0, `pet-record.ts`)
+| Type | Purpose |
+|---|---|
+| `ReproductiveStatus` + `REPRODUCTIVE_STATUS_LABELS` | `Mascotas.IDEstadoReproductivo`: 1 Entero, 2 Esterilizado, 3 Gestante, 4 Lactancia |
+| `ConsentType` + `CONSENT_TYPE_LABELS` | 1 general/privacy, 2 anesthesia, 3 surgery, 4 hospitalization, 5 euthanasia, 6 recording |
+| `PetConsent`, `CreatePetConsentRequest` | Signed consent (`/veterinarian/pets/{petId}/consents`); frozen `text`, PNG data-URL `signature` |
+| `PetEuthanasia`, `CreatePetEuthanasiaRequest` | NOM-033 euthanasia record (`/veterinarian/pets/{petId}/euthanasia`); needs a type-5 consent, optional inventory `lotId` |
+| `UpdatePetDeathRequest` | Natural death (`PUT /veterinarian/pets/{petId}/death`) |
+| `VetProfessional`, `UpsertVetProfessionalRequest` | Printed name, cédula and signature per professional user (`/veterinarian/professionals`) |
+| `ClinicalProblemStatus`, `ClinicalProblem`, `SaveClinicalProblemRequest` | Problem list (`/veterinarian/pets/{petId}/problems`) |
+| `BiteObservationStatus`, `BiteObservation`, `BiteObservationDay` + requests | NOM-011 10-day biting-animal observation (`/veterinarian/pets/{petId}/bite-observations`) |
+| `HealthCertificateType`, `HealthCertificate`, `CreateHealthCertificateRequest` | Issued certificates with consecutive folio and printed snapshot (`/veterinarian/pets/{petId}/certificates`) |
+| `RecordChange` | Change history of the clinical record (`/veterinarian/pets/{petId}/history`) |
+
 ## Breaking Change Log
 
 | Change | Reason |

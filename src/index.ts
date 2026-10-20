@@ -26,6 +26,7 @@ export * from './entities/vet-appointment';
 export * from './entities/medical-test';
 export * from './entities/health-record';
 export * from './entities/clinical-case';
+export * from './entities/pet-record';
 export * from './entities/booking';
 export * from './entities/company-config';
 export * from './entities/online-store-checkout';
