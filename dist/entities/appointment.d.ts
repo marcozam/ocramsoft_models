@@ -77,7 +77,7 @@ export interface Appointment extends BaseEntity {
     bookedByApiClientId?: string;
     /**
      * The agenda the appointment is booked on (`AppointmentResource`, e.g. a
-     * groomer). `null` / absent = the branch's main agenda (the consulting
+     * groomer, a stylist or a table). `null` / absent = the branch's main agenda (the consulting
      * room). Overlaps are checked per agenda: two appointments only collide
      * when they share it.
      */
@@ -102,22 +102,47 @@ export interface AppointmentSlot {
     /** The agenda the slot was checked against; absent = the branch's main agenda. */
     resourceId?: number | null;
 }
-/** What an agenda other than the branch's main one is for. */
+/**
+ * What an agenda other than the branch's main one is for. It only groups
+ * agendas on screen; it does not decide which services an agenda offers.
+ */
 export declare enum AppointmentResourceKind {
-    /** A groomer (estilista) of the grooming service. */
-    GROOMING = "grooming"
+    /** An agenda of no particular trade. */
+    GENERAL = "general",
+    /** A consulting agenda (a vet or a consulting room). */
+    CONSULTATION = "consultation",
+    /** The grooming service: a groomer (estilista) or a grooming table. */
+    GROOMING = "grooming",
+    /** A beauty salon: a stylist or a chair. */
+    STYLING = "styling"
+}
+/** Whether a person or a place works an agenda. */
+export declare enum AppointmentResourceClass {
+    /** A professional: worked by a system user. */
+    PROFESSIONAL = "professional",
+    /** A space or equipment (a table, a room, a chair): no user. */
+    SPACE = "space"
 }
 /**
- * A bookable agenda of a branch besides its main one, such as a groomer:
- * it takes one appointment at a time, independent of every other agenda.
+ * A bookable agenda of a branch besides its main one, such as a groomer, a
+ * stylist or a grooming table: it takes one appointment at a time,
+ * independent of every other agenda.
  */
 export interface AppointmentResource {
     id: number;
     branchId: number;
     kind: AppointmentResourceKind;
+    resourceClass: AppointmentResourceClass;
     name: string;
     isActive: boolean;
     /** Display order among the branch's agendas of the same kind (ascending). */
     order: number;
+    /**
+     * A professional agenda is worked by a system user (its PublicId). `null`
+     * = not linked yet, which only legacy agendas are; always `null` for a space.
+     */
+    userPublicId?: string | null;
+    /** Name of the user working the agenda; `null` when there is none. */
+    userName?: string | null;
 }
 //# sourceMappingURL=appointment.d.ts.map
