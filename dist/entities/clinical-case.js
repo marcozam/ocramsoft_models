@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClinicalCaseStatus = void 0;
+exports.ClinicalCaseCloseErrorCode = exports.ClinicalCaseStatus = void 0;
 /**
  * Veterinary vertical — clinical cases (CasoClinico): several visits of a pet
  * grouped under one problem ("Otitis bilateral"), opened on the first visit
@@ -23,4 +23,15 @@ var ClinicalCaseStatus;
     ClinicalCaseStatus[ClinicalCaseStatus["CHRONIC"] = 40504] = "CHRONIC";
     ClinicalCaseStatus[ClinicalCaseStatus["CANCELLED"] = 40505] = "CANCELLED";
 })(ClinicalCaseStatus || (exports.ClinicalCaseStatus = ClinicalCaseStatus = {}));
+/**
+ * `errorCode` of a 409 (`code` CONFLICT) from POST
+ * /veterinarian/cases/{publicId}/close: why the case could not be closed.
+ */
+var ClinicalCaseCloseErrorCode;
+(function (ClinicalCaseCloseErrorCode) {
+    /** The case is already closed; reload it. */
+    ClinicalCaseCloseErrorCode["ALREADY_CLOSED"] = "CASE_ALREADY_CLOSED";
+    /** Pending follow-up appointments; retry with `cancelAppointments: true`. */
+    ClinicalCaseCloseErrorCode["PENDING_APPOINTMENTS"] = "CASE_PENDING_APPOINTMENTS";
+})(ClinicalCaseCloseErrorCode || (exports.ClinicalCaseCloseErrorCode = ClinicalCaseCloseErrorCode = {}));
 //# sourceMappingURL=clinical-case.js.map
