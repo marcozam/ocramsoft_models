@@ -76,10 +76,13 @@ export interface Appointment extends BaseEntity {
     /** Identifier of the external API client, set only when bookingChannel === API. */
     bookedByApiClientId?: string;
     /**
-     * Reserved for the future multi-resource model (staff/station per branch).
-     * Unused while scheduling is one-appointment-at-a-time per branch.
+     * The agenda the appointment is booked on (`AppointmentResource`, e.g. a
+     * groomer). `null` / absent = the branch's main agenda (the consulting
+     * room). Overlaps are checked per agenda: two appointments only collide
+     * when they share it.
      */
-    resourceId?: number;
+    resourceId?: number | null;
+    resourceName?: string | null;
     /**
      * Vet vertical: the clinical case a follow-up appointment was born from
      * (internal id), with its public GUID and title; absent for any other
@@ -96,7 +99,25 @@ export interface AppointmentSlot {
     /** ISO 8601 end datetime. */
     end: string;
     available: boolean;
-    /** Reserved for the future multi-resource model. */
-    resourceId?: number;
+    /** The agenda the slot was checked against; absent = the branch's main agenda. */
+    resourceId?: number | null;
+}
+/** What an agenda other than the branch's main one is for. */
+export declare enum AppointmentResourceKind {
+    /** A groomer (estilista) of the grooming service. */
+    GROOMING = "grooming"
+}
+/**
+ * A bookable agenda of a branch besides its main one, such as a groomer:
+ * it takes one appointment at a time, independent of every other agenda.
+ */
+export interface AppointmentResource {
+    id: number;
+    branchId: number;
+    kind: AppointmentResourceKind;
+    name: string;
+    isActive: boolean;
+    /** Display order among the branch's agendas of the same kind (ascending). */
+    order: number;
 }
 //# sourceMappingURL=appointment.d.ts.map

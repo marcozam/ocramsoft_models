@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BookingChannel = exports.AppointmentStatus = void 0;
+exports.AppointmentResourceKind = exports.BookingChannel = exports.AppointmentStatus = void 0;
 /**
  * Appointment lifecycle statuses.
  * Values match the SysMD CatStatus rows seeded under IDUso = 403 (AGENDA),
@@ -30,4 +30,10 @@ var BookingChannel;
     /** An external system booked through the public API (API-key authenticated). */
     BookingChannel[BookingChannel["API"] = 3] = "API";
 })(BookingChannel || (exports.BookingChannel = BookingChannel = {}));
+/** What an agenda other than the branch's main one is for. */
+var AppointmentResourceKind;
+(function (AppointmentResourceKind) {
+    /** A groomer (estilista) of the grooming service. */
+    AppointmentResourceKind["GROOMING"] = "grooming";
+})(AppointmentResourceKind || (exports.AppointmentResourceKind = AppointmentResourceKind = {}));
 //# sourceMappingURL=appointment.js.map
