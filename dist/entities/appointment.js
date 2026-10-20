@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppointmentResourceKind = exports.BookingChannel = exports.AppointmentStatus = void 0;
+exports.AppointmentResourceClass = exports.AppointmentResourceKind = exports.BookingChannel = exports.AppointmentStatus = void 0;
 /**
  * Appointment lifecycle statuses.
  * Values match the SysMD CatStatus rows seeded under IDUso = 403 (AGENDA),
@@ -30,10 +30,27 @@ var BookingChannel;
     /** An external system booked through the public API (API-key authenticated). */
     BookingChannel[BookingChannel["API"] = 3] = "API";
 })(BookingChannel || (exports.BookingChannel = BookingChannel = {}));
-/** What an agenda other than the branch's main one is for. */
+/**
+ * What an agenda other than the branch's main one is for. It only groups
+ * agendas on screen; it does not decide which services an agenda offers.
+ */
 var AppointmentResourceKind;
 (function (AppointmentResourceKind) {
-    /** A groomer (estilista) of the grooming service. */
+    /** An agenda of no particular trade. */
+    AppointmentResourceKind["GENERAL"] = "general";
+    /** A consulting agenda (a vet or a consulting room). */
+    AppointmentResourceKind["CONSULTATION"] = "consultation";
+    /** The grooming service: a groomer (estilista) or a grooming table. */
     AppointmentResourceKind["GROOMING"] = "grooming";
+    /** A beauty salon: a stylist or a chair. */
+    AppointmentResourceKind["STYLING"] = "styling";
 })(AppointmentResourceKind || (exports.AppointmentResourceKind = AppointmentResourceKind = {}));
+/** Whether a person or a place works an agenda. */
+var AppointmentResourceClass;
+(function (AppointmentResourceClass) {
+    /** A professional: worked by a system user. */
+    AppointmentResourceClass["PROFESSIONAL"] = "professional";
+    /** A space or equipment (a table, a room, a chair): no user. */
+    AppointmentResourceClass["SPACE"] = "space";
+})(AppointmentResourceClass || (exports.AppointmentResourceClass = AppointmentResourceClass = {}));
 //# sourceMappingURL=appointment.js.map
