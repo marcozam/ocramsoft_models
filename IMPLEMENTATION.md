@@ -112,14 +112,16 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/medical-test.ts`
 | Export | Notes |
 |---|---|
-| `TestAttributeDataType` | `'numeric' \| 'text' \| 'boolean' \| 'option' \| 'multioption'` — SQL `TipoDato` 1–5 (v4.17.1) |
-| `TestType` | Study type from the catalog (`id, name`), e.g. Reporte Citológico |
+| `TestAttributeDataType` | `'numeric' \| 'text' \| 'boolean' \| 'option' \| 'multioption' \| 'bodymap'` — SQL `TipoDato` 1–6 (v4.17.1; `bodymap` 4.43.0) |
+| `BodyMapValue` / `BodyMapMarker` / `BodyMapView` / `BodyMapSilhouette` (4.43.0) | Value of a `bodymap` attribute (lesion sites on a canine/feline silhouette, 4 views, `x`/`y` as 0..1 fractions, max 100 markers); sent as `MedicalTestValueInput.value`, read back as `MedicalTestValue.bodyMapValue` (`textValue` keeps the raw JSON) |
+| `TestType` | Study type from the catalog (`id, name`), e.g. Reporte Citológico; 4.43.0: `suggested` / `suggestedOrder` when listed for a visit type (`?recordTypeId=`), suggested first |
+| `NotifiableFinding` (4.43.0) | A study result matching the zoonotic / notifiable findings catalog (`disease, zoonosis, notifiable, authority, note`); `MedicalTest.notifiableFindings` on single-study reads |
 | `TestAttribute` | One capturable attribute of a study or consultation type: `attributeId, name, dataType, unit, refMin, refMax, options[], section, order`; main v4.30.0 (MVP 4.32.0) adds optional `key` (stable code such as `peso`), `decimals` and the physical `limitMin`/`limitMax`; `refMin`/`refMax` are resolved for the patient's species when the catalog has a species range; MVP 4.33.0 added an optional `required`, removed in MVP 4.34.0 before any release (no vital is ever required; product decision 2026-10-15) |
 | `MedicalTestValue` | Captured value: `numericValue` / `textValue` (multioption `\|`-joined) / `boolValue`, plus `outOfRange` and per-value `observation` |
 | `MedicalTest` | A patient's study with its `values[]`; `healthRecordId` links the originating visit; `fileCount` counts its attached files; `isDraft` marks a study started without results (type + photos) to be completed later |
 | `MedicalTestOrigin` / `MedicalTestStatus` (v4.21.0) | `internal` (the vet captures the results) or `external` (sample sent to a lab: `laboratoryId` — a supplier — `sentAt`, `expectedResultsAt`, `resultsReceivedAt` on `MedicalTest` and its create/update bodies). `productId`/`productName` is what the study is charged as, from the product configured per study type and origin. `status` is derived by the gateway: `pending_results`, `to_send`, `at_lab`, `to_interpret`, `completed` |
 | `PendingMedicalTest` (v4.21.0) | Item of GET /veterinarian/tests/pending: a draft study plus `petId`, `petName`, `speciesName`, `tutorName`, `tutorPhone` and `overdue` (expected results date passed) |
-| `MedicalTestAiAnalysis` / `MedicalTestAiSuggestion` / `MedicalTestAiConfidence` | Answer of POST /veterinarian/tests/{testId}/ai-analysis: values the vision model suggests from the study photos (never saved by themselves), plus interpretation, recommendations and warnings; `TestType.aiAnalysis` flags the types configured for it |
+| `MedicalTestAiAnalysis` / `MedicalTestAiSuggestion` / `MedicalTestAiConfidence` | Answer of POST /veterinarian/tests/{testId}/ai-analysis: values the vision model suggests from the study photos (never saved by themselves), plus interpretation, recommendations and warnings; `TestType.aiAnalysis` flags the types configured for it; 4.43.0: `diagnosisReview.usedCaseHistory` when the visit's clinical case history was considered |
 | `MedicalTestFile` / `MedicalTestFileKind` | A photo or PDF attached to a study (`kind: 'image' \| 'pdf'`); bytes are private and served only by the authenticated `.../files/{id}/content` endpoint |
 | `MedicalTestValueInput` | Value on create/update: `value: number \| string \| boolean \| string[] \| null` — the gateway routes it by `dataType`; `null` on update clears the value |
 | `CreateMedicalTestRequest` / `UpdateMedicalTestRequest` | Bodies of POST /veterinarian/pets/{petId}/tests and PUT /veterinarian/tests/{testId}; the study type is immutable on update, and on update a header text field sent as `null` or `''` is cleared; `isDraft` creates a draft (values optional) and `isDraft: false` completes it |
@@ -141,11 +143,12 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | Export | Notes |
 |---|---|
 | `ClinicalCaseStatus` | enum; values = CatStatus ids under IDUso 405 (40501 OPEN, 40502 FOLLOW_UP, 40503 RESOLVED, 40504 CHRONIC, 40505 CANCELLED); `ClinicalCaseClosingStatus` the three closing ones |
-| `ClinicalCase` | A case (several visits of a pet under one problem): `id, publicId, petId, title, recordTypeId (specialty), status, onsetDate, openedAt, closedAt, presumptiveDiagnosis, finalDiagnosis, closingOutcome, professionalUserId, visitsCount, lastVisitId/Date/Evolution, nextAppointmentAt/PublicId, inactive`. Item of GET /veterinarian/pets/{petId}/cases (open first) |
+| `ClinicalCase` | A case (several visits of a pet under one problem): `id, publicId, petId, title, recordTypeId (specialty), status, onsetDate, openedAt, closedAt, presumptiveDiagnosis, finalDiagnosis, closingOutcome, professionalUserId, professionalName? (4.44.0, the responsible vet's display name), visitsCount, lastVisitId/Date/Evolution, nextAppointmentAt/PublicId, inactive`. Item of GET /veterinarian/pets/{petId}/cases (open first) |
 | `ClinicalCaseDetail` / `CaseVisitSummary` / `CasePendingAppointment` | GET /veterinarian/cases/{publicId}: the header plus the visits (date, type, evolution, diagnoses, treatment, photos and tests counts) and the pending follow-up appointments |
 | `CaseProgress` / `CaseProgressVisit` / `CaseTrendPoint` / `CaseVisitPhoto` / `CaseVisitTest` | GET /veterinarian/cases/{publicId}/progress: per-visit trend points (`trend` attributes, with `copied`), photos per visit (`description` = anatomical zone, for side-by-side), treatment per visit, studies per visit |
 | `CaseLastVisit` | GET /veterinarian/cases/{publicId}/last-visit: the last visit as a `HealthRecord` with its `vitals` (each with `copied`), to prefill the follow-up; `null` without visits |
 | `CreateClinicalCaseRequest` / `UpdateClinicalCaseRequest` / `CloseClinicalCaseRequest` | Bodies of POST /veterinarian/pets/{petId}/cases (`firstRecordId` links the visit the case opens from and lends its reason, onset date and diagnosis), PUT /veterinarian/cases/{publicId}, POST /veterinarian/cases/{publicId}/close (`cancelAppointments` cancels the pending follow-ups that otherwise block the close) |
+| `ClinicalCaseCloseErrorCode` (4.44.0) | `errorCode` of the close's 409: `CASE_ALREADY_CLOSED` (reload the case) or `CASE_PENDING_APPOINTMENTS` (retry with `cancelAppointments`) |
 | `HealthRecord.caseId/casePublicId/caseTitle`, `CreateHealthRecordRequest.caseId`, `Appointment.caseId/casePublicId/caseTitle`, `MedicalTestValue.copied` / `MedicalTestValueInput.copied` | v4.40.0: the case a visit or a follow-up appointment belongs to (the visit started from the appointment inherits it; a closed case refuses new visits and appointments), and the per-value "prefilled, not touched" flag |
 
 ### `src/entities/customer-auth.ts`
@@ -375,7 +378,7 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?` |
 | `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
 
-### Pet record: reproductive status, consents, euthanasia (v4.42.0, `pet-record.ts`)
+### Pet record: reproductive status, consents, euthanasia (v4.46.0, `pet-record.ts`)
 | Type | Purpose |
 |---|---|
 | `ReproductiveStatus` + `REPRODUCTIVE_STATUS_LABELS` | `Mascotas.IDEstadoReproductivo`: 1 Entero, 2 Esterilizado, 3 Gestante, 4 Lactancia |
