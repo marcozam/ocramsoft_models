@@ -213,4 +213,28 @@ export interface CloseClinicalCaseRequest {
     finalDiagnosis?: string | null;
     cancelAppointments?: boolean;
 }
+/**
+ * Body of POST /veterinarian/cases/{publicId}/visits: adds an already saved
+ * visit of the case's pet to the case. Adding the visit the case already has
+ * changes nothing; a visit of another case must be removed from it first
+ * (DELETE /veterinarian/cases/{publicId}/visits/{recordId}). Both answer the
+ * case detail, consolidated (onset date, diagnoses, status) from its visits.
+ */
+export interface AttachCaseVisitRequest {
+    /** Internal id of the visit (a health record), as a string. */
+    recordId: string;
+}
+/**
+ * `errorCode` of a 409 (`code` CONFLICT) from POST or DELETE
+ * /veterinarian/cases/{publicId}/visits: why the visit could not be added or
+ * removed.
+ */
+export declare enum ClinicalCaseVisitErrorCode {
+    /** The visit belongs to another pet. */
+    OTHER_PET = "CASE_VISIT_OTHER_PET",
+    /** The case is closed: reopen it to change its visits. */
+    CASE_CLOSED = "CASE_CLOSED",
+    /** The visit already belongs to another case; remove it from that one first. */
+    IN_OTHER_CASE = "CASE_VISIT_IN_OTHER_CASE"
+}
 //# sourceMappingURL=clinical-case.d.ts.map

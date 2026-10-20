@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClinicalCaseCloseErrorCode = exports.ClinicalCaseStatus = void 0;
+exports.ClinicalCaseVisitErrorCode = exports.ClinicalCaseCloseErrorCode = exports.ClinicalCaseStatus = void 0;
 /**
  * Veterinary vertical — clinical cases (CasoClinico): several visits of a pet
  * grouped under one problem ("Otitis bilateral"), opened on the first visit
@@ -34,4 +34,18 @@ var ClinicalCaseCloseErrorCode;
     /** Pending follow-up appointments; retry with `cancelAppointments: true`. */
     ClinicalCaseCloseErrorCode["PENDING_APPOINTMENTS"] = "CASE_PENDING_APPOINTMENTS";
 })(ClinicalCaseCloseErrorCode || (exports.ClinicalCaseCloseErrorCode = ClinicalCaseCloseErrorCode = {}));
+/**
+ * `errorCode` of a 409 (`code` CONFLICT) from POST or DELETE
+ * /veterinarian/cases/{publicId}/visits: why the visit could not be added or
+ * removed.
+ */
+var ClinicalCaseVisitErrorCode;
+(function (ClinicalCaseVisitErrorCode) {
+    /** The visit belongs to another pet. */
+    ClinicalCaseVisitErrorCode["OTHER_PET"] = "CASE_VISIT_OTHER_PET";
+    /** The case is closed: reopen it to change its visits. */
+    ClinicalCaseVisitErrorCode["CASE_CLOSED"] = "CASE_CLOSED";
+    /** The visit already belongs to another case; remove it from that one first. */
+    ClinicalCaseVisitErrorCode["IN_OTHER_CASE"] = "CASE_VISIT_IN_OTHER_CASE";
+})(ClinicalCaseVisitErrorCode || (exports.ClinicalCaseVisitErrorCode = ClinicalCaseVisitErrorCode = {}));
 //# sourceMappingURL=clinical-case.js.map
