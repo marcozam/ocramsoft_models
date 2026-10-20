@@ -153,3 +153,58 @@ export interface AppointmentResource {
   /** Name of the user working the agenda; `null` when there is none. */
   userName?: string | null;
 }
+
+/**
+ * One opening range of an agenda's week. A day may have several ranges (a
+ * lunch break splits it); they never overlap and each lies inside the
+ * branch hours of that day. An agenda with no ranges follows the branch hours.
+ */
+export interface ResourceWorkingHours {
+  /** ISO weekday: 1 = Monday .. 7 = Sunday. */
+  dayOfWeek: number;
+  /** Branch-local opening time, `HH:mm`. */
+  opensAt: string;
+  /** Branch-local closing time, `HH:mm`, after `opensAt`. */
+  closesAt: string;
+  /** Slot interval of the range in minutes; absent = 30. */
+  intervalMinutes?: number;
+}
+
+/** Body of PUT /appointments/resources/{id}/hours: the whole week; `[]` = follow the branch hours. */
+export interface SetResourceWorkingHoursRequest {
+  hours: ResourceWorkingHours[];
+}
+
+/**
+ * A span no appointment may be offered in or self-booked into (lunch, a day
+ * off, a holiday). Staff may still book over it.
+ */
+export interface AgendaBlock {
+  id: number;
+  branchId: number;
+  /** The agenda it blocks; `null` = the whole branch (every agenda). */
+  resourceId: number | null;
+  resourceName?: string | null;
+  /** ISO 8601 start instant (UTC). */
+  start: string;
+  /** ISO 8601 end instant (UTC), after `start`. */
+  end: string;
+  reason?: string | null;
+  isActive: boolean;
+  /** Local id of the user who created it. */
+  createdByUserId?: number | null;
+  /** ISO 8601 creation instant (UTC). */
+  registeredAt?: string;
+}
+
+/** Body of POST /appointments/blocks. */
+export interface CreateAgendaBlockRequest {
+  branchId: number;
+  /** Absent / `null` = the whole branch. */
+  resourceId?: number | null;
+  /** ISO 8601 start instant. */
+  start: string;
+  /** ISO 8601 end instant, after `start`. */
+  end: string;
+  reason?: string | null;
+}
