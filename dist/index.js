@@ -25,6 +25,7 @@ __exportStar(require("./entities/rules-engine"), exports);
 __exportStar(require("./entities/online-store"), exports);
 __exportStar(require("./entities/stock"), exports);
 __exportStar(require("./entities/stock-lot"), exports);
+__exportStar(require("./entities/physical-count"), exports);
 __exportStar(require("./entities/optica-examen"), exports);
 __exportStar(require("./entities/sale-order"), exports);
 __exportStar(require("./entities/quote"), exports);
