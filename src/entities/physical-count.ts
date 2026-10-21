@@ -9,9 +9,9 @@ export interface PhysicalCountLine {
 }
 
 /**
- * Body of POST /stock/:locationId/physical-counts. `categoryIds` scopes the
- * count: only products of those categories may be counted and nothing else is
- * touched. Absent or empty = the whole location.
+ * Body of POST /stock/:locationId/physical-counts. `categoryIds` records which
+ * categories were counted (absent or empty = the whole location); only the
+ * products in `lines` are adjusted.
  */
 export interface PhysicalCountCreate {
   categoryIds?: string[];
