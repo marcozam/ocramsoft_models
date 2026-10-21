@@ -197,6 +197,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `IStockItem` | Type alias for `StockItem` — backward compat for the BE name |
 | `StockLocation` | `name, locationType?, locationTypeId?(string\|number), items?` (extends `BaseEntity`). BE narrows `locationTypeId` to required `number`; FE adds `itemsLoaded?, branchId?, branchName?` |
 
+### `src/entities/physical-count.ts`
+| Export | Notes |
+|---|---|
+| `PhysicalCountLine` | `{ productId, physicalQuantity }` — one counted product; `0` = not found on the shelf (v4.40.1) |
+| `PhysicalCountCreate` | `{ categoryIds?, lines, notes? }` — body of POST /stock/:locationId/physical-counts; `categoryIds` = categories counted, absent = whole location; only `lines` are adjusted (v4.40.1) |
+| `PhysicalCountResult` | `{ id, adjustedCount }` — the recorded count (v4.40.1) |
+| `CategoryLastCount` | `{ categoryId, categoryName, countId, countedAt }` — last count per category of a location, null when never counted (v4.40.1) |
+
 ### `src/entities/optica-examen.ts`
 | Export | Notes |
 |---|---|
