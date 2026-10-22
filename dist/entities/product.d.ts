@@ -12,6 +12,8 @@ export interface ProductCategory extends BaseEntity {
     /** When true, products in this category are schedulable services and carry a duration. */
     isSchedulable?: boolean;
     brands?: ProductBrand[];
+    /** An inactive category is hidden from pickers; its products are inactive too. */
+    isActive?: boolean;
     /**
      * Material icon ligature name (e.g. `pets`, `local_pharmacy`) shown next to
      * the category. Absent when the category has no custom look.

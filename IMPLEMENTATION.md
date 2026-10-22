@@ -81,6 +81,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration, `number \| null`: `null` clears it on update; 4.41.0: the source of a visit type's duration) + `description?, mainImageUrl?, images?, availableOnline?` |
 | `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
 | `ProductCategory.icon?` / `iconColor?` / `backgroundColor?` | Category appearance (v4.23.0): Material icon name and `#RRGGBB` colours, all optional. Set and edited from the FE category form; the BE validates the hex format |
+| `ProductCategory.isActive?` | Active state (v4.41.0). An inactive category is hidden from pickers and its products are inactive too; changed through `PATCH /products/categories/:id/active` |
 | `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item. BE re-exports it; FE keeps it via the `../products` barrel |
 | `Product.parentId?` | Grouper this product is a variation of — set only on variations |
 | `Product.isGrouper?` | Abstract grouper row: never sold on its own, only holds variations |
@@ -202,6 +203,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `StockItem` | Canonical inventory item: `quantity, name?, min?, max?, categoryId?, categoryName?` (extends `BaseEntity`). FE extends with required `id` + `product?`; BE extends with `locationId?` |
 | `IStockItem` | Type alias for `StockItem` — backward compat for the BE name |
 | `StockLocation` | `name, locationType?, locationTypeId?(string\|number), items?` (extends `BaseEntity`). BE narrows `locationTypeId` to required `number`; FE adds `itemsLoaded?, branchId?, branchName?` |
+
+### `src/entities/physical-count.ts`
+| Export | Notes |
+|---|---|
+| `PhysicalCountLine` | `{ productId, physicalQuantity }` — one counted product; `0` = not found on the shelf (v4.40.1) |
+| `PhysicalCountCreate` | `{ categoryIds?, lines, notes? }` — body of POST /stock/:locationId/physical-counts; `categoryIds` = categories counted, absent = whole location; only `lines` are adjusted (v4.40.1) |
+| `PhysicalCountResult` | `{ id, adjustedCount }` — the recorded count (v4.40.1) |
+| `CategoryLastCount` | `{ categoryId, categoryName, countId, countedAt }` — last count per category of a location, null when never counted (v4.40.1) |
 
 ### `src/entities/optica-examen.ts`
 | Export | Notes |
