@@ -205,6 +205,8 @@ export interface HealthRecordApplication {
     batch?: string | null;
     /** Expiry of the applied vial, not a booster date. */
     validUntil?: string | null;
+    /** When the vaccine's booster is due (`YYYY-MM-DD`); dewormers keep theirs in `validUntil`. */
+    nextApplicationDate?: string | null;
     /** Stock lot (PublicId) the applied product came from. */
     lotId?: string | null;
     route?: string | null;
@@ -230,6 +232,8 @@ export interface CreateHealthApplicationRequest {
     /** Stock lot (PublicId) the applied product came from. */
     lotId?: string | null;
     validUntil?: string | null;
+    /** `YYYY-MM-DD`; see {@link HealthRecordApplication.nextApplicationDate}. */
+    nextApplicationDate?: string | null;
     route?: string | null;
     dose?: string | null;
     /** Doses applied, a positive integer; defaults to 1. */
@@ -240,7 +244,7 @@ export interface CreateHealthApplicationRequest {
 /**
  * Body of PUT /pets/:petId/applications/:id. Product, date, quantity and professional keep their
  * value when omitted; the vial fields (batch, validUntil, route, dose, notes)
- * are replaced as sent, so omitting one clears it.
+ * and nextApplicationDate are replaced as sent, so omitting one clears it.
  */
 export interface UpdateHealthApplicationRequest {
     productId?: number;
@@ -249,6 +253,8 @@ export interface UpdateHealthApplicationRequest {
     /** Stock lot (PublicId) the applied product came from. */
     lotId?: string | null;
     validUntil?: string | null;
+    /** `YYYY-MM-DD`; see {@link HealthRecordApplication.nextApplicationDate}. */
+    nextApplicationDate?: string | null;
     route?: string | null;
     dose?: string | null;
     quantity?: number;
