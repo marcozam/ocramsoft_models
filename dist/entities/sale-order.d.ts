@@ -48,6 +48,8 @@ export interface SaleOrderItem {
     unitPrice: number;
     amount: number;
     comment?: string;
+    /** Lot (PublicId) to sell from. Omitted: the gateway picks the lot. */
+    lotId?: string;
 }
 export interface SaleOrderPayment extends Payment {
     paymentId: number;

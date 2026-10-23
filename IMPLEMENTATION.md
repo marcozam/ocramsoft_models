@@ -342,6 +342,28 @@ These Tier-1 candidates were diffed BEâ†”FE and deliberately **not** promoted â€
 |---|---|
 | `Branch.timeZone?` | IANA time zone string added to the existing Branch interface (optional, backward compatible) |
 
+### `src/entities/stock-lot.ts` (v4.36.2 and v4.39.0, lots and expiry)
+| Export | Notes |
+|---|---|
+| `StockLotStatus` | `'valid' \| 'expiring' \| 'expired' \| 'no-expiry'`; `expiring` = within the account's alert days |
+| `StockLot` | A lot of a product: `id` (PublicId), `productId`, `code`, `expirationDate?` (`yyyy-MM-dd`, `null` = no expiry), `supplierId?` |
+| `StockLotBalance` | `StockLot` + `locationId`, `quantity`, `status`, `daysToExpiry?`, display names (`productName?`, `categoryName?`, `branchName?`) |
+| `StockLotDetail` | A lot with its `productName` and per-location `balances` |
+| `StockLotMovement` | One movement of a lot: `id, dateTime` (ISO UTC), `movementTypeId, movementType, quantity, reference, locationId`, `locationName?`, `userName?` |
+| `LotRef` | Lot on a stock operation: `lotId?` or `lotCode?` + `expirationDate?` |
+| `LotQuantity` | Quantity of one lot on a purchase line: `lotCode, expirationDate?, quantity` |
+| `ExpiredLotWarning` | An expired lot a sale consumed: `productId, productName?, lotId, lotCode, expirationDate, quantity` |
+| `InventoryConfig` | Account inventory settings: `expiryAlertDays` (default 30) |
+
+### Lot fields on existing types (v4.36.2 and v4.39.0, all optional)
+| Type | Fields |
+|---|---|
+| `ProductCategory` (`product.ts`) | `lotControl?`, `manualLotSelection?`, `expiryAlertDays?` (`null` = account default) |
+| `Product` (`product.ts`) | `lotControl?`, `manualLotSelection?` |
+| `StockItem` (`stock.ts`) | `lotControl?`, `manualLotSelection?`, `unassignedQuantity?`, `nextExpirationDate?`, `expiryStatus?` |
+| `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?` |
+| `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
+
 ## Breaking Change Log
 
 | Change | Reason |

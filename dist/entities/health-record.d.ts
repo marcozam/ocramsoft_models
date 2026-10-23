@@ -195,6 +195,8 @@ export interface HealthRecordApplication {
     validUntil?: string | null;
     /** When the vaccine's booster is due (`YYYY-MM-DD`); dewormers keep theirs in `validUntil`. */
     nextApplicationDate?: string | null;
+    /** Stock lot (PublicId) the applied product came from. */
+    lotId?: string | null;
     route?: string | null;
     dose?: string | null;
     /** Doses of the product applied (what the visit charges); 1 when absent. */
@@ -215,6 +217,8 @@ export interface CreateHealthApplicationRequest {
     /** Defaults to now; back-dating is allowed. */
     date?: string;
     batch?: string | null;
+    /** Stock lot (PublicId) the applied product came from. */
+    lotId?: string | null;
     validUntil?: string | null;
     /** `YYYY-MM-DD`; see {@link HealthRecordApplication.nextApplicationDate}. */
     nextApplicationDate?: string | null;
@@ -234,6 +238,8 @@ export interface UpdateHealthApplicationRequest {
     productId?: number;
     date?: string;
     batch?: string | null;
+    /** Stock lot (PublicId) the applied product came from. */
+    lotId?: string | null;
     validUntil?: string | null;
     /** `YYYY-MM-DD`; see {@link HealthRecordApplication.nextApplicationDate}. */
     nextApplicationDate?: string | null;
