@@ -81,6 +81,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) + `description?, mainImageUrl?, images?, availableOnline?` |
 | `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
 | `ProductCategory.icon?` / `iconColor?` / `backgroundColor?` | Category appearance (v4.23.0): Material icon name and `#RRGGBB` colours, all optional. Set and edited from the FE category form; the BE validates the hex format |
+| `ProductCategory.isActive?` | Active state (v4.41.0). An inactive category is hidden from pickers and its products are inactive too; changed through `PATCH /products/categories/:id/active` |
 | `ProductImage` | `{ id, url, isPrincipal, order }` — product image gallery item. BE re-exports it; FE keeps it via the `../products` barrel |
 | `Product.parentId?` | Grouper this product is a variation of — set only on variations |
 | `Product.isGrouper?` | Abstract grouper row: never sold on its own, only holds variations |
@@ -137,6 +138,17 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `HealthRecordApplication` | A sanitary product applied to a patient; `recordId` is the consultation it was applied in, `null` when applied outside one; `quantity` is the doses applied (1 when absent; also on the create/update requests, v4.27.0); `productImageUrl` is the product's principal photo (v4.27.0) |
 | `CreateHealthApplicationRequest` / `UpdateHealthApplicationRequest` / `LinkHealthApplicationRequest` | Bodies of POST /veterinarian/pets/{petId}/applications, PUT /veterinarian/pets/{petId}/applications/{id} and PUT /veterinarian/pets/{petId}/applications/{id}/record (`recordId: null` unlinks) |
 
+### `src/entities/clinical-case.ts` (v4.40.0)
+| Export | Notes |
+|---|---|
+| `ClinicalCaseStatus` | enum; values = CatStatus ids under IDUso 405 (40501 OPEN, 40502 FOLLOW_UP, 40503 RESOLVED, 40504 CHRONIC, 40505 CANCELLED); `ClinicalCaseClosingStatus` the three closing ones |
+| `ClinicalCase` | A case (several visits of a pet under one problem): `id, publicId, petId, title, recordTypeId (specialty), status, onsetDate, openedAt, closedAt, presumptiveDiagnosis, finalDiagnosis, closingOutcome, professionalUserId, visitsCount, lastVisitId/Date/Evolution, nextAppointmentAt/PublicId, inactive`. Item of GET /veterinarian/pets/{petId}/cases (open first) |
+| `ClinicalCaseDetail` / `CaseVisitSummary` / `CasePendingAppointment` | GET /veterinarian/cases/{publicId}: the header plus the visits (date, type, evolution, diagnoses, treatment, photos and tests counts) and the pending follow-up appointments |
+| `CaseProgress` / `CaseProgressVisit` / `CaseTrendPoint` / `CaseVisitPhoto` / `CaseVisitTest` | GET /veterinarian/cases/{publicId}/progress: per-visit trend points (`trend` attributes, with `copied`), photos per visit (`description` = anatomical zone, for side-by-side), treatment per visit, studies per visit |
+| `CaseLastVisit` | GET /veterinarian/cases/{publicId}/last-visit: the last visit as a `HealthRecord` with its `vitals` (each with `copied`), to prefill the follow-up; `null` without visits |
+| `CreateClinicalCaseRequest` / `UpdateClinicalCaseRequest` / `CloseClinicalCaseRequest` | Bodies of POST /veterinarian/pets/{petId}/cases (`firstRecordId` links the visit the case opens from and lends its reason, onset date and diagnosis), PUT /veterinarian/cases/{publicId}, POST /veterinarian/cases/{publicId}/close (`cancelAppointments` cancels the pending follow-ups that otherwise block the close) |
+| `HealthRecord.caseId/casePublicId/caseTitle`, `CreateHealthRecordRequest.caseId`, `Appointment.caseId/casePublicId/caseTitle`, `MedicalTestValue.copied` / `MedicalTestValueInput.copied` | v4.40.0: the case a visit or a follow-up appointment belongs to (the visit started from the appointment inherits it; a closed case refuses new visits and appointments), and the per-value "prefilled, not touched" flag |
+
 ### `src/entities/customer-auth.ts`
 | Export | Notes |
 |---|---|
@@ -185,6 +197,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `StockItem` | Canonical inventory item: `quantity, name?, min?, max?, categoryId?, categoryName?` (extends `BaseEntity`). FE extends with required `id` + `product?`; BE extends with `locationId?` |
 | `IStockItem` | Type alias for `StockItem` — backward compat for the BE name |
 | `StockLocation` | `name, locationType?, locationTypeId?(string\|number), items?` (extends `BaseEntity`). BE narrows `locationTypeId` to required `number`; FE adds `itemsLoaded?, branchId?, branchName?` |
+
+### `src/entities/physical-count.ts`
+| Export | Notes |
+|---|---|
+| `PhysicalCountLine` | `{ productId, physicalQuantity }` — one counted product; `0` = not found on the shelf (v4.40.1) |
+| `PhysicalCountCreate` | `{ categoryIds?, lines, notes? }` — body of POST /stock/:locationId/physical-counts; `categoryIds` = categories counted, absent = whole location; only `lines` are adjusted (v4.40.1) |
+| `PhysicalCountResult` | `{ id, adjustedCount }` — the recorded count (v4.40.1) |
+| `CategoryLastCount` | `{ categoryId, categoryName, countId, countedAt }` — last count per category of a location, null when never counted (v4.40.1) |
 
 ### `src/entities/optica-examen.ts`
 | Export | Notes |
@@ -341,6 +361,28 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | Export | Notes |
 |---|---|
 | `Branch.timeZone?` | IANA time zone string added to the existing Branch interface (optional, backward compatible) |
+
+### `src/entities/stock-lot.ts` (v4.39.0, lots and expiry)
+| Export | Notes |
+|---|---|
+| `StockLotStatus` | `'valid' \| 'expiring' \| 'expired' \| 'no-expiry'`; `expiring` = within the account's alert days |
+| `StockLot` | A lot of a product: `id` (PublicId), `productId`, `code`, `expirationDate?` (`yyyy-MM-dd`, `null` = no expiry), `supplierId?` |
+| `StockLotBalance` | `StockLot` + `locationId`, `quantity`, `status`, `daysToExpiry?`, display names (`productName?`, `categoryName?`, `branchName?`) |
+| `StockLotDetail` | A lot with its `productName` and per-location `balances` |
+| `StockLotMovement` | One movement of a lot: `id, dateTime` (ISO UTC), `movementTypeId, movementType, quantity, reference, locationId`, `locationName?`, `userName?` |
+| `LotRef` | Lot on a stock operation: `lotId?` or `lotCode?` + `expirationDate?` |
+| `LotQuantity` | Quantity of one lot on a purchase line: `lotCode, expirationDate?, quantity` |
+| `ExpiredLotWarning` | An expired lot a sale consumed: `productId, productName?, lotId, lotCode, expirationDate, quantity` |
+| `InventoryConfig` | Account inventory settings: `expiryAlertDays` (default 30) |
+
+### Lot fields on existing types (v4.39.0, all optional)
+| Type | Fields |
+|---|---|
+| `ProductCategory` (`product.ts`) | `lotControl?`, `manualLotSelection?`, `expiryAlertDays?` (`null` = account default) |
+| `Product` (`product.ts`) | `lotControl?`, `manualLotSelection?` |
+| `StockItem` (`stock.ts`) | `lotControl?`, `manualLotSelection?`, `unassignedQuantity?`, `nextExpirationDate?`, `expiryStatus?` |
+| `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?` |
+| `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
 
 ## Breaking Change Log
 

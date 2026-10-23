@@ -12,6 +12,8 @@ export interface ProductCategory extends BaseEntity {
     /** When true, products in this category are schedulable services and carry a duration. */
     isSchedulable?: boolean;
     brands?: ProductBrand[];
+    /** An inactive category is hidden from pickers; its products are inactive too. */
+    isActive?: boolean;
     /**
      * Material icon ligature name (e.g. `pets`, `local_pharmacy`) shown next to
      * the category. Absent when the category has no custom look.
@@ -21,6 +23,11 @@ export interface ProductCategory extends BaseEntity {
     iconColor?: string;
     /** Background colour behind the icon as `#RRGGBB`. Absent means "use the default". */
     backgroundColor?: string;
+    /** Stock of products in this category is tracked by lot. */
+    lotControl?: boolean;
+    manualLotSelection?: boolean;
+    /** Overrides the account's `InventoryConfig.expiryAlertDays`; `null` = use the account's. */
+    expiryAlertDays?: number | null;
 }
 export interface ProductGroup extends SimpleEntity {
     categoryId?: string;
@@ -71,6 +78,9 @@ export interface Product extends BaseEntity {
      * Absent or empty means the product always applies.
      */
     conditions?: Rule[];
+    /** Inherited from the product's category. */
+    lotControl?: boolean;
+    manualLotSelection?: boolean;
 }
 export interface ProductImage {
     id: string;
