@@ -196,7 +196,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/stock.ts`
 | Export | Notes |
 |---|---|
-| `StockItem` | Canonical inventory item: `quantity, name?, min?, max?, categoryId?, categoryName?` (extends `BaseEntity`). FE extends with required `id` + `product?`; BE extends with `locationId?` |
+| `StockItem` | Canonical inventory item: `quantity, name?, min?, max?, categoryId?, categoryName?` (extends `BaseEntity`). `isActive?` (4.58.0): `false` for a deactivated product, which the stock lists keep only while its quantity is not 0. FE extends with required `id` + `product?`; BE extends with `locationId?` |
 | `IStockItem` | Type alias for `StockItem` — backward compat for the BE name |
 | `StockLocation` | `name, locationType?, locationTypeId?(string\|number), items?` (extends `BaseEntity`). BE narrows `locationTypeId` to required `number`; FE adds `itemsLoaded?, branchId?, branchName?` |
 
