@@ -19,6 +19,8 @@ export interface StockItem extends BaseEntity {
     /** Earliest expiration among the lots with stock here (`yyyy-MM-dd`). */
     nextExpirationDate?: string | null;
     expiryStatus?: StockLotStatus | null;
+    /** False for a deactivated product, listed only while its quantity is not 0. */
+    isActive?: boolean;
 }
 /** Backward-compat alias for the BE-side name (`IStockItem`). */
 export type IStockItem = StockItem;
