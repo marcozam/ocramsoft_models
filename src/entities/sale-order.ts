@@ -52,6 +52,14 @@ export interface SaleOrderItem {
   comment?: string;
   /** Lot (PublicId) to sell from. Omitted: the gateway picks the lot. */
   lotId?: string;
+  /**
+   * Lot code typed by hand (the vial's label) when the lot is not in stock yet.
+   * Only read without `lotId`: the gateway finds or creates the lot and moves
+   * the product's stock without a lot into it before selling.
+   */
+  lotCode?: string;
+  /** Expiry of a hand-typed `lotCode` (YYYY-MM-DD, last day of the month). */
+  lotExpirationDate?: string | null;
 }
 
 export interface SaleOrderPayment extends Payment {
