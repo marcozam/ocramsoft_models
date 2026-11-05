@@ -383,7 +383,7 @@ These Tier-1 candidates were diffed BEâ†”FE and deliberately **not** promoted â€
 | `ProductCategory` (`product.ts`) | `lotControl?`, `manualLotSelection?`, `expiryAlertDays?` (`null` = account default) |
 | `Product` (`product.ts`) | `lotControl?`, `manualLotSelection?` |
 | `StockItem` (`stock.ts`) | `lotControl?`, `manualLotSelection?`, `unassignedQuantity?`, `nextExpirationDate?`, `expiryStatus?` |
-| `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?` |
+| `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?`; `lotCode?`, `lotExpirationDate?` (4.59.0): a lot typed by hand, read only without `lotId` |
 | `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
 
 ## Breaking Change Log
