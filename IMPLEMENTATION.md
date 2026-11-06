@@ -390,10 +390,11 @@ These Tier-1 candidates were diffed BEâ†”FE and deliberately **not** promoted â€
 | Type | Notes |
 |---|---|
 | `PrescriptionDoseUnit`, `PRESCRIPTION_DOSE_UNITS`, `PRESCRIPTION_DOSE_UNIT_LABELS` | `RecetaDetalle.Unidad` codes without accents (`ml`, `tableta`, `capsula`, `mg`, `gota`, `aplicacion`, `sobre`, `pieza`); the labels carry the accents |
-| `PrescriptionLine` | One medicine (`RecetaDetalle`): `productId` null when typed by hand; `dose` + `doseUnit` together, else `instructions` |
-| `Prescription` | `Receta` + its lines; `id`/`petId` PublicIds, `recordId`/`branchId` ids as strings, `status` `issued` / `annulled`; `data` (print snapshot) only on GET one and the issuing POST |
+| `PrescriptionLine` | One medicine (`RecetaDetalle`): `productId` null when typed by hand; `dose` + `doseUnit` together, else `instructions`; `routeId` from `AdministrationRoute` (`routeName` / `routeAbbreviation` read only) |
+| `Prescription` | `Receta` + its lines; `id` PublicId, `petId`/`recordId`/`branchId` ids as strings, `status` `issued` / `annulled`; `data` (print snapshot) only on GET one and the issuing POST |
 | `IssuePrescriptionRequest` | `POST /veterinarian/pets/:petId/prescriptions` |
 | `AnnulPrescriptionRequest` | `POST /veterinarian/prescriptions/:id/annul` |
+| `AdministrationRoute` (`administration-route.ts`) | Platform catalog `CatViaAdministracion` (`GET /veterinarian/administration-routes`): `id`, `code`, `name`, printed `abbreviation`, `isActive`. Prescriptions use it first; applications, euthanasia and controlled dispensing will move to it |
 
 ## Breaking Change Log
 

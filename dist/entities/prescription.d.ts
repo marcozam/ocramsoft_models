@@ -3,9 +3,9 @@
  * the clinic's letterhead with a consecutive `RX-` folio per account. A
  * prescription is never edited or deleted: it is annulled and keeps its folio.
  *
- * Ids follow the API's conventions: prescriptions and pets by PublicId,
- * products, branches and health records by their id as a string, users by
- * their numeric id.
+ * Ids follow the API's conventions: prescriptions by PublicId; pets,
+ * products, branches and health records by their id as a string; users and
+ * routes of administration by their numeric id.
  */
 /** `RecetaDetalle.Unidad`: the code on the wire, without accents. */
 export type PrescriptionDoseUnit = 'ml' | 'tableta' | 'capsula' | 'mg' | 'gota' | 'aplicacion' | 'sobre' | 'pieza';
@@ -25,8 +25,11 @@ export interface PrescriptionLine {
     activeIngredient: string | null;
     dose: number | null;
     doseUnit: PrescriptionDoseUnit | null;
-    /** «Oral», «Tópica», «Subcutánea»… */
-    route: string | null;
+    /** `AdministrationRoute.id`. */
+    routeId: number | null;
+    /** Read only: the route's name and printed abbreviation («Oral», «VO»). */
+    routeName?: string | null;
+    routeAbbreviation?: string | null;
     /** 1..168. */
     everyHours: number | null;
     /** 1..365. */

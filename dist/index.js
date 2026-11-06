@@ -22,6 +22,7 @@ __exportStar(require("./entities/branch"), exports);
 __exportStar(require("./entities/customer"), exports);
 __exportStar(require("./entities/product"), exports);
 __exportStar(require("./entities/prescription"), exports);
+__exportStar(require("./entities/administration-route"), exports);
 __exportStar(require("./entities/rules-engine"), exports);
 __exportStar(require("./entities/online-store"), exports);
 __exportStar(require("./entities/stock"), exports);
