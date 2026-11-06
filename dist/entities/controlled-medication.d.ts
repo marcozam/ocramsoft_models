@@ -23,7 +23,8 @@ export interface ActiveIngredient {
     id: string;
     key: string;
     name: string;
-    riskGroup: NomRiskGroup;
+    /** `null` = not a controlled ingredient (NSAIDs, antiparasitics, …). */
+    riskGroup: NomRiskGroup | null;
     cofeprisClass: CofeprisClass | null;
     antimicrobial: boolean;
     /** Reference brands containing the ingredient. */

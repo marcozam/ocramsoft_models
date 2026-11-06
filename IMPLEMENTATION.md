@@ -443,6 +443,18 @@ Expense (Gasto / GastoProgramado) line types are not shared here; their presenta
 | `AnnulPrescriptionRequest` | `POST /veterinarian/prescriptions/:id/annul` |
 | `AdministrationRoute` (`administration-route.ts`) | Platform catalog `CatViaAdministracion` (`GET /veterinarian/administration-routes`): `id`, `code`, `name`, printed `abbreviation`, `isActive`. Prescriptions use it first; applications, euthanasia and controlled dispensing will move to it |
 
+### Clinical formulary: recommended doses (v4.63.0, `dose-reference.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `DoseUnitCode`, `ConcentrationUnit` | `DosisReferencia.UnidadDosis` (`mg_kg`, `ui_kg`, `ml_kg`, `mg_animal`, `ml_animal`) and `ProductoPrincipioActivo.UnidadConcentracion` codes |
+| `ClinicalSource`, `ClinicalCatalogVersion` | Source of a reference; catalog version in force (`reviewerName` null = pending MVZ review) |
+| `DoseReference`, `IngredientContraindication` | Global formulary rows (tenancy 4.1), identical for every clinic |
+| `ProductActiveIngredient(Input)`, `ProductActiveIngredientsResult` | `GET`/`PUT /products/:id/active-ingredients`: several ingredients per product, concentration per inventory unit, one principal |
+| `DoseSuggestion`, `IngredientDoseRecommendation`, `DoseRecommendation` | `GET /veterinarian/pets/:petId/dose-recommendation`: pet weight, chosen references per route and the computed quantity |
+
+Also in 4.63.0: `ActiveIngredient.riskGroup` may be `null` (non-controlled ingredients); `PrescriptionLine` gains optional `doseReferenceId`, `catalogVersion`, `doseModified`.
+
 ## Breaking Change Log
 
 | Change | Reason |
