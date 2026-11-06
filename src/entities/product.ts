@@ -88,6 +88,36 @@ export interface Product extends BaseEntity {
   /** Inherited from the product's category. */
   lotControl?: boolean;
   manualLotSelection?: boolean;
+  /**
+   * Unit stock is counted in (e.g. `pieza`, `ml`, at most 20 characters).
+   * `null` means pieza. Cannot change once the product has stock history.
+   */
+  inventoryUnit?: string | null;
+}
+
+/**
+ * A unit the product is bought in: a box of 10, a 1 L bottle. Expense lines
+ * keep quantity and price in this unit; stock receives quantity × `factor`
+ * inventory units.
+ */
+export interface ProductPresentation {
+  /** Presentation PublicId. */
+  id: string;
+  name: string;
+  /** Inventory units per presentation; greater than 0. */
+  factor: number;
+  /** At most one active presentation per product is the default. */
+  isDefault: boolean;
+  isActive: boolean;
+}
+
+/** Body to create or update a product's presentation. */
+export interface SaveProductPresentationRequest {
+  /** Unique among the product's active presentations; at most 60 characters. */
+  name: string;
+  factor: number;
+  /** true clears the previous default. */
+  isDefault?: boolean;
 }
 
 export interface ProductImage {
