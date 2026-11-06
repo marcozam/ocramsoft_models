@@ -433,6 +433,15 @@ Expense (Gasto / GastoProgramado) line types are not shared here; their presenta
 | `ControlledLedgerBalance`, `ControlledLedgerMovement`, `ControlledLedgerReport` | `GET /reports/controlled-medication` (`ControlledLedger_Get` RS0 / RS1 + RS2 attached as `dispensing`) |
 | `LotRecipient`, `LotRecipientSource` | `GET /stock/lots/:lotId/recipients` (`ControlledLot_GetRecipients`) |
 
+### Prescriptions, simple (v4.62.0, `prescription.ts`, new file)
+| Type | Notes |
+|---|---|
+| `PrescriptionDoseUnit`, `PRESCRIPTION_DOSE_UNITS`, `PRESCRIPTION_DOSE_UNIT_LABELS` | `RecetaDetalle.Unidad` codes without accents (`ml`, `tableta`, `capsula`, `mg`, `gota`, `aplicacion`, `sobre`, `pieza`); the labels carry the accents |
+| `PrescriptionLine` | One medicine (`RecetaDetalle`): `productId` null when typed by hand; `dose` + `doseUnit` together, else `instructions` |
+| `Prescription` | `Receta` + its lines; `id`/`petId` PublicIds, `recordId`/`branchId` ids as strings, `status` `issued` / `annulled`; `data` (print snapshot) only on GET one and the issuing POST |
+| `IssuePrescriptionRequest` | `POST /veterinarian/pets/:petId/prescriptions` |
+| `AnnulPrescriptionRequest` | `POST /veterinarian/prescriptions/:id/annul` |
+
 ## Breaking Change Log
 
 | Change | Reason |
