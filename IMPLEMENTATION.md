@@ -418,6 +418,21 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 
 Expense (Gasto / GastoProgramado) line types are not shared here; their presentation fields live in the gateway and web.
 
+### Controlled medication, cut 1 (v4.61.0, `controlled-medication.ts`, all optional on existing types)
+| Type | Notes |
+|---|---|
+| `NomRiskGroup` | 1 Group I, 2 Group II, 3 Group III (`ProductosServicios.GrupoRiesgo`) |
+| `CofeprisClass` | 1 estupefaciente, 2 psicotrópico II, 3 psicotrópico III |
+| `ActiveIngredient` | Global catalog (`GET /products/active-ingredients`, `CatPrincipioActivo`); `brands` split from the SP's comma list |
+| `SetProductRiskGroupRequest`, `ProductRiskGroup` | `PUT /products/:id/risk-group` body and response (elevated roles) |
+| `Product.riskGroup?`, `activeIngredientId?`, `activeIngredientName?` | `null` = not controlled |
+| `ControlledDispensingInput` | One dispensing row on a sale line (`DispensacionControlada_Create`); pet / lot by PublicId, `prescriberUserId` numeric |
+| `ControlledDispensing` | Recorded row (`DispensacionControlada_GetByOrden`): input + `id` (PublicId), product, pet, owner (customer PublicId), lot, `isActive`, cancellation |
+| `SaleOrderItem.dispensing?: ControlledDispensingInput[]` | Sent on `CreateSaleRequest.items` |
+| `SaleOrderItemDetail` | `SaleOrderItem` with `dispensing?: ControlledDispensing[]`; `SaleOrder.items` is now `SaleOrderItemDetail[]` (a subtype, no consumer change) |
+| `ControlledLedgerBalance`, `ControlledLedgerMovement`, `ControlledLedgerReport` | `GET /reports/controlled-medication` (`ControlledLedger_Get` RS0 / RS1 + RS2 attached as `dispensing`) |
+| `LotRecipient`, `LotRecipientSource` | `GET /stock/lots/:lotId/recipients` (`ControlledLot_GetRecipients`) |
+
 ## Breaking Change Log
 
 | Change | Reason |
