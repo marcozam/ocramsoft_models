@@ -24,6 +24,7 @@ __exportStar(require("./entities/product"), exports);
 __exportStar(require("./entities/controlled-medication"), exports);
 __exportStar(require("./entities/prescription"), exports);
 __exportStar(require("./entities/dose-reference"), exports);
+__exportStar(require("./entities/diagnosis"), exports);
 __exportStar(require("./entities/administration-route"), exports);
 __exportStar(require("./entities/rules-engine"), exports);
 __exportStar(require("./entities/online-store"), exports);
