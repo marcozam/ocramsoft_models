@@ -1,0 +1,1 @@
+{"version":3,"file":"administration-route.d.ts","sourceRoot":"","sources":["../../src/entities/administration-route.ts"],"names":[],"mappings":"AAAA;;;;;GAKG;AACH,MAAM,WAAW,mBAAmB;IAClC,EAAE,EAAE,MAAM,CAAC;IACX,wDAAwD;IACxD,IAAI,EAAE,MAAM,CAAC;IACb,IAAI,EAAE,MAAM,CAAC;IACb,wDAAwD;IACxD,YAAY,EAAE,MAAM,CAAC;IACrB,QAAQ,EAAE,OAAO,CAAC;CACnB"}
