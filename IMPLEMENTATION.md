@@ -453,3 +453,15 @@ Expense (Gasto / GastoProgramado) line types are not shared here; their presenta
 | `Sexo` enum is now shared | Was FE-only; BE now references it too via shared package |
 | `SaleOrderSummary.customerId` is now `string \| null` (v4.0.0) | Customer IDs exposed by the API are now the contact's public GUID (`Contacto.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). `Customer.id` and `CreateSaleRequest.customerId` were already `string` and now carry the GUID. |
 | `SaleOrderSummary.id` documented as the sale's public GUID (v4.7.1) | Sale IDs exposed by the API are now the order's public GUID (`OrdenVenta.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). The type was already `id?: string`, so this is a doc-only clarification — no consumer code change required. |
+
+### Clinical formulary: recommended doses (v4.63.0, `dose-reference.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `DoseUnitCode`, `ConcentrationUnit` | `DosisReferencia.UnidadDosis` (`mg_kg`, `ui_kg`, `ml_kg`, `mg_animal`, `ml_animal`) and `ProductoPrincipioActivo.UnidadConcentracion` codes |
+| `ClinicalSource`, `ClinicalCatalogVersion` | Source of a reference; catalog version in force (`reviewerName` null = pending MVZ review) |
+| `DoseReference`, `IngredientContraindication` | Global formulary rows (tenancy 4.1), identical for every clinic |
+| `ProductActiveIngredient(Input)`, `ProductActiveIngredientsResult` | `GET`/`PUT /products/:id/active-ingredients`: several ingredients per product, concentration per inventory unit, one principal |
+| `DoseSuggestion`, `IngredientDoseRecommendation`, `DoseRecommendation` | `GET /veterinarian/pets/:petId/dose-recommendation`: pet weight, chosen references per route and the computed quantity |
+
+Also in 4.63.0: `ActiveIngredient.riskGroup` may be `null` (non-controlled ingredients); `PrescriptionLine` gains optional `doseReferenceId`, `catalogVersion`, `doseModified`.
