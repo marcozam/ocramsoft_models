@@ -4,9 +4,9 @@
  * the clinic's letterhead with a consecutive `RX-` folio per account. A
  * prescription is never edited or deleted: it is annulled and keeps its folio.
  *
- * Ids follow the API's conventions: prescriptions and pets by PublicId,
- * products, branches and health records by their id as a string, users by
- * their numeric id.
+ * Ids follow the API's conventions: prescriptions by PublicId; pets,
+ * products, branches and health records by their id as a string; users and
+ * routes of administration by their numeric id.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PRESCRIPTION_DOSE_UNIT_LABELS = exports.PRESCRIPTION_DOSE_UNITS = void 0;

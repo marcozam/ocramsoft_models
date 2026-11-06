@@ -7,6 +7,7 @@ export * from './entities/customer';
 export * from './entities/product';
 export * from './entities/controlled-medication';
 export * from './entities/prescription';
+export * from './entities/administration-route';
 export * from './entities/rules-engine';
 export * from './entities/online-store';
 export * from './entities/stock';
