@@ -455,6 +455,14 @@ Expense (Gasto / GastoProgramado) line types are not shared here; their presenta
 
 Also in 4.63.0: `ActiveIngredient.riskGroup` may be `null` (non-controlled ingredients); `PrescriptionLine` gains optional `doseReferenceId`, `catalogVersion`, `doseModified`.
 
+### Diagnosis catalog (v4.64.0, `diagnosis.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `DiagnosisKind` | `presumptive` / `definitive` (`ExpedienteClinicoDiagnostico.Tipo` 1 / 2) |
+| `Diagnosis` | Global `CatDiagnostico` row from `GET /veterinarian/diagnoses` (search by name or synonym, `matchedSynonym`) |
+| `RecordDiagnosis`, `RecordDiagnosisInput` | `GET`/`PUT /veterinarian/records/:recordId/diagnoses`: several per consultation; the free-text diagnosis stays |
+
 ## Breaking Change Log
 
 | Change | Reason |

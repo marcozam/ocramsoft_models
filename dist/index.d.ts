@@ -8,6 +8,7 @@ export * from './entities/product';
 export * from './entities/controlled-medication';
 export * from './entities/prescription';
 export * from './entities/dose-reference';
+export * from './entities/diagnosis';
 export * from './entities/administration-route';
 export * from './entities/rules-engine';
 export * from './entities/online-store';
