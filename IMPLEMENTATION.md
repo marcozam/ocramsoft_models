@@ -443,17 +443,6 @@ Expense (Gasto / GastoProgramado) line types are not shared here; their presenta
 | `AnnulPrescriptionRequest` | `POST /veterinarian/prescriptions/:id/annul` |
 | `AdministrationRoute` (`administration-route.ts`) | Platform catalog `CatViaAdministracion` (`GET /veterinarian/administration-routes`): `id`, `code`, `name`, printed `abbreviation`, `isActive`. Prescriptions use it first; applications, euthanasia and controlled dispensing will move to it |
 
-## Breaking Change Log
-
-| Change | Reason |
-|---|---|
-| `UserRole` interface in FE renamed to `RoleRecord` | Collided with `UserRole` enum from shared package |
-| `BaseEntity.id` is now `id?: string` in shared | BE always had it optional; FE narrows back to required locally |
-| `Address` gains `colonyId?`, `latitude?`, `longitude?` | BE had these fields; added to shared for completeness |
-| `Sexo` enum is now shared | Was FE-only; BE now references it too via shared package |
-| `SaleOrderSummary.customerId` is now `string \| null` (v4.0.0) | Customer IDs exposed by the API are now the contact's public GUID (`Contacto.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). `Customer.id` and `CreateSaleRequest.customerId` were already `string` and now carry the GUID. |
-| `SaleOrderSummary.id` documented as the sale's public GUID (v4.7.1) | Sale IDs exposed by the API are now the order's public GUID (`OrdenVenta.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). The type was already `id?: string`, so this is a doc-only clarification — no consumer code change required. |
-
 ### Clinical formulary: recommended doses (v4.63.0, `dose-reference.ts`, new file)
 
 | Type | Notes |
@@ -465,3 +454,14 @@ Expense (Gasto / GastoProgramado) line types are not shared here; their presenta
 | `DoseSuggestion`, `IngredientDoseRecommendation`, `DoseRecommendation` | `GET /veterinarian/pets/:petId/dose-recommendation`: pet weight, chosen references per route and the computed quantity |
 
 Also in 4.63.0: `ActiveIngredient.riskGroup` may be `null` (non-controlled ingredients); `PrescriptionLine` gains optional `doseReferenceId`, `catalogVersion`, `doseModified`.
+
+## Breaking Change Log
+
+| Change | Reason |
+|---|---|
+| `UserRole` interface in FE renamed to `RoleRecord` | Collided with `UserRole` enum from shared package |
+| `BaseEntity.id` is now `id?: string` in shared | BE always had it optional; FE narrows back to required locally |
+| `Address` gains `colonyId?`, `latitude?`, `longitude?` | BE had these fields; added to shared for completeness |
+| `Sexo` enum is now shared | Was FE-only; BE now references it too via shared package |
+| `SaleOrderSummary.customerId` is now `string \| null` (v4.0.0) | Customer IDs exposed by the API are now the contact's public GUID (`Contacto.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). `Customer.id` and `CreateSaleRequest.customerId` were already `string` and now carry the GUID. |
+| `SaleOrderSummary.id` documented as the sale's public GUID (v4.7.1) | Sale IDs exposed by the API are now the order's public GUID (`OrdenVenta.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). The type was already `id?: string`, so this is a doc-only clarification — no consumer code change required. |
