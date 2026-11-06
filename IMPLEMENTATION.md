@@ -406,6 +406,18 @@ These Tier-1 candidates were diffed BEâ†”FE and deliberately **not** promoted â€
 | `HealthCertificateType`, `HealthCertificate`, `CreateHealthCertificateRequest` | Issued certificates with consecutive folio and printed snapshot (`/veterinarian/pets/{petId}/certificates`) |
 | `RecordChange` | Change history of the clinical record (`/veterinarian/pets/{petId}/history`) |
 
+### Purchase presentations (v4.60.0, all optional)
+| Type | Notes |
+|---|---|
+| `ProductPresentation` (`product.ts`) | A unit a product is bought in: `id` (PublicId), `name`, `factor` (inventory units per presentation), `isDefault`, `isActive` |
+| `SaveProductPresentationRequest` (`product.ts`) | Create/update body: `name`, `factor`, `isDefault?` (true clears the previous default) |
+| `Product.inventoryUnit?` | Unit stock is counted in; `null` = pieza |
+| `PresentationRef` (`purchase-order-preview.ts`) | `{ id, name, factor }` reference to a presentation |
+| `PurchaseSuggestionLine` | `inventoryUnit?`, `defaultPresentation?: PresentationRef \| null`; `onOrder` is in inventory units |
+| `PurchaseSupplierCost` | `presentation?: PresentationRef \| null` (latest purchase line); `unitCost` is per inventory unit |
+
+Expense (Gasto / GastoProgramado) line types are not shared here; their presentation fields live in the gateway and web.
+
 ## Breaking Change Log
 
 | Change | Reason |
