@@ -386,6 +386,15 @@ These Tier-1 candidates were diffed BEâ†”FE and deliberately **not** promoted â€
 | `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?`; `lotCode?`, `lotExpirationDate?` (4.59.0): a lot typed by hand, read only without `lotId` |
 | `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
 
+### Prescriptions, simple (v4.62.0, `prescription.ts`, new file)
+| Type | Notes |
+|---|---|
+| `PrescriptionDoseUnit`, `PRESCRIPTION_DOSE_UNITS`, `PRESCRIPTION_DOSE_UNIT_LABELS` | `RecetaDetalle.Unidad` codes without accents (`ml`, `tableta`, `capsula`, `mg`, `gota`, `aplicacion`, `sobre`, `pieza`); the labels carry the accents |
+| `PrescriptionLine` | One medicine (`RecetaDetalle`): `productId` null when typed by hand; `dose` + `doseUnit` together, else `instructions` |
+| `Prescription` | `Receta` + its lines; `id`/`petId` PublicIds, `recordId`/`branchId` ids as strings, `status` `issued` / `annulled`; `data` (print snapshot) only on GET one and the issuing POST |
+| `IssuePrescriptionRequest` | `POST /veterinarian/pets/:petId/prescriptions` |
+| `AnnulPrescriptionRequest` | `POST /veterinarian/prescriptions/:id/annul` |
+
 ## Breaking Change Log
 
 | Change | Reason |
