@@ -475,6 +475,10 @@ Also in 4.63.0: `ActiveIngredient.riskGroup` may be `null` (non-controlled ingre
 
 Services dated before the account's start date (`CuentaConfiguracion` key `cobro-servicios`) are not tracked and have no entry.
 
+### Studies linked to a consultation (v4.67.0, optional)
+
+`UpdateMedicalTestRequest.healthRecordId?: number | string | null`: links a study (prueba complementaria) to another active consultation of the same patient after it was created; `null` unlinks it, left out keeps it. `CreateMedicalTestRequest.healthRecordId` already existed.
+
 ## Breaking Change Log
 
 | Change | Reason |

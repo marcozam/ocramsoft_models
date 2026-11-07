@@ -300,6 +300,11 @@ export interface UpdateMedicalTestRequest {
   expectedResultsAt?: string;
   /** `null` clears it (results not back after all). */
   resultsReceivedAt?: string | null;
+  /**
+   * Consultation the study belongs to: an active visit of the same patient.
+   * `null` unlinks it; left out keeps the current one.
+   */
+  healthRecordId?: number | string | null;
 }
 
 /** How sure the model is of one suggested value. */
