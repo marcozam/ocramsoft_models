@@ -410,6 +410,14 @@ Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, 
 
 `UpdateMedicalTestRequest.healthRecordId?: number | string | null`: links a study (prueba complementaria) to another active consultation of the same patient after it was created; `null` unlinks it, left out keeps it. `CreateMedicalTestRequest.healthRecordId` already existed.
 
+### Category features (v4.59.7, main line, `product.ts`)
+
+| Type | Notes |
+|---|---|
+| `CategoryFeature` | `activeIngredients` / `riskGroup` / `presentations` (SQL `CatFuncionCategoria.Clave` `PRINCIPIO_ACTIVO` / `CONTROL_SANITARIO` / `PRESENTACIONES`; the gateway maps them) |
+| `ProductCategory.features?` | Features the category uses, on every category read |
+| `CategoryFeaturesInput` | `PUT /products/categories/:id/features` (elevated roles): replaces the list. Saving non-empty data for a section whose feature is off answers 409 `CATEGORY_FEATURE_DISABLED`; clearing is always allowed |
+
 ## Breaking Change Log
 
 | Change | Reason |
