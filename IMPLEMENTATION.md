@@ -87,6 +87,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `Product.isGrouper?` | Abstract grouper row: never sold on its own, only holds variations |
 | `Product.variationCount?` | Active variations hanging off a grouper (0 for a plain product) |
 | `Product.conditions?` | Rules deciding whether this product applies to a case; empty/absent = always applies |
+| `Product.inventoryUnit?` | Unit stock is counted in (`ml`, `tableta`; at most 20 characters), from `ProductosServicios.UnidadInventario` (v4.59.3). `null` = pieza; set with `PUT /products/:id/inventory-unit`, refused once a set unit has stock history |
 | `ContactProductMapping` | A contact's own catalog number for one of our products (v4.17.0): `{ id, partNumber, productId, productName?, barcode?, isActive, createdAt?, updatedAt? }`. Scoped per contact, so the same part number can mean different items for different contacts. Serves both directions — a customer's purchase order and a supplier's invoice |
 
 ### `src/entities/rules-engine.ts`
