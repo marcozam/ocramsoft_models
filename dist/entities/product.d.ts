@@ -2,6 +2,18 @@ import { BaseEntity, SimpleEntity } from '../core/base-entity';
 import { Rule } from './rules-engine';
 export interface ProductBrand extends SimpleEntity {
 }
+/**
+ * Optional product section a category may use, configured per account
+ * (`PUT /products/categories/:id/features`, elevated roles).
+ * - `activeIngredients`: active ingredients of the product.
+ * - `riskGroup`: sanitary control (risk group and its active ingredient).
+ * - `presentations`: inventory unit and purchase presentations.
+ */
+export type CategoryFeature = 'activeIngredients' | 'riskGroup' | 'presentations';
+/** Body of `PUT /products/categories/:id/features`: replaces the category's features. */
+export interface CategoryFeaturesInput {
+    features: CategoryFeature[];
+}
 export interface ProductCategory extends BaseEntity {
     name: string;
     hasStock?: boolean;
@@ -26,6 +38,11 @@ export interface ProductCategory extends BaseEntity {
     manualLotSelection?: boolean;
     /** Overrides the account's `InventoryConfig.expiryAlertDays`; `null` = use the account's. */
     expiryAlertDays?: number | null;
+    /**
+     * Product sections this category uses. A product whose category lacks a
+     * feature can only clear that section's data, never set it.
+     */
+    features?: CategoryFeature[];
 }
 export interface ProductGroup extends SimpleEntity {
     categoryId?: string;
