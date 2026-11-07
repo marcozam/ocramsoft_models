@@ -364,6 +364,15 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?` |
 | `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
 
+### Dose formulary and catalog diagnoses (v4.36.6, gateway-main line)
+Same types as 4.59.2 on main (4.61.0, 4.63.0 and 4.64.0 on the integration line), on the 4.36 line the gateway's main branch is pinned to.
+| Type | Notes |
+|---|---|
+| `ActiveIngredient`, `NomRiskGroup`, `CofeprisClass` and the rest of `controlled-medication.ts` (new file) | Global active ingredient catalog; `riskGroup` `null` = not controlled. The dispensing types ride along unused until the controlled-medication release |
+| `dose-reference.ts` (new file) | `DoseReference`, `ProductActiveIngredient(Input)`, `ProductActiveIngredientsResult`, `DoseRecommendation`, `DoseSuggestion(Reason)`, … |
+| `diagnosis.ts` (new file) | `Diagnosis`, `RecordDiagnosis`, `RecordDiagnosisInput`, `DiagnosisKind` |
+| `PrescriptionLine` (`prescription.ts`) | `doseReferenceId?`, `catalogVersion?`, `doseModified?` |
+
 ## Breaking Change Log
 
 | Change | Reason |
