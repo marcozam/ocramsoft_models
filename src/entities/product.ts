@@ -82,6 +82,11 @@ export interface Product extends BaseEntity {
   /** Inherited from the product's category. */
   lotControl?: boolean;
   manualLotSelection?: boolean;
+  /**
+   * Unit stock is counted in (e.g. `pieza`, `ml`, at most 20 characters).
+   * `null` means pieza. Cannot change once the product has stock history.
+   */
+  inventoryUnit?: string | null;
 }
 
 export interface ProductImage {
