@@ -475,6 +475,12 @@ Also in 4.63.0: `ActiveIngredient.riskGroup` may be `null` (non-controlled ingre
 
 Services dated before the account's start date (`CuentaConfiguracion` key `cobro-servicios`) are not tracked and have no entry.
 
+### Lab result trends (v4.66.0, `medical-test.ts`)
+
+| Type | Notes |
+|---|---|
+| `PetLabResultEntry` | `GET /veterinarian/pets/:petId/lab-trends`: one complementary test (id, date, type) with its numeric `MedicalTestValue[]` (species range, `outOfRange`), newest test first; drafts left out. `date` is anchored like `MedicalTest.date` |
+
 ## Breaking Change Log
 
 | Change | Reason |
