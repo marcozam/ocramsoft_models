@@ -481,6 +481,10 @@ Services dated before the account's start date (`CuentaConfiguracion` key `cobro
 |---|---|
 | `PetLabResultEntry` | `GET /veterinarian/pets/:petId/lab-trends`: one complementary test (id, date, type) with its numeric `MedicalTestValue[]` (species range, `outOfRange`), newest test first; drafts left out. `date` is anchored like `MedicalTest.date` |
 
+### Studies linked to a consultation (v4.67.0, optional)
+
+`UpdateMedicalTestRequest.healthRecordId?: number | string | null`: links a study (prueba complementaria) to another active consultation of the same patient after it was created; `null` unlinks it, left out keeps it. `CreateMedicalTestRequest.healthRecordId` already existed.
+
 ## Breaking Change Log
 
 | Change | Reason |
