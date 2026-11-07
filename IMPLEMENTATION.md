@@ -396,6 +396,15 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `AnnulPrescriptionRequest` | `POST /veterinarian/prescriptions/:id/annul` |
 | `AdministrationRoute` (`administration-route.ts`) | Platform catalog `CatViaAdministracion` (`GET /veterinarian/administration-routes`): `id`, `code`, `name`, printed `abbreviation`, `isActive`. Prescriptions use it first; applications, euthanasia and controlled dispensing will move to it |
 
+### Dose formulary and catalog diagnoses (v4.59.2, main line)
+Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, `PrescriptionLine` origin fields) and 4.64.0 (`diagnosis.ts`) on the integration line, brought to main for the dose formulary release.
+| Type | Notes |
+|---|---|
+| `ActiveIngredient`, `NomRiskGroup`, `CofeprisClass` and the rest of `controlled-medication.ts` (new file) | Global active ingredient catalog; `riskGroup` `null` = not controlled. The dispensing types ride along unused until the controlled-medication release |
+| `dose-reference.ts` (new file) | `DoseReference`, `ProductActiveIngredient(Input)`, `ProductActiveIngredientsResult`, `DoseRecommendation`, `DoseSuggestion(Reason)`, … |
+| `diagnosis.ts` (new file) | `Diagnosis`, `RecordDiagnosis`, `RecordDiagnosisInput`, `DiagnosisKind` |
+| `PrescriptionLine` | `doseReferenceId?`, `catalogVersion?`, `doseModified?` |
+
 ## Breaking Change Log
 
 | Change | Reason |

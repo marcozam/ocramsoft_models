@@ -66,6 +66,12 @@ export interface PrescriptionLine {
   /** 1..365. */
   durationDays: number | null;
   instructions: string | null;
+  /** `DoseReference.id` the line was proposed from, when it was. */
+  doseReferenceId?: string | null;
+  /** Clinical catalog version of that reference. */
+  catalogVersion?: number | null;
+  /** `true` when the vet changed the proposed dose or unit. */
+  doseModified?: boolean;
 }
 
 /**
