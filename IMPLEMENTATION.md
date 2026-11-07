@@ -371,6 +371,7 @@ Same types as 4.59.2 on main (4.61.0, 4.63.0 and 4.64.0 on the integration line)
 | `ActiveIngredient`, `NomRiskGroup`, `CofeprisClass` and the rest of `controlled-medication.ts` (new file, 4.36.6) | Global active ingredient catalog; `riskGroup` `null` = not controlled. The dispensing types ride along unused until the controlled-medication release |
 | `dose-reference.ts` (new file, 4.36.6) | `DoseReference`, `ProductActiveIngredient(Input)`, `ProductActiveIngredientsResult`, `DoseRecommendation`, `DoseSuggestion(Reason)`, … |
 | `diagnosis.ts` (new file, 4.36.6) | `Diagnosis`, `RecordDiagnosis`, `RecordDiagnosisInput`, `DiagnosisKind` |
+| `PrescriptionLine` (`prescription.ts`, 4.36.7) | `doseReferenceId?`, `catalogVersion?`, `doseModified?` |
 
 ## Breaking Change Log
 
