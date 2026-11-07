@@ -406,6 +406,10 @@ Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, 
 | `diagnosis.ts` (new file) | `Diagnosis`, `RecordDiagnosis`, `RecordDiagnosisInput`, `DiagnosisKind` |
 | `PrescriptionLine` | `doseReferenceId?`, `catalogVersion?`, `doseModified?` |
 
+### Studies linked to a consultation (v4.67.0, optional)
+
+`UpdateMedicalTestRequest.healthRecordId?: number | string | null`: links a study (prueba complementaria) to another active consultation of the same patient after it was created; `null` unlinks it, left out keeps it. `CreateMedicalTestRequest.healthRecordId` already existed.
+
 ## Breaking Change Log
 
 | Change | Reason |
