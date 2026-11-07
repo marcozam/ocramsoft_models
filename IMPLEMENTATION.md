@@ -489,6 +489,14 @@ Services dated before the account's start date (`CuentaConfiguracion` key `cobro
 
 `MedicalTestAiInterpretation`: answer of `POST /veterinarian/tests/:testId/ai-interpretation` (draft `interpretation`, `recommendations`, `warnings`, `model`, `diagnosisReview`). The diagnosis review of both AI endpoints now also weighs the consultation's catalog diagnoses (`RecordDiagnosis`), not only the free-text diagnosis.
 
+### Category features (v4.69.0, `product.ts`)
+
+| Type | Notes |
+|---|---|
+| `CategoryFeature` | `activeIngredients` / `riskGroup` / `presentations` (SQL `CatFuncionCategoria.Clave` `PRINCIPIO_ACTIVO` / `CONTROL_SANITARIO` / `PRESENTACIONES`; the gateway maps them) |
+| `ProductCategory.features?` | Features the category uses, on every category read |
+| `CategoryFeaturesInput` | `PUT /products/categories/:id/features` (elevated roles): replaces the list. Saving non-empty data for a section whose feature is off answers 409 `CATEGORY_FEATURE_DISABLED`; clearing is always allowed |
+
 ## Breaking Change Log
 
 | Change | Reason |
