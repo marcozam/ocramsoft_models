@@ -128,6 +128,8 @@ export interface MedicalTest {
   /** External studies: the laboratory, a supplier (its public id). */
   laboratoryId?: string | null;
   laboratoryName?: string | null;
+  /** External studies: who signs the laboratory's report; it varies per report. */
+  laboratoryManager?: string | null;
   /** External studies: when the sample was sent (ISO instant). */
   sentAt?: string | null;
   /** External studies: when the results are expected (`yyyy-MM-dd`). */
@@ -197,6 +199,8 @@ export interface CreateMedicalTestRequest {
   origin?: MedicalTestOrigin;
   /** Supplier public id of the laboratory. */
   laboratoryId?: string;
+  /** Who signs the laboratory's report; ignored on an internal study. */
+  laboratoryManager?: string;
   sentAt?: string;
   /** `yyyy-MM-dd`. */
   expectedResultsAt?: string;
@@ -226,6 +230,8 @@ export interface UpdateMedicalTestRequest {
   origin?: MedicalTestOrigin;
   /** Supplier public id of the laboratory; `null` clears it. */
   laboratoryId?: string | null;
+  /** Who signs the laboratory's report; `null` or `''` clears it. */
+  laboratoryManager?: string | null;
   /** `null` clears the sent and expected dates. */
   sentAt?: string | null;
   /** `yyyy-MM-dd`; cleared together with `sentAt`. */
