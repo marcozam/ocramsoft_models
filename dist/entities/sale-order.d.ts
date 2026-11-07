@@ -3,6 +3,7 @@ import { Address } from './address';
 import { BaseEntity } from '../core/base-entity';
 import { MedidasArmazon, OpticaExamen } from './optica-examen';
 import { ControlledDispensing, ControlledDispensingInput } from './controlled-medication';
+import { ChargedServiceRef } from './service-charge';
 /** Eagle-view representation of a sale order — no line items or payment breakdown. */
 export interface SaleOrderSummary extends BaseEntity {
     /**
@@ -65,6 +66,12 @@ export interface SaleOrderItem {
      * that is not controlled.
      */
     dispensing?: ControlledDispensingInput[];
+    /**
+     * Vet services the line charges (consultations, applications, tests), sent
+     * when creating a sale. Their quantities add up to at most `quantity`; a
+     * service already charged by a sale that is not cancelled is refused.
+     */
+    sources?: ChargedServiceRef[];
 }
 /** A line of a sale read with `details=true`. */
 export interface SaleOrderItemDetail extends SaleOrderItem {
