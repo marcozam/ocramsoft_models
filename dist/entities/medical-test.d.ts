@@ -348,4 +348,25 @@ export interface PetLabResultEntry {
     testTypeName: string;
     values: MedicalTestValue[];
 }
+/**
+ * Answer of POST /veterinarian/tests/{testId}/ai-interpretation: a draft of
+ * the «Interpretación» and «Sugerencias» of a study with numeric results
+ * (hemograma, química, perfil tiroideo…), written from its saved values, the
+ * species' reference ranges and the originating consultation, blind to the
+ * diagnosis. Nothing is saved: the vet edits the draft and saves the study.
+ */
+export interface MedicalTestAiInterpretation {
+    testId: string;
+    interpretation: string;
+    /** Draft of the report's SUGERENCIAS block; `null` when there is nothing to add. */
+    recommendations: string | null;
+    warnings: string[];
+    model: string;
+    /**
+     * Second step: contrast of the draft with the consultation's diagnoses
+     * (free text and catalog); `null` without a consultation or diagnosis (a
+     * warning says so), or when the step failed.
+     */
+    diagnosisReview: MedicalTestAiDiagnosisReview | null;
+}
 //# sourceMappingURL=medical-test.d.ts.map

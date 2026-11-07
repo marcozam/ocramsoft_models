@@ -485,6 +485,10 @@ Services dated before the account's start date (`CuentaConfiguracion` key `cobro
 
 `UpdateMedicalTestRequest.healthRecordId?: number | string | null`: links a study (prueba complementaria) to another active consultation of the same patient after it was created; `null` unlinks it, left out keeps it. `CreateMedicalTestRequest.healthRecordId` already existed.
 
+### AI interpretation of numeric studies (v4.68.0, new type)
+
+`MedicalTestAiInterpretation`: answer of `POST /veterinarian/tests/:testId/ai-interpretation` (draft `interpretation`, `recommendations`, `warnings`, `model`, `diagnosisReview`). The diagnosis review of both AI endpoints now also weighs the consultation's catalog diagnoses (`RecordDiagnosis`), not only the free-text diagnosis.
+
 ## Breaking Change Log
 
 | Change | Reason |
