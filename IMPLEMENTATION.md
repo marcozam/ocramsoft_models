@@ -463,6 +463,18 @@ Also in 4.63.0: `ActiveIngredient.riskGroup` may be `null` (non-controlled ingre
 | `Diagnosis` | Global `CatDiagnostico` row from `GET /veterinarian/diagnoses` (search by name or synonym, `matchedSynonym`) |
 | `RecordDiagnosis`, `RecordDiagnosisInput` | `GET`/`PUT /veterinarian/records/:recordId/diagnoses`: several per consultation; the free-text diagnosis stays |
 
+### Service charges (v4.65.0, `service-charge.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `ChargedServiceKind` | `consultation` / `application` / `test` (health record, health application, medical test) |
+| `ChargedServiceRef` | `{ kind, id }`; `id` = the id the API already exposes for the service. Sent on `SaleOrderItem.sources` (new optional field) |
+| `ServiceChargeStatus` | `charged` (linked to a sale that is not cancelled) / `waived` («Sin cargo» with a reason) / `pending` |
+| `ServiceChargeEntry` | `GET /veterinarian/pets/:petId/charges` and `GET /veterinarian/pending-charges?customerId=`: one tracked service with its product, quantity, state, sale (PublicId + folio + balance flag) and, for applications, the lot |
+| `WaiveServiceChargeRequest` | `POST /veterinarian/charges/waive` (elevated roles) |
+
+Services dated before the account's start date (`CuentaConfiguracion` key `cobro-servicios`) are not tracked and have no entry.
+
 ## Breaking Change Log
 
 | Change | Reason |
