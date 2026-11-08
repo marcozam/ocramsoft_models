@@ -420,6 +420,13 @@ Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, 
 | `ProductCategory.features?` | Features the category uses, on every category read |
 | `CategoryFeaturesInput` | `PUT /products/categories/:id/features` (elevated roles): replaces the list. Saving non-empty data for a section whose feature is off answers 409 `CATEGORY_FEATURE_DISABLED`; clearing is always allowed |
 
+### Account features (v4.59.9, `account-features.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `AccountFeaturesConfig` | Settings key `features` (`GET/PUT /config/features`, also in `GET /config`). `onlineStore`: the account uses the online store; off hides every store reference in the web (product switch, «En línea» tag and filter, Meta export) and the Meta export answers 404. `onlineStoreAvailable` (read-only): false in the pool, where `onlineStore` is always false |
+| `SaveAccountFeaturesConfigRequest` | `PUT /config/features` body (ADMIN) |
+
 ### Active ingredient suggestions (v4.59.10, main line, `dose-reference.ts`)
 
 | Type | Notes |
