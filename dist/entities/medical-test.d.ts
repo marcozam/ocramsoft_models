@@ -74,6 +74,22 @@ export interface TestAttribute {
     order: number;
     /** The apps chart this attribute over time (`CatAtributosSalud.Tendencia`). */
     trend?: boolean;
+    /**
+     * The option that means "normal" (`CatAtributosSalud.OpcionNormal`). Set on
+     * a physical-exam system: a `multioption` whose value is either this option
+     * alone or the findings. Exclusive with every other option.
+     */
+    normalOption?: string | null;
+    /**
+     * `key` of the attribute this one depends on (`IDAtributoPadre`): it is
+     * captured only while that parent holds a finding (see `showWhen`).
+     */
+    parentKey?: string | null;
+    /**
+     * Parent options that reveal this attribute (`MostrarSi`). Empty: any
+     * parent value other than its `normalOption`.
+     */
+    showWhen?: string[];
 }
 /** A captured value of one attribute within a study. */
 export interface MedicalTestValue {
