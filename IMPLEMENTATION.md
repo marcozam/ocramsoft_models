@@ -375,6 +375,13 @@ Same types as 4.59.2 on main (4.61.0, 4.63.0 and 4.64.0 on the integration line)
 | `diagnosis.ts` (new file, 4.36.6) | `Diagnosis`, `RecordDiagnosis`, `RecordDiagnosisInput`, `DiagnosisKind` |
 | `PrescriptionLine` (`prescription.ts`, 4.36.7) | `doseReferenceId?`, `catalogVersion?`, `doseModified?` |
 
+### Account features (v4.36.14, `account-features.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `AccountFeaturesConfig` | Settings key `features` (`GET/PUT /config/features`, also in `GET /config`). `onlineStore`: the account uses the online store; off hides every store reference in the web (product switch, «En línea» tag and filter, Meta export) and the Meta export answers 404. `onlineStoreAvailable` (read-only): false in the pool, where `onlineStore` is always false |
+| `SaveAccountFeaturesConfigRequest` | `PUT /config/features` body (ADMIN) |
+
 ### Active ingredient suggestions (v4.36.15, gateway-main line, `dose-reference.ts`)
 
 | Type | Notes |
