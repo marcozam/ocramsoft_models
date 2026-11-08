@@ -336,35 +336,6 @@ export interface MedicalTestAiSuggestion {
 }
 
 /**
-<<<<<<< HEAD
-=======
- * How the slide findings relate to the vet's presumptive diagnosis:
- * `apoya` (they support it), `parcial` (partly, or not enough to tell),
- * `no_apoya` (they point elsewhere).
- */
-export type MedicalTestAiConcordance = 'apoya' | 'parcial' | 'no_apoya';
-
-/**
- * Feedback on the consultation's presumptive diagnosis, produced in a second,
- * text-only step after the blind slide reading (which never sees the
- * diagnosis). Every statement cites slide findings; the vet decides.
- */
-export interface MedicalTestAiDiagnosisReview {
-  concordance: MedicalTestAiConcordance;
-  /** Why, in Spanish, citing the findings of the reading. */
-  rationale: string;
-  /** Slide findings that do not fit the diagnosis. */
-  contradictingFindings: string[];
-  /** Changes to consider in the treatment or the plan. */
-  suggestedChanges: string[];
-  /** Complementary tests that would settle the doubt. */
-  suggestedNextTests: string[];
-  /** The study's visit belongs to a clinical case and its history was considered. */
-  usedCaseHistory?: boolean;
-}
-
-/**
->>>>>>> 6a1a3c9 (Phase 4 dermatology: body map data type, suggested tests, notifiable findings (4.43.0))
  * Answer of POST /veterinarian/tests/{testId}/ai-analysis. Nothing is saved:
  * the vet reviews the suggestions in the form and saves the study.
  */
