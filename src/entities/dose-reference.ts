@@ -125,3 +125,51 @@ export interface DoseRecommendation {
   ingredients: IngredientDoseRecommendation[];
   contraindications: IngredientContraindication[];
 }
+
+export type ActiveIngredientSuggestionSource = 'catalog' | 'ai';
+export type ActiveIngredientSuggestionStatus = 'pending' | 'accepted' | 'rejected';
+
+/**
+ * One proposed ingredient. A suggestion never writes the product's active
+ * ingredients or inventory unit until a user accepts it.
+ */
+export interface ActiveIngredientSuggestionLine {
+  /** `null` = the ingredient is not in the catalog (only `activeIngredientName`). */
+  activeIngredientId: string | null;
+  activeIngredientName: string;
+  concentration: number | null;
+  concentrationUnit: ConcentrationUnit | null;
+  isPrimary: boolean;
+}
+
+/** Item of `GET /products/active-ingredient-suggestions`. */
+export interface ActiveIngredientSuggestion {
+  id: string;
+  productId: string;
+  productName: string;
+  categoryId: string;
+  categoryName: string;
+  source: ActiveIngredientSuggestionSource;
+  status: ActiveIngredientSuggestionStatus;
+  currentInventoryUnit: string | null;
+  suggestedInventoryUnit: string | null;
+  /** 0–1. */
+  confidence: number | null;
+  lines: ActiveIngredientSuggestionLine[];
+  /** ISO 8601 UTC. */
+  createdAt: string;
+}
+
+/** Body of `POST /products/active-ingredient-suggestions/:id/accept`: what the user confirmed. */
+export interface AcceptActiveIngredientSuggestionInput {
+  ingredients: ProductActiveIngredientInput[];
+  /** Left out = keep the product's inventory unit. */
+  inventoryUnit?: string | null;
+}
+
+/** Response of `POST /products/active-ingredient-suggestions/generate`. */
+export interface GenerateActiveIngredientSuggestionsResult {
+  created: number;
+  /** Candidates where no catalog ingredient was found. */
+  unmatched: number;
+}
