@@ -427,6 +427,18 @@ Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, 
 | `AccountFeaturesConfig` | Settings key `features` (`GET/PUT /config/features`, also in `GET /config`). `onlineStore`: the account uses the online store; off hides every store reference in the web (product switch, «En línea» tag and filter, Meta export) and the Meta export answers 404. `onlineStoreAvailable` (read-only): false in the pool, where `onlineStore` is always false |
 | `SaveAccountFeaturesConfigRequest` | `PUT /config/features` body (ADMIN) |
 
+### Active ingredient suggestions (v4.59.10, main line, `dose-reference.ts`)
+
+| Type | Notes |
+|---|---|
+| `ActiveIngredientSuggestionSource` / `ActiveIngredientSuggestionStatus` | `catalog` / `ai`; `pending` / `accepted` / `rejected` (SQL `ProductoSugerencia.Origen` / `Estado` 0-1-2) |
+| `ActiveIngredientSuggestionLine` | Proposed ingredient; `activeIngredientId` `null` when the name is not in the catalog; `concentrationUnit` is `ConcentrationUnit` |
+| `ActiveIngredientSuggestion` | `GET /products/active-ingredient-suggestions?status=`: product, category, current and suggested inventory unit, confidence (0-1), lines |
+| `AcceptActiveIngredientSuggestionInput` | `POST /products/active-ingredient-suggestions/:id/accept`: `ingredients` (`ProductActiveIngredientInput[]`, same as `PUT /products/:id/active-ingredients`) + optional `inventoryUnit` (left out = unchanged) |
+| `GenerateActiveIngredientSuggestionsResult` | `POST /products/active-ingredient-suggestions/generate`: `{ created, unmatched }` |
+
+A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by itself; only accepting it does, through the existing saves.
+
 ## Breaking Change Log
 
 | Change | Reason |
