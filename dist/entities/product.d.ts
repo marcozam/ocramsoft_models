@@ -1,4 +1,5 @@
 import { BaseEntity, SimpleEntity } from '../core/base-entity';
+import { NomRiskGroup } from './controlled-medication';
 import { Rule } from './rules-engine';
 export interface ProductBrand extends SimpleEntity {
 }
@@ -103,6 +104,10 @@ export interface Product extends BaseEntity {
      * `null` means pieza. Cannot change once the product has stock history.
      */
     inventoryUnit?: string | null;
+    /** Controlled-medication risk group; `null` = not controlled. */
+    riskGroup?: NomRiskGroup | null;
+    activeIngredientId?: string | null;
+    activeIngredientName?: string | null;
 }
 /**
  * A unit the product is bought in: a box of 10, a 1 L bottle. Expense lines
