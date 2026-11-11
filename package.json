@@ -1,6 +1,6 @@
 {
   "name": "@ocramsoft/models",
-  "version": "4.59.11",
+  "version": "4.59.12",
   "description": "Shared TypeScript models for OcramSoft POS system",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
