@@ -439,6 +439,18 @@ Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, 
 
 A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by itself; only accepting it does, through the existing saves.
 
+### Purchase presentations (v4.59.11 main line / v4.36.16 gateway-main line, all optional)
+
+| Type | Notes |
+|---|---|
+| `ProductPresentation` (`product.ts`) | A unit a product is bought in: `id` (PublicId), `name`, `factor` (inventory units per presentation), `isDefault`, `isActive` |
+| `SaveProductPresentationRequest` (`product.ts`) | Create/update body: `name`, `factor`, `isDefault?` (true clears the previous default) |
+| `PresentationRef` (`purchase-order-preview.ts`) | `{ id, name, factor }` reference to a presentation |
+| `PurchaseSuggestionLine` | `inventoryUnit?`, `defaultPresentation?: PresentationRef \| null`; `onOrder` is in inventory units |
+| `PurchaseSupplierCost` | `presentation?: PresentationRef \| null` (latest purchase line); `unitCost` is per inventory unit |
+
+Expense (Gasto / GastoProgramado) line types are not shared here; their presentation fields live in the gateway and web.
+
 ## Breaking Change Log
 
 | Change | Reason |
