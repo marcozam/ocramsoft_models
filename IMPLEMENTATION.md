@@ -406,6 +406,14 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 
 Expense (Gasto / GastoProgramado) line types are not shared here; their presentation fields live in the gateway and web.
 
+### Controlled medication cut 1 (v4.59.12 main line / v4.36.17 gateway-main line, all optional)
+
+| Type | Notes |
+|---|---|
+| `Product.riskGroup` / `activeIngredientId` / `activeIngredientName` | Sanitary control of the product (`PUT /products/:id/risk-group`); `null` = not controlled |
+| `SaleOrderItem.dispensing?: ControlledDispensingInput[]` | Controlled dispensing rows sent with a sale line; required on Group I |
+| `SaleOrderItemDetail` | Sale line read with `details=true`, with `dispensing?: ControlledDispensing[]`; `SaleOrder.items` uses it |
+
 ## Breaking Change Log
 
 | Change | Reason |
