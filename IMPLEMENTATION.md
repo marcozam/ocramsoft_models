@@ -174,7 +174,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/company-config.ts`
 | Export | Notes |
 |---|---|
-| `CompanyConfig` | `{ name, razonSocial, rfc, taxRegime, vetName?, vetLicense?, logoUrl? }` — fiscal identity of the business plus the clinic letterhead identity (gateway `config/company` document, `GET/PUT /config/company`); `rfc` is upper case without separators, `taxRegime` is the SAT c_RegimenFiscal code or null until configured. Expense capture compares the CFDI receiver against it; `vetName`/`vetLicense` (cédula profesional) are printed on veterinary certificates, and `logoUrl` is the clinic logo on their letterhead (uploaded through `POST /config/company/logo`) |
+| `CompanyConfig` | `{ name, razonSocial, rfc, taxRegime, vetName?, vetLicense?, logoUrl?, razonSocialId? }` — fiscal identity of the business plus the clinic letterhead identity (gateway `config/company` document, `GET/PUT /config/company`); `rfc` is upper case without separators, `taxRegime` is the SAT c_RegimenFiscal code or null until configured. Expense capture compares the CFDI receiver against it; `vetName`/`vetLicense` (cédula profesional) are printed on veterinary certificates, and `logoUrl` is the clinic logo on their letterhead (uploaded through `POST /config/company/logo`). `razonSocialId` is the billing razón social (`GET /issuers` id) the company invoices and receives expenses with; while set, `razonSocial`/`rfc`/`taxRegime` are copies of it |
 
 ### `src/entities/online-store-checkout.ts`
 | Export | Notes |
@@ -366,6 +366,11 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | Export | Notes |
 |---|---|
 | `Branch.timeZone?` | IANA time zone string added to the existing Branch interface (optional, backward compatible) |
+
+### `src/entities/branch.ts` (v4.61.0 update)
+| Export | Notes |
+|---|---|
+| `Branch.razonSocialId?` | Billing razón social the branch invoices and receives expenses with (`GET /issuers` id); `null` = the company's (`CompanyConfig.razonSocialId`) |
 
 ### `src/entities/stock-lot.ts` (v4.39.0, lots and expiry)
 | Export | Notes |
