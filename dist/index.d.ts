@@ -39,4 +39,5 @@ export * from './entities/purchase-order-preview';
 export * from './entities/vet-settings';
 export * from './entities/account-features';
 export * from './utils';
+export * from './auth';
 //# sourceMappingURL=index.d.ts.map

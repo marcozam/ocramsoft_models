@@ -439,6 +439,15 @@ Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, 
 
 A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by itself; only accepting it does, through the existing saves.
 
+### Access claims and permission codes (v4.60.0, `auth/`, new folder)
+
+| Type | Notes |
+|---|---|
+| `Module`, `Feature`, `Permission`, `RoleTemplate` (+ `ModuleCode`, `FeatureCode`, `PermissionCode`, `RoleTemplateCode`) | `auth/permissions.ts`, **generated** by `SQL_Scripts/scripts/permisos_catalogo.py --ts` from `databases/SIOS_AUTH/catalogo/permisos.json` (the same source as the SIOS_AUTH seed). Never edit by hand |
+| `SENSITIVE_PERMISSIONS` | Permissions flagged `sensible` in the catalog (highlighted in the role editor) |
+| `AccessClaims` | The access token's `mods`, `perms`, `feats`, `beta` (auth service, `SYS_GetAccesoUsuario`). Plain `string[]`: the database can hold codes newer than the package |
+| `readAccessClaims`, `hasAccessClaims`, `hasPermission` (any-of), `hasModule`, `hasFeature`, `isBeta` | Pure helpers shared by the gateways and the web |
+
 ## Breaking Change Log
 
 | Change | Reason |
