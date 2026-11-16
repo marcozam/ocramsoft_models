@@ -87,6 +87,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `Product.isGrouper?` | Abstract grouper row: never sold on its own, only holds variations |
 | `Product.variationCount?` | Active variations hanging off a grouper (0 for a plain product) |
 | `Product.conditions?` | Rules deciding whether this product applies to a case; empty/absent = always applies |
+| `Product.inventoryUnit?` | Unit stock is counted in (`ml`, `tableta`; at most 20 characters), from `ProductosServicios.UnidadInventario` (v4.59.3). `null` = pieza; set with `PUT /products/:id/inventory-unit`, refused once a set unit has stock history |
 | `ContactProductMapping` | A contact's own catalog number for one of our products (v4.17.0): `{ id, partNumber, productId, productName?, barcode?, isActive, createdAt?, updatedAt? }`. Scoped per contact, so the same part number can mean different items for different contacts. Serves both directions — a customer's purchase order and a supplier's invoice |
 
 ### `src/entities/rules-engine.ts`
@@ -121,10 +122,10 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `BodyMapValue` / `BodyMapMarker` / `BodyMapView` / `BodyMapSilhouette` (4.43.0) | Value of a `bodymap` attribute (lesion sites on a canine/feline silhouette, 4 views, `x`/`y` as 0..1 fractions, max 100 markers); sent as `MedicalTestValueInput.value`, read back as `MedicalTestValue.bodyMapValue` (`textValue` keeps the raw JSON) |
 | `TestType` | Study type from the catalog (`id, name`), e.g. Reporte Citológico; 4.43.0: `suggested` / `suggestedOrder` when listed for a visit type (`?recordTypeId=`), suggested first |
 | `NotifiableFinding` (4.43.0) | A study result matching the zoonotic / notifiable findings catalog (`disease, zoonosis, notifiable, authority, note`); `MedicalTest.notifiableFindings` on single-study reads |
-| `TestAttribute` | One capturable attribute of a study or consultation type: `attributeId, name, dataType, unit, refMin, refMax, options[], section, order`; main v4.30.0 (MVP 4.32.0) adds optional `key` (stable code such as `peso`), `decimals` and the physical `limitMin`/`limitMax`; `refMin`/`refMax` are resolved for the patient's species when the catalog has a species range; MVP 4.33.0 added an optional `required`, removed in MVP 4.34.0 before any release (no vital is ever required; product decision 2026-10-15); integration v4.71.0 adds the optional physical-exam metadata `normalOption` (the exclusive "normal" option of a system), `parentKey` and `showWhen[]` (a companion attribute captured only while its parent holds one of those findings, or any finding when empty) |
+| `TestAttribute` | One capturable attribute of a study or consultation type: `attributeId, name, dataType, unit, refMin, refMax, options[], section, order`; main v4.30.0 (MVP 4.32.0) adds optional `key` (stable code such as `peso`), `decimals` and the physical `limitMin`/`limitMax`; `refMin`/`refMax` are resolved for the patient's species when the catalog has a species range; MVP 4.33.0 added an optional `required`, removed in MVP 4.34.0 before any release (no vital is ever required; product decision 2026-10-15); main 4.59.8 (integration 4.71.0) adds the optional physical-exam metadata `normalOption` (the exclusive "normal" option of a system), `parentKey` and `showWhen[]` (a companion attribute captured only while its parent holds one of those findings, or any finding when empty) |
 | `MedicalTestValue` | Captured value: `numericValue` / `textValue` (multioption `\|`-joined) / `boolValue`, plus `outOfRange` and per-value `observation` |
 | `MedicalTest` | A patient's study with its `values[]`; `healthRecordId` links the originating visit; `fileCount` counts its attached files; `isDraft` marks a study started without results (type + photos) to be completed later |
-| `MedicalTestOrigin` / `MedicalTestStatus` (v4.21.0) | `internal` (the vet captures the results) or `external` (sample sent to a lab: `laboratoryId` — a supplier — `laboratoryManager` (who signs the report, v4.70.0), `sentAt`, `expectedResultsAt`, `resultsReceivedAt` on `MedicalTest` and its create/update bodies). `productId`/`productName` is what the study is charged as, from the product configured per study type and origin. `status` is derived by the gateway: `pending_results`, `to_send`, `at_lab`, `to_interpret`, `completed` |
+| `MedicalTestOrigin` / `MedicalTestStatus` (v4.21.0) | `internal` (the vet captures the results) or `external` (sample sent to a lab: `laboratoryId` — a supplier — `laboratoryManager` (who signs the report, v4.59.5 on main / v4.70.0 on integration), `sentAt`, `expectedResultsAt`, `resultsReceivedAt` on `MedicalTest` and its create/update bodies). `productId`/`productName` is what the study is charged as, from the product configured per study type and origin. `status` is derived by the gateway: `pending_results`, `to_send`, `at_lab`, `to_interpret`, `completed` |
 | `PendingMedicalTest` (v4.21.0) | Item of GET /veterinarian/tests/pending: a draft study plus `petId`, `petName`, `speciesName`, `tutorName`, `tutorPhone` and `overdue` (expected results date passed) |
 | `MedicalTestAiAnalysis` / `MedicalTestAiSuggestion` / `MedicalTestAiConfidence` | Answer of POST /veterinarian/tests/{testId}/ai-analysis: values the vision model suggests from the study photos (never saved by themselves), plus interpretation, recommendations and warnings; `TestType.aiAnalysis` flags the types configured for it; 4.43.0: `diagnosisReview.usedCaseHistory` when the visit's clinical case history was considered |
 | `MedicalTestFile` / `MedicalTestFileKind` | A photo or PDF attached to a study (`kind: 'image' \| 'pdf'`); bytes are private and served only by the authenticated `.../files/{id}/content` endpoint |
@@ -177,7 +178,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/company-config.ts`
 | Export | Notes |
 |---|---|
-| `CompanyConfig` | `{ name, razonSocial, rfc, taxRegime, vetName?, vetLicense?, logoUrl? }` — fiscal identity of the business plus the clinic letterhead identity (gateway `config/company` document, `GET/PUT /config/company`); `rfc` is upper case without separators, `taxRegime` is the SAT c_RegimenFiscal code or null until configured. Expense capture compares the CFDI receiver against it; `vetName`/`vetLicense` (cédula profesional) are printed on veterinary certificates, and `logoUrl` is the clinic logo on their letterhead (uploaded through `POST /config/company/logo`) |
+| `CompanyConfig` | `{ name, razonSocial, rfc, taxRegime, vetName?, vetLicense?, logoUrl?, razonSocialId? }` — fiscal identity of the business plus the clinic letterhead identity (gateway `config/company` document, `GET/PUT /config/company`); `rfc` is upper case without separators, `taxRegime` is the SAT c_RegimenFiscal code or null until configured. Expense capture compares the CFDI receiver against it; `vetName`/`vetLicense` (cédula profesional) are printed on veterinary certificates, and `logoUrl` is the clinic logo on their letterhead (uploaded through `POST /config/company/logo`). `razonSocialId` is the billing razón social (`GET /issuers` id) the company invoices and receives expenses with; while set, `razonSocial`/`rfc`/`taxRegime` are copies of it |
 
 ### `src/entities/online-store-checkout.ts`
 | Export | Notes |
@@ -370,6 +371,11 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 |---|---|
 | `Branch.timeZone?` | IANA time zone string added to the existing Branch interface (optional, backward compatible) |
 
+### `src/entities/branch.ts` (v4.61.0 update)
+| Export | Notes |
+|---|---|
+| `Branch.razonSocialId?` | Billing razón social the branch invoices and receives expenses with (`GET /issuers` id); `null` = the company's (`CompanyConfig.razonSocialId`) |
+
 ### `src/entities/stock-lot.ts` (v4.39.0, lots and expiry)
 | Export | Notes |
 |---|---|
@@ -515,6 +521,15 @@ Services dated before the account's start date (`CuentaConfiguracion` key `cobro
 | `GenerateActiveIngredientSuggestionsResult` | `POST /products/active-ingredient-suggestions/generate`: `{ created, unmatched }` |
 
 A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by itself; only accepting it does, through the existing saves.
+
+### Access claims and permission codes (v4.60.0, `auth/`, new folder)
+
+| Type | Notes |
+|---|---|
+| `Module`, `Feature`, `Permission`, `RoleTemplate` (+ `ModuleCode`, `FeatureCode`, `PermissionCode`, `RoleTemplateCode`) | `auth/permissions.ts`, **generated** by `SQL_Scripts/scripts/permisos_catalogo.py --ts` from `databases/SIOS_AUTH/catalogo/permisos.json` (the same source as the SIOS_AUTH seed). Never edit by hand |
+| `SENSITIVE_PERMISSIONS` | Permissions flagged `sensible` in the catalog (highlighted in the role editor) |
+| `AccessClaims` | The access token's `mods`, `perms`, `feats`, `beta` (auth service, `SYS_GetAccesoUsuario`). Plain `string[]`: the database can hold codes newer than the package |
+| `readAccessClaims`, `hasAccessClaims`, `hasPermission` (any-of), `hasModule`, `hasFeature`, `isBeta` | Pure helpers shared by the gateways and the web |
 
 ## Breaking Change Log
 

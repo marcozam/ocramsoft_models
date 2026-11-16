@@ -57,4 +57,5 @@ __exportStar(require("./entities/purchase-order-preview"), exports);
 __exportStar(require("./entities/vet-settings"), exports);
 __exportStar(require("./entities/account-features"), exports);
 __exportStar(require("./utils"), exports);
+__exportStar(require("./auth"), exports);
 //# sourceMappingURL=index.js.map

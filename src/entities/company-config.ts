@@ -29,4 +29,10 @@ export interface CompanyConfig {
    * hand — a `PUT /config/company` that omits it leaves the stored value alone.
    */
   logoUrl?: string | null;
+  /**
+   * PublicId of the account's own razón social in the billing service
+   * (`GET /issuers`) that invoices and receives expenses; null until linked.
+   * While set, `razonSocial`, `rfc` and `taxRegime` are copies of it.
+   */
+  razonSocialId?: string | null;
 }
