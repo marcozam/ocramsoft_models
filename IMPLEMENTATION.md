@@ -453,6 +453,15 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `AccessClaims` | The access token's `mods`, `perms`, `feats`, `beta` (auth service, `SYS_GetAccesoUsuario`). Plain `string[]`: the database can hold codes newer than the package |
 | `readAccessClaims`, `hasAccessClaims`, `hasPermission` (any-of), `hasModule`, `hasFeature`, `isBeta` | Pure helpers shared by the gateways and the web |
 
+### Password reset and verification codes (v4.62.0, `auth/password-reset.ts`)
+
+| Type | Notes |
+|---|---|
+| `PasswordResetRequest`, `PasswordResetStarted` | `POST /auth/password-reset` (auth service): always 202, blind for users that can't recover |
+| `VerificationConfirmRequest`, `VerificationConfirmed` | `POST /auth/verifications/:requestId/confirm`, any purpose of the SIOS_AUTH engine; `token` only for purposes with a last step |
+| `PasswordResetCompleteRequest` | `POST /auth/password-reset/complete` (204) |
+| `VerificationErrorCode` | The `errorCode` values of a refused step |
+
 ## Breaking Change Log
 
 | Change | Reason |
