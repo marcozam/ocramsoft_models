@@ -17,4 +17,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./access"), exports);
 __exportStar(require("./permissions"), exports);
 __exportStar(require("./password-reset"), exports);
+__exportStar(require("./user-access"), exports);
 //# sourceMappingURL=index.js.map

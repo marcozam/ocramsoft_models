@@ -462,6 +462,15 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `PasswordResetCompleteRequest` | `POST /auth/password-reset/complete` (204) |
 | `VerificationErrorCode` | The `errorCode` values of a refused step |
 
+### User access by e-mailed link (v4.68.0, optional)
+
+| Type | Notes |
+|---|---|
+| `User.email`, `emailConfirmed`, `pendingEmail`, `access` (`UserAccess`), `invitationExpiresAt` | The linked e-mail (where access links go; login stays by `userName`) and how the user gets in |
+| `CreateUserRequest`, `UpdateUserRequest` (`entities/user.ts`) | `POST /users` with `email` + `access` (`invite` / `password`); `PUT /users/:id` with `email` |
+| `AccessLinkSent`, `PasswordResetLinkRequest`, `UserAccessErrorCode` (`auth/user-access.ts`) | Admin invitation, reset link and e-mail confirmation endpoints |
+| `VerificationPeek`, `VerificationLinkPurpose` | `GET /auth/verifications/:requestId`, read only, for the page a link opens |
+
 ## Breaking Change Log
 
 | Change | Reason |
