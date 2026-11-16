@@ -7,7 +7,7 @@
 
 /** POST /auth/password-reset body. */
 export interface PasswordResetRequest {
-  /** The user name as typed on the login. */
+  /** The user name or the linked e-mail, as typed. */
   userName: string;
 }
 
