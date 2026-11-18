@@ -84,6 +84,14 @@ export interface Appointment extends BaseEntity {
    * Unused while scheduling is one-appointment-at-a-time per branch.
    */
   resourceId?: number;
+  /**
+   * Vet vertical: the clinical case a follow-up appointment was born from
+   * (internal id), with its public GUID and title; absent for any other
+   * appointment. The consultation started from the appointment inherits it.
+   */
+  caseId?: string | null;
+  casePublicId?: string | null;
+  caseTitle?: string | null;
 }
 
 /** A candidate booking slot returned by the availability endpoint. */
