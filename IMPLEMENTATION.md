@@ -178,7 +178,8 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/company-config.ts`
 | Export | Notes |
 |---|---|
-| `CompanyConfig` | `{ name, razonSocial, rfc, taxRegime, vetName?, vetLicense?, logoUrl?, razonSocialId? }` — fiscal identity of the business plus the clinic letterhead identity (gateway `config/company` document, `GET/PUT /config/company`); `rfc` is upper case without separators, `taxRegime` is the SAT c_RegimenFiscal code or null until configured. Expense capture compares the CFDI receiver against it; `vetName`/`vetLicense` (cédula profesional) are printed on veterinary certificates, and `logoUrl` is the clinic logo on their letterhead (uploaded through `POST /config/company/logo`). `razonSocialId` is the billing razón social (`GET /issuers` id) the company invoices and receives expenses with; while set, `razonSocial`/`rfc`/`taxRegime` are copies of it |
+| `CompanyConfig` | `{ name, vetName?, vetLicense?, logoUrl?, fiscal? }` — the business (gateway `config/company` document, `GET/PUT /config/company`): trade name, the clinic letterhead identity (`vetName`/`vetLicense` on veterinary certificates, `logoUrl` uploaded through `POST /config/company/logo`). Its fiscal data are not stored: `fiscal` (`CompanyFiscalIdentity`) is the main razón social read from billing on each read |
+| `CompanyFiscalIdentity` | `{ razonSocialId, rfc, legalName, taxRegime, ownRfcs }` — the account's primary razón social in billing (`GET /issuers`), read-only; `ownRfcs` are the RFC of every razón social of the account (expense capture compares the CFDI receiver against them) |
 
 ### `src/entities/online-store-checkout.ts`
 | Export | Notes |
@@ -374,7 +375,7 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 ### `src/entities/branch.ts` (v4.61.0 update)
 | Export | Notes |
 |---|---|
-| `Branch.razonSocialId?` | Billing razón social the branch invoices and receives expenses with (`GET /issuers` id); `null` = the company's (`CompanyConfig.razonSocialId`) |
+| `Branch.razonSocialId?` | Billing razón social the branch invoices and receives expenses with (`GET /issuers` id); `null` = the account's primary one |
 
 ### `src/entities/stock-lot.ts` (v4.39.0, lots and expiry)
 | Export | Notes |
@@ -531,6 +532,24 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `AccessClaims` | The access token's `mods`, `perms`, `feats`, `beta` (auth service, `SYS_GetAccesoUsuario`). Plain `string[]`: the database can hold codes newer than the package |
 | `readAccessClaims`, `hasAccessClaims`, `hasPermission` (any-of), `hasModule`, `hasFeature`, `isBeta` | Pure helpers shared by the gateways and the web |
 
+### Password reset and verification codes (v4.62.0, `auth/password-reset.ts`)
+
+| Type | Notes |
+|---|---|
+| `PasswordResetRequest`, `PasswordResetStarted` | `POST /auth/password-reset` (auth service): always 202, blind for users that can't recover |
+| `VerificationConfirmRequest`, `VerificationConfirmed` | `POST /auth/verifications/:requestId/confirm`, any purpose of the SIOS_AUTH engine; `token` only for purposes with a last step |
+| `PasswordResetCompleteRequest` | `POST /auth/password-reset/complete` (204) |
+| `VerificationErrorCode` | The `errorCode` values of a refused step |
+
+### User access by e-mailed link (v4.68.0, optional)
+
+| Type | Notes |
+|---|---|
+| `User.email`, `emailConfirmed`, `pendingEmail`, `access` (`UserAccess`), `invitationExpiresAt` | The linked e-mail (where access links go; login stays by `userName`) and how the user gets in |
+| `CreateUserRequest`, `UpdateUserRequest` (`entities/user.ts`) | `POST /users` with `email` + `access` (`invite` / `password`); `PUT /users/:id` with `email` |
+| `AccessLinkSent`, `PasswordResetLinkRequest`, `UserAccessErrorCode` (`auth/user-access.ts`) | Admin invitation, reset link and e-mail confirmation endpoints |
+| `VerificationPeek`, `VerificationLinkPurpose` | `GET /auth/verifications/:requestId`, read only, for the page a link opens |
+
 ## Breaking Change Log
 
 | Change | Reason |
@@ -541,3 +560,10 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `Sexo` enum is now shared | Was FE-only; BE now references it too via shared package |
 | `SaleOrderSummary.customerId` is now `string \| null` (v4.0.0) | Customer IDs exposed by the API are now the contact's public GUID (`Contacto.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). `Customer.id` and `CreateSaleRequest.customerId` were already `string` and now carry the GUID. |
 | `SaleOrderSummary.id` documented as the sale's public GUID (v4.7.1) | Sale IDs exposed by the API are now the order's public GUID (`OrdenVenta.PublicId`), never the internal numeric ID (IDOR/enumeration hardening). The type was already `id?: string`, so this is a doc-only clarification — no consumer code change required. |
+
+### Company fiscal data only from billing (v5.0.0, breaking)
+
+| Type | Notes |
+|---|---|
+| `CompanyConfig` | `razonSocial`, `rfc`, `taxRegime` and `razonSocialId` removed: billing is the only fiscal record. Read `fiscal` instead |
+| `CompanyFiscalIdentity` (new) | The main razón social in billing, filled in by the gateway on `GET /config/company` and `/config` |
