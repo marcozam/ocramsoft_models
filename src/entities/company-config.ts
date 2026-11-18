@@ -1,20 +1,29 @@
 /**
- * Fiscal identity of the business running the system, stored in the gateway
- * `config/company` document and exposed through `/config`.
- *
- * Expense capture compares the CFDI receiver against `rfc` (and, once the
- * check exists, `taxRegime`), so these values must match what the SAT has
- * registered for the company.
+ * The fiscal identity of the business, owned by the billing service: its main
+ * razón social (`GET /issuers`, the primary one). Read-only in `/config`: the
+ * gateway reads it from billing on each read and never stores it.
+ */
+export interface CompanyFiscalIdentity {
+  /** PublicId of the razón social in billing. */
+  razonSocialId: string;
+  /** RFC in upper case without separators (12 = persona moral, 13 = física). */
+  rfc: string;
+  /** Legal name exactly as registered with the SAT. */
+  legalName: string;
+  /** SAT c_RegimenFiscal code (e.g. `626`); null when billing has none. */
+  taxRegime: string | null;
+  /** RFC of every razón social of the account: a CFDI received by any of them is the business's. */
+  ownRfcs: string[];
+}
+
+/**
+ * The business running the system, stored in the gateway `config/company`
+ * document and exposed through `/config`. Its fiscal data (RFC, razón social,
+ * régimen) are not stored here: they come from billing in `fiscal`.
  */
 export interface CompanyConfig {
   /** Trade name printed on tickets and page headers. */
   name: string;
-  /** Legal name (razón social) exactly as registered with the SAT. */
-  razonSocial: string;
-  /** RFC in upper case without separators (12 = persona moral, 13 = física). */
-  rfc: string;
-  /** SAT c_RegimenFiscal code (e.g. `601`); null until configured. */
-  taxRegime: string | null;
   /**
    * Attending veterinarian printed on the clinic's letterhead documents; null
    * until configured. Mexican airlines reject a pet travel health certificate
@@ -30,9 +39,8 @@ export interface CompanyConfig {
    */
   logoUrl?: string | null;
   /**
-   * PublicId of the account's own razón social in the billing service
-   * (`GET /issuers`) that invoices and receives expenses; null until linked.
-   * While set, `razonSocial`, `rfc` and `taxRegime` are copies of it.
+   * The main razón social in billing; null when the account has none yet (or
+   * billing could not be read). Read-only: a `PUT /config/company` ignores it.
    */
-  razonSocialId?: string | null;
+  fiscal?: CompanyFiscalIdentity | null;
 }
