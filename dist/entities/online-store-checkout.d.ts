@@ -18,12 +18,16 @@ import { Address } from './address';
  *   fulfillment) and the customer receives a confirmation e-mail; the card can
  *   be saved for the next purchase. Card data never reaches our servers.
  *
- * Every order is
- * shipped — there is no local delivery or pickup — and the shipping cost is
- * quoted per destination over WhatsApp after the order is placed.
+ * The shopper chooses how to receive it (`fulfillment`): local delivery to an
+ * address in the store's delivery area, charged per order and free from a
+ * products total, or pickup at the store, with a discount from that same
+ * total. The rules are served by GET /online-store/pricing
+ * (`OnlineStorePricing.fulfillment`) and applied again by the server.
  */
 /** How the shopper pays the order. */
 export type OnlineOrderPaymentMethod = 'bank_transfer' | 'card';
+/** How the order reaches the shopper. */
+export type OnlineOrderFulfillment = 'delivery' | 'pickup';
 /** One cart line as submitted at checkout. Prices are resolved server-side. */
 export interface OnlineOrderItemRequest {
     /** Product id as served by GET /online-store/products. */
@@ -33,13 +37,15 @@ export interface OnlineOrderItemRequest {
 /**
  * Request body for POST /online-store/orders (customer token required).
  *
- * Exactly one shipping destination must be given: `shippingAddressId` to reuse
- * an address the customer already has (see `GET /online-store/addresses`), or
- * `shippingAddress` to add a new one, which is linked to the customer as part
- * of the order.
+ * For `delivery` (the default) exactly one shipping destination must be
+ * given: `shippingAddressId` to reuse an address the customer already has (see
+ * `GET /online-store/addresses`), or `shippingAddress` to add a new one, which
+ * is linked to the customer as part of the order. `pickup` takes neither.
  */
 export interface PlaceOnlineOrderRequest {
     items: OnlineOrderItemRequest[];
+    /** How the order reaches the shopper; absent = `delivery`. */
+    fulfillment?: OnlineOrderFulfillment;
     /** Id of an address already owned by the customer. */
     shippingAddressId?: string;
     /** New shipping destination; validated with the shared address rules. */
@@ -91,8 +97,14 @@ export interface OnlineOrderConfirmation {
     /** Human-facing folio — also the bank-transfer reference/concepto. */
     folio: string;
     status: OnlineOrderStatus;
-    /** Server-computed products total (shipping is quoted separately). */
+    /** Server-computed amount to pay: products + shipping fee − pickup discount. */
     total: number;
+    /** How the order reaches the shopper. */
+    fulfillment?: OnlineOrderFulfillment;
+    /** Shipping fee charged in `total` (0 = free or pickup). */
+    shippingFee?: number;
+    /** Pickup discount taken off `total`. */
+    discount?: number;
     /** ISO 4217 currency (e.g. `MXN`). */
     currency: string;
     paymentMethod: OnlineOrderPaymentMethod;

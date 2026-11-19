@@ -199,7 +199,9 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `OnlineStoreProductVariation` | `{ id, name, description?, price, available, imageUrl?, images? }` — one selectable variation of a grouper; the storefront swaps the gallery to its `images` and appends its `description` to the grouper's (v4.14.0) |
 | `OnlineStoreProductPage` | `{ items, total, skipped, nextPageToken? }` — one catalog page; `skipped` counts products left out for want of a branch price |
 | `OnlineStoreCategory` | `{ id, name, icon?, iconColor?, backgroundColor?, productCount }` — item of GET /online-store/categories: a category the store has something to sell in, with its back-office look (v4.24.0) |
-| `OnlineStorePricing` | `{ pricesIncludeTax, taxRate }` — GET /online-store/pricing: whether catalog prices already include tax (POS `includeTaxInPrices`) and the rate the checkout adds otherwise (v5.3.0) |
+| `OnlineStorePricing` | `{ pricesIncludeTax, taxRate, fulfillment? }` — GET /online-store/pricing: whether catalog prices already include tax (POS `includeTaxInPrices`), the rate the checkout adds otherwise (v5.3.0) and the delivery and pickup rules (v5.5.0) |
+| `OnlineStoreFulfillmentRules` | `{ delivery: { fee, freeFrom, city, state, postalCodePrefixes, promise }, pickup?: { name, address, discountRate, discountFrom, discountCap } }` — local delivery fee and free-delivery threshold, pickup discount (v5.5.0) |
+| `OnlineOrderFulfillment` | `'delivery' \| 'pickup'` — `PlaceOnlineOrderRequest.fulfillment` (absent = delivery); the confirmation echoes it with `shippingFee` and `discount` (v5.5.0) |
 
 ### `src/entities/stock.ts`
 | Export | Notes |

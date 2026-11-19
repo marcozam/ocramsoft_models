@@ -123,5 +123,39 @@ export interface OnlineStorePricing {
     pricesIncludeTax: boolean;
     /** Tax rate as a fraction (`0.16` for 16 %). */
     taxRate: number;
+    /** How orders are delivered and what that costs; absent = not offered online. */
+    fulfillment?: OnlineStoreFulfillmentRules;
+}
+/**
+ * Delivery and pickup rules of the online store. Amounts are in the store's
+ * currency and compare with the products total as the shopper pays it (tax
+ * included when prices include tax).
+ */
+export interface OnlineStoreFulfillmentRules {
+    delivery: {
+        /** Fee per order below `freeFrom`. */
+        fee: number;
+        /** Products total from which delivery is free; null = never free. */
+        freeFrom: number | null;
+        /** Where the store delivers, e.g. "Mazatlán". */
+        city: string;
+        state: string;
+        /** Postal code prefixes the store delivers to (e.g. `820`); empty = any. */
+        postalCodePrefixes: string[];
+        /** Promise shown to the shopper, e.g. "Entrega en Mazatlán en menos de 24 h". */
+        promise: string | null;
+    };
+    /** Absent = pickup is not offered. */
+    pickup?: {
+        /** Where to pick the order up (the store's branch). */
+        name: string;
+        address: string;
+        /** Fraction off the products total from `discountFrom` (`0.05` = 5 %). */
+        discountRate: number;
+        /** Products total from which the discount applies; null = never. */
+        discountFrom: number | null;
+        /** Most the discount takes off; null = no cap. */
+        discountCap: number | null;
+    };
 }
 //# sourceMappingURL=online-store.d.ts.map
