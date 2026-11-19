@@ -69,3 +69,23 @@ export interface RegisterCustomerRequest {
   /** Customer display name captured by the frontend after OTP verification. */
   name: string;
 }
+
+/**
+ * Body of `POST /customer-auth/guest`: a shopper buying without a WhatsApp
+ * code. The phone is not verified, so the grant never shows saved data.
+ */
+export interface CustomerGuestRequest {
+  phone: string;
+  name: string;
+}
+
+/**
+ * Guest grant: places an order and reads its status. It never lists saved
+ * addresses or cards; that takes the OTP grant (`CustomerTokenGrant`). The
+ * response is the same whether or not the phone already has a customer.
+ */
+export interface CustomerGuestGrant {
+  token: string;
+  /** Token lifetime in seconds. */
+  expiresIn: number;
+}
