@@ -158,9 +158,10 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | Export | Notes |
 |---|---|
 | `CustomerOtpRequest` / `CustomerOtpVerifyRequest` | Public OTP flow bodies: `{ phone }` and `{ phone, code }` — phone verified via WhatsApp OTP |
-| `VerifiedCustomer` | `{ exists, name? }` — identity resolved after OTP verify; when `exists === false` the FE collects a name and calls register |
+| `VerifiedCustomer` | `{ exists, name?, email? }` — identity resolved after OTP verify; when `exists === false` the FE collects a name and calls register; `email` prefills the checkout (v5.6.0) |
 | `CustomerTokenGrant` | `{ token, expiresIn, customer }` — full access grant; the token carries the customer PublicId, shared by every customer-facing flow (booking today, online sales next) |
 | `CustomerGuestRequest` | `{ phone, name }` — POST /customer-auth/guest: buy without a WhatsApp code (v5.4.0) |
+| `CustomerIdentifyRequest` / `CustomerIdentifyResponse` | `{ phone }` → `{ known, codeSent, retryAfterSeconds? }` — POST /customer-auth/identify: the checkout asks the phone first; a known phone gets the WhatsApp code right away, an unknown one buys as guest (v5.6.0) |
 | `CustomerGuestGrant` | `{ token, expiresIn }` — guest grant: places an order and reads its status, never the saved addresses or cards; same answer whether or not the phone has a customer (v5.4.0) |
 | `CustomerOtpVerifyResponse` | `{ customer }` + either the access grant (existing customer) or `registrationToken`/`registrationExpiresIn` (unknown phone — only authorizes register) |
 | `RegisterCustomerRequest` | `{ name }` — creates the customer for the OTP-verified phone and returns the access grant |

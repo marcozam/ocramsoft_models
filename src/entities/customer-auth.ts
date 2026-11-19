@@ -31,6 +31,8 @@ export interface VerifiedCustomer {
   exists: boolean;
   /** Display name, present only when the customer already exists. */
   name?: string;
+  /** E-mail on file, present only when the customer exists and has one (checkout prefill). */
+  email?: string;
 }
 
 /**
@@ -88,4 +90,23 @@ export interface CustomerGuestGrant {
   token: string;
   /** Token lifetime in seconds. */
   expiresIn: number;
+}
+
+/** Request body for POST /customer-auth/identify: the phone typed first at checkout. */
+export interface CustomerIdentifyRequest {
+  phone: string;
+}
+
+/**
+ * Response body for POST /customer-auth/identify. A known phone is a returning
+ * customer: the WhatsApp code is sent right away (`codeSent`), and verifying it
+ * opens the saved data. An unknown phone buys without a code
+ * (POST /customer-auth/guest with the name).
+ */
+export interface CustomerIdentifyResponse {
+  known: boolean;
+  /** A code went out now; false when known but another was asked for too soon. */
+  codeSent: boolean;
+  /** Known and throttled: seconds until a new code may be sent. */
+  retryAfterSeconds?: number;
 }
