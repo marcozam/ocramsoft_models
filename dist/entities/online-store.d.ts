@@ -112,4 +112,16 @@ export interface OnlineStoreCategory {
     /** How many catalog rows (groupers count once) fall in this category. */
     productCount: number;
 }
+/**
+ * How the storefront reads the prices it is given (`GET /online-store/pricing`).
+ * The prices on products and variations are already what the shopper pays per
+ * unit when `pricesIncludeTax` is true; otherwise tax at `taxRate` is added to
+ * the order total at checkout.
+ */
+export interface OnlineStorePricing {
+    /** Whether listed prices already include tax (POS setting `includeTaxInPrices`). */
+    pricesIncludeTax: boolean;
+    /** Tax rate as a fraction (`0.16` for 16 %). */
+    taxRate: number;
+}
 //# sourceMappingURL=online-store.d.ts.map
