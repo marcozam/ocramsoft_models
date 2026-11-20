@@ -162,8 +162,11 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | Export | Notes |
 |---|---|
 | `CustomerOtpRequest` / `CustomerOtpVerifyRequest` | Public OTP flow bodies: `{ phone }` and `{ phone, code }` — phone verified via WhatsApp OTP |
-| `VerifiedCustomer` | `{ exists, name? }` — identity resolved after OTP verify; when `exists === false` the FE collects a name and calls register |
+| `VerifiedCustomer` | `{ exists, name?, email? }` — identity resolved after OTP verify; when `exists === false` the FE collects a name and calls register; `email` prefills the checkout (v5.6.0) |
 | `CustomerTokenGrant` | `{ token, expiresIn, customer }` — full access grant; the token carries the customer PublicId, shared by every customer-facing flow (booking today, online sales next) |
+| `CustomerGuestRequest` | `{ phone, name }` — POST /customer-auth/guest: buy without a WhatsApp code (v5.4.0) |
+| `CustomerIdentifyRequest` / `CustomerIdentifyResponse` | `{ phone }` → `{ known, codeSent, retryAfterSeconds? }` — POST /customer-auth/identify: the checkout asks the phone first; a known phone gets the WhatsApp code right away, an unknown one buys as guest (v5.6.0) |
+| `CustomerGuestGrant` | `{ token, expiresIn }` — guest grant: places an order and reads its status, never the saved addresses or cards; same answer whether or not the phone has a customer (v5.4.0) |
 | `CustomerOtpVerifyResponse` | `{ customer }` + either the access grant (existing customer) or `registrationToken`/`registrationExpiresIn` (unknown phone — only authorizes register) |
 | `RegisterCustomerRequest` | `{ name }` — creates the customer for the OTP-verified phone and returns the access grant |
 
@@ -184,13 +187,14 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 ### `src/entities/online-store-checkout.ts`
 | Export | Notes |
 |---|---|
-| `OnlineOrderPaymentMethod` | `'bank_transfer'` — the only online payment method today (SPEI, validated by staff) |
+| `OnlineOrderPaymentMethod` | `'bank_transfer' \| 'card'` — SPEI validated by staff, or a card paid on the processor's hosted page (Stripe Checkout) |
 | `OnlineOrderItemRequest` | `{ productId, quantity }` — cart line; prices are always resolved server-side. `productId` is a plain product or a variation of a grouper — never the grouper itself |
-| `PlaceOnlineOrderRequest` | `{ items, shippingAddressId? \| shippingAddress?, shippingReferences?, paymentMethod, comment? }` — body of POST /online-store/orders; exactly one shipping destination (an address the customer already owns, or a new one linked as part of the order); identity comes from the customer-auth bearer token, never the body |
-| `OnlineOrderStatus` | `'pending_payment' \| 'confirmed'` — pending until staff validate the transfer receipt |
+| `PlaceOnlineOrderRequest` | `{ items, shippingAddressId? \| shippingAddress?, shippingReferences?, paymentMethod, email?, successUrl?, cancelUrl?, comment? }` — body of POST /online-store/orders; exactly one shipping destination (an address the customer already owns, or a new one linked as part of the order); identity comes from the customer-auth bearer token, never the body; `email` is required with `card` (confirmation e-mail); `successUrl` / `cancelUrl` are the storefront pages the payment page returns to (`{ORDER_ID}` placeholder) |
+| `OnlineOrderStatus` | `'pending_payment' \| 'confirmed' \| 'cancelled'` — pending until the payment arrives (transfer validated by staff, card confirmed by the processor); cancelled when cancelled or the card page expired unpaid |
 | `BankTransferInfo` | `{ bankName, accountHolder, clabe, cardNumber? }` — account the customer wires the total to |
 | `EstimatedShippingDays` | `{ min, max }` business days counted from payment confirmation |
-| `OnlineOrderConfirmation` | `{ orderId (OrdenVenta PublicId GUID), folio (transfer reference), status, total, currency, bankTransfer, estimatedShippingDays }` |
+| `OnlineOrderConfirmation` | `{ orderId (OrdenVenta PublicId GUID), folio (transfer reference), status, total, currency, paymentMethod, bankTransfer? (transfer), checkoutUrl? (card: hosted payment page), estimatedShippingDays }` |
+| `OnlineOrderStatusResponse` | `{ orderId, folio, status, total, currency }` — GET /online-store/orders/:id, the storefront's view of its own order after the payment page returns |
 
 ### `src/entities/online-store.ts`
 | Export | Notes |
@@ -200,6 +204,9 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `OnlineStoreProductVariation` | `{ id, name, description?, price, available, imageUrl?, images? }` — one selectable variation of a grouper; the storefront swaps the gallery to its `images` and appends its `description` to the grouper's (v4.14.0) |
 | `OnlineStoreProductPage` | `{ items, total, skipped, nextPageToken? }` — one catalog page; `skipped` counts products left out for want of a branch price |
 | `OnlineStoreCategory` | `{ id, name, icon?, iconColor?, backgroundColor?, productCount }` — item of GET /online-store/categories: a category the store has something to sell in, with its back-office look (v4.24.0) |
+| `OnlineStorePricing` | `{ pricesIncludeTax, taxRate, fulfillment? }` — GET /online-store/pricing: whether catalog prices already include tax (POS `includeTaxInPrices`), the rate the checkout adds otherwise (v5.3.0) and the delivery and pickup rules (v5.5.0) |
+| `OnlineStoreFulfillmentRules` | `{ delivery: { fee, freeFrom, city, state, postalCodePrefixes, promise }, pickup?: { name, address, discountRate, discountFrom, discountCap } }` — local delivery fee and free-delivery threshold, pickup discount (v5.5.0) |
+| `OnlineOrderFulfillment` | `'delivery' \| 'pickup'` — `PlaceOnlineOrderRequest.fulfillment` (absent = delivery); the confirmation echoes it with `shippingFee` and `discount` (v5.5.0) |
 
 ### `src/entities/stock.ts`
 | Export | Notes |

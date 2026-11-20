@@ -28,6 +28,8 @@ export interface VerifiedCustomer {
     exists: boolean;
     /** Display name, present only when the customer already exists. */
     name?: string;
+    /** E-mail on file, present only when the customer exists and has one (checkout prefill). */
+    email?: string;
 }
 /**
  * A full customer access grant. The token carries the customer identifier
@@ -62,5 +64,40 @@ export interface CustomerOtpVerifyResponse {
 export interface RegisterCustomerRequest {
     /** Customer display name captured by the frontend after OTP verification. */
     name: string;
+}
+/**
+ * Body of `POST /customer-auth/guest`: a shopper buying without a WhatsApp
+ * code. The phone is not verified, so the grant never shows saved data.
+ */
+export interface CustomerGuestRequest {
+    phone: string;
+    name: string;
+}
+/**
+ * Guest grant: places an order and reads its status. It never lists saved
+ * addresses or cards; that takes the OTP grant (`CustomerTokenGrant`). The
+ * response is the same whether or not the phone already has a customer.
+ */
+export interface CustomerGuestGrant {
+    token: string;
+    /** Token lifetime in seconds. */
+    expiresIn: number;
+}
+/** Request body for POST /customer-auth/identify: the phone typed first at checkout. */
+export interface CustomerIdentifyRequest {
+    phone: string;
+}
+/**
+ * Response body for POST /customer-auth/identify. A known phone is a returning
+ * customer: the WhatsApp code is sent right away (`codeSent`), and verifying it
+ * opens the saved data. An unknown phone buys without a code
+ * (POST /customer-auth/guest with the name).
+ */
+export interface CustomerIdentifyResponse {
+    known: boolean;
+    /** A code went out now; false when known but another was asked for too soon. */
+    codeSent: boolean;
+    /** Known and throttled: seconds until a new code may be sent. */
+    retryAfterSeconds?: number;
 }
 //# sourceMappingURL=customer-auth.d.ts.map
