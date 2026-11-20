@@ -557,6 +557,17 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `AccessLinkSent`, `PasswordResetLinkRequest`, `UserAccessErrorCode` (`auth/user-access.ts`) | Admin invitation, reset link and e-mail confirmation endpoints |
 | `VerificationPeek`, `VerificationLinkPurpose` | `GET /auth/verifications/:requestId`, read only, for the page a link opens |
 
+### Team members linked to users (v5.7.0, `staff.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `StaffMember` | `GET /staff` (gateway): an account user (auth service) joined to what the clinic database links to it: professional data (`ProfesionalSalud`), its own agenda (`RecursoAgenda` Clase PROFESIONAL) and hours. `userPublicId` `null` = a PROFESIONAL agenda with no user (from before); `isSelf` = the signed-in user |
+| `StaffFunction` | `vet` → role `veterinarian`, `groomer` → `groomer`, `reception` → `receptionist`, `other` → `otherRole` |
+| `StaffProfessional`, `StaffAgenda`, `StaffHoursRange` | `StaffAgenda.kind` is `grooming` (agenda Tipo `ESTETICA`); a lunch break is two ranges on one day; `day` 1 = Monday |
+| `StaffAccess` | Same values as `UserAccess` |
+| `StaffCreateRequest`, `StaffUpdateRequest` | `POST /staff`, `PUT /staff/:userPublicId`, `PUT /staff/me`; `userPublicId` on a create retries after the user step succeeded |
+| `StaffSaveResult`, `StaffStepResult`, `StaffStepId` | Per-step result of a save (`user`, `reference`, `professional`, `agenda`, `hours`) |
+
 ## Breaking Change Log
 
 | Change | Reason |
