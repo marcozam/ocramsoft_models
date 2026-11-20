@@ -234,6 +234,8 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 |---|---|
 | `OpticaSaleOrder` | `extends SaleOrder` + `examen: OpticaExamen \| null` — sale order with the exam linked via OpticaExamenVenta (GET /optica/sale/:saleId) |
 | `SaleReferenceMatch` | An existing sale found under a customer reference (v4.17.0): `{ publicId, folioNumber, dateTime?, total, statusId, statusName?, isCancelled, branchId, branchName?, reference }`. Backs the duplicate warning when importing a purchase order (GET /pos/sale/by-reference) |
+| `RegisterSalePaymentsRequest` / `RegisterSalePaymentsData` | Payments to an existing sale, an «abono» (POST /pos/sale/:saleId/payments). 5.7.0: `sessionId?` optional (omitted = the caller's open cash session); the response adds `totalPaid?`, `balance?`, `sessionId?` (session PublicId) |
+| `SessionReceivedPayment` | 5.7.0: an abono received in a cash session (GET /pos/sale/session/:sessionId/payments): `{ paymentId, dateTime, type, amount, received?, saleId, folioNumber, saleDateTime, customerName, saleTotal, saleBalance }` |
 
 ### `src/entities/sale-report.ts` (v4.3.0)
 | Export | Notes |

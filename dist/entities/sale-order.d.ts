@@ -1,4 +1,4 @@
-import { Payment } from './payment';
+import { Payment, PaymentMethodType } from './payment';
 import { Address } from './address';
 import { BaseEntity } from '../core/base-entity';
 import { MedidasArmazon, OpticaExamen } from './optica-examen';
@@ -135,7 +135,8 @@ export interface OpticaSaleOrder extends SaleOrder {
 }
 /** HTTP request body to register payments for an existing sale order. */
 export interface RegisterSalePaymentsRequest {
-    sessionId: number;
+    /** Cash session the money enters; omitted = the caller's own open session. */
+    sessionId?: number;
     payments: Payment[];
 }
 /** Response data returned after registering payments for a sale. */
@@ -143,6 +144,33 @@ export interface RegisterSalePaymentsData {
     saleId: string;
     registeredPayments: number;
     totalAmount: number;
+    /** Sale total paid after these payments. */
+    totalPaid?: number;
+    /** What the customer still owes after these payments. */
+    balance?: number;
+    /** Public id of the cash session the payments entered. */
+    sessionId?: string;
+}
+/**
+ * A payment received in a cash session for a sale that was not paid in full
+ * when it was made (an «abono»): listed in the cash session's detail.
+ */
+export interface SessionReceivedPayment {
+    paymentId: number;
+    /** When the payment was received (extended ISO 8601). */
+    dateTime: string;
+    type: PaymentMethodType;
+    amount: number;
+    /** Cash handed over, when it was cash. */
+    received?: number;
+    /** Public id of the sale (OrdenVenta.PublicId). */
+    saleId: string;
+    folioNumber: number;
+    saleDateTime: string;
+    customerName: string;
+    saleTotal: number;
+    /** What the sale still owes today. */
+    saleBalance: number;
 }
 /**
  * An existing sale already carrying a given reference for a customer.
