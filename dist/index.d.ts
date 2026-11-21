@@ -17,6 +17,7 @@ export * from './entities/stock-lot';
 export * from './entities/physical-count';
 export * from './entities/optica-examen';
 export * from './entities/sale-order';
+export * from './entities/service-charge';
 export * from './entities/quote';
 export * from './entities/production-order';
 export * from './entities/production-recipe';
@@ -39,6 +40,8 @@ export * from './entities/online-store-checkout';
 export * from './entities/purchase-order-preview';
 export * from './entities/vet-settings';
 export * from './entities/account-features';
+export * from './entities/staff';
+export * from './entities/clinic-setup';
 export * from './utils';
 export * from './auth';
 //# sourceMappingURL=index.d.ts.map

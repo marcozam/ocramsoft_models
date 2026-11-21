@@ -9,6 +9,7 @@ export declare const Module: {
     readonly INVENTORY: "inventory";
     readonly PURCHASING: "purchasing";
     readonly EXPENSES: "expenses";
+    readonly BILLING: "billing";
     readonly PRODUCTION: "production";
     readonly REPORTS: "reports";
     readonly SCHEDULING: "scheduling";
@@ -55,6 +56,11 @@ export declare const Feature: {
     readonly EXPENSES_SCHEDULES: "expenses.schedules";
     readonly EXPENSES_CFDI_INBOX: "expenses.cfdi_inbox";
     readonly EXPENSES_SAT_IMPORT: "expenses.sat_import";
+    readonly BILLING_INVOICES: "billing.invoices";
+    readonly BILLING_ISSUERS: "billing.issuers";
+    readonly BILLING_FIEL: "billing.fiel";
+    readonly BILLING_RECEIVED: "billing.received";
+    readonly BILLING_ISSUED: "billing.issued";
     readonly PRODUCTION_RECIPES: "production.recipes";
     readonly PRODUCTION_ORDERS: "production.orders";
     readonly REPORTS_SALES_SUMMARY: "reports.sales_summary";
@@ -147,6 +153,16 @@ export declare const Permission: {
     readonly EXPENSES_CFDI_INBOX_READ: "expenses.cfdi_inbox.read";
     readonly EXPENSES_CFDI_INBOX_MANAGE: "expenses.cfdi_inbox.manage";
     readonly EXPENSES_SAT_IMPORT_MANAGE: "expenses.sat_import.manage";
+    readonly BILLING_INVOICES_READ: "billing.invoices.read";
+    readonly BILLING_INVOICES_STAMP: "billing.invoices.stamp";
+    readonly BILLING_INVOICES_CANCEL: "billing.invoices.cancel";
+    readonly BILLING_ISSUERS_READ: "billing.issuers.read";
+    readonly BILLING_ISSUERS_MANAGE: "billing.issuers.manage";
+    readonly BILLING_FIEL_MANAGE: "billing.fiel.manage";
+    readonly BILLING_RECEIVED_READ: "billing.received.read";
+    readonly BILLING_RECEIVED_LINK: "billing.received.link";
+    readonly BILLING_ISSUED_READ: "billing.issued.read";
+    readonly BILLING_ISSUED_LINK: "billing.issued.link";
     readonly PRODUCTION_RECIPES_READ: "production.recipes.read";
     readonly PRODUCTION_RECIPES_MANAGE: "production.recipes.manage";
     readonly PRODUCTION_ORDERS_READ: "production.orders.read";
@@ -203,8 +219,10 @@ export declare const RoleTemplate: {
     readonly USER: "user";
     readonly RECEPTIONIST: "receptionist";
     readonly VETERINARIAN: "veterinarian";
+    readonly GROOMER: "groomer";
     readonly WAREHOUSE: "warehouse";
     readonly ACCOUNTANT: "accountant";
+    readonly BILLING: "billing";
     readonly OPTOMETRIST: "optometrist";
     readonly LOCK: "lock";
     readonly CUSTOMER: "customer";

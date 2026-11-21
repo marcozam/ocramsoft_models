@@ -17,9 +17,16 @@ export interface VisitTypeSetting {
     enabled: boolean;
     /** Display order within the clinic's list. */
     order: number;
-    /** Product charged at the POS when a visit of this type is billed. */
+    /**
+     * Product charged at the POS when a visit of this type is billed. Like a
+     * test type's products, it is the type's only link to the catalog.
+     */
     productId: string | null;
-    /** Default appointment duration in minutes. */
+    /**
+     * Appointment length in minutes: the product's `Product.durationMinutes`
+     * (read-only here, set on the product). `null` without a product or when the
+     * product has no duration.
+     */
     durationMinutes: number | null;
 }
 /**
@@ -32,6 +39,10 @@ export interface UpdateVisitTypeSettingRequest {
     enabled?: boolean;
     order?: number;
     productId?: string | null;
+    /**
+     * @deprecated The duration is the product's (`Product.durationMinutes`);
+     * the gateway answers 400 when it is sent.
+     */
     durationMinutes?: number | null;
 }
 /** Body of POST /veterinarian/settings/visit-types (create a private type). */
@@ -40,6 +51,10 @@ export interface CreateVisitTypeRequest {
     enabled?: boolean;
     order?: number;
     productId?: string | null;
+    /**
+     * @deprecated The duration is the product's (`Product.durationMinutes`);
+     * the gateway answers 400 when it is sent.
+     */
     durationMinutes?: number | null;
 }
 /** A test type with the clinic's per-account settings. */

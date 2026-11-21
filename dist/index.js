@@ -33,6 +33,7 @@ __exportStar(require("./entities/stock-lot"), exports);
 __exportStar(require("./entities/physical-count"), exports);
 __exportStar(require("./entities/optica-examen"), exports);
 __exportStar(require("./entities/sale-order"), exports);
+__exportStar(require("./entities/service-charge"), exports);
 __exportStar(require("./entities/quote"), exports);
 __exportStar(require("./entities/production-order"), exports);
 __exportStar(require("./entities/production-recipe"), exports);
@@ -55,6 +56,8 @@ __exportStar(require("./entities/online-store-checkout"), exports);
 __exportStar(require("./entities/purchase-order-preview"), exports);
 __exportStar(require("./entities/vet-settings"), exports);
 __exportStar(require("./entities/account-features"), exports);
+__exportStar(require("./entities/staff"), exports);
+__exportStar(require("./entities/clinic-setup"), exports);
 __exportStar(require("./utils"), exports);
 __exportStar(require("./auth"), exports);
 //# sourceMappingURL=index.js.map

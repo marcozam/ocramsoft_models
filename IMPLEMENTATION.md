@@ -78,7 +78,7 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `ProductBrand` | `extends SimpleEntity` — FE alias: `Brand` |
 | `ProductCategory` | Core category shape |
 | `ProductGroup` | `extends SimpleEntity` + `categoryId?` |
-| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration) + `description?, mainImageUrl?, images?, availableOnline?` |
+| `Product` | Core product shape: `name, sku?, isActive, category?, brand?, categoryId?, brandId?, groupId?, durationMinutes?` (service duration, `number \| null`: `null` clears it on update; 4.41.0: the source of a visit type's duration) + `description?, mainImageUrl?, images?, availableOnline?` |
 | `ProductCategory.isSchedulable?` | When true, products in the category are schedulable services |
 | `ProductCategory.icon?` / `iconColor?` / `backgroundColor?` | Category appearance (v4.23.0): Material icon name and `#RRGGBB` colours, all optional. Set and edited from the FE category form; the BE validates the hex format |
 | `ProductCategory.isActive?` | Active state (v4.41.0). An inactive category is hidden from pickers and its products are inactive too; changed through `PATCH /products/categories/:id/active` |
@@ -106,9 +106,13 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `AppointmentStatus` | enum; values = CatStatus ids under IDUso 403 (40301 SCHEDULED … 40306 NO_SHOW) |
 | `BookingChannel` | enum; values = CatCanalAgenda ids (1 SELF_SERVICE, 2 ON_BEHALF, 3 API) — how a booking was made |
 | `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
-| `Appointment` | Customer appointment: `branchId, customerId, customerPublicId? (Contacto.PublicId), services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
+| `Appointment` | Customer appointment: `branchId, customerId, customerPublicId? (Contacto.PublicId), services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?, resourceName?` (4.51.0: the agenda it is booked on, `null` = the branch's main agenda) |
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
+| `AppointmentResource` / `AppointmentResourceKind` / `AppointmentResourceClass` (4.51.0, 4.52.0) | A bookable agenda of a branch besides its main one: `id, branchId, kind ('general' \| 'consultation' \| 'grooming' \| 'styling', groups on screen), resourceClass ('professional' = worked by a system user \| 'space' = a table, room or chair), name, isActive, order, userPublicId? (the professional's user; `null` = not linked yet, legacy agendas only), userName?`. Item of GET /appointments/resources; overlaps are checked per agenda |
+| `ResourceWorkingHours` / `SetResourceWorkingHoursRequest` (4.55.0) | One opening range of an agenda's week: `dayOfWeek` (1 = Monday .. 7 = Sunday), `opensAt` / `closesAt` (`HH:mm`, branch-local), `intervalMinutes?` (default 30). GET/PUT /appointments/resources/{id}/hours (`{ hours }`; `[]` = the agenda follows the branch hours). Several ranges per day, never overlapping, inside the branch hours |
+| `AgendaBlock` / `CreateAgendaBlockRequest` (4.55.0) | Blocked span of a branch or one agenda: `id, branchId, resourceId` (`null` = the whole branch), `resourceName?, start, end` (ISO UTC), `reason?, isActive, createdByUserId?, registeredAt?`. GET/POST /appointments/blocks, DELETE /appointments/blocks/{id}. Blocks stop self-service and API bookings; staff may still book over them |
 | `AppointmentRecordLink` (vet-appointment.ts, v4.22.0) | Item of GET /veterinarian/appointments/{id}/records: the consultation (`recordId`) a pet of the appointment already has, so the agenda offers «Ver consulta» instead of starting another |
+| `WalkInVisit` (vet-appointment.ts, v4.54.0) | Item of GET /veterinarian/records/walk-ins?date=YYYY-MM-DD: a consultation with no appointment that day (pet, main owner with `ownerContactPublicId`, visit type, professional, UTC `date`), listed in the vet day agenda next to the appointments. It stores no branch, so every branch lists it |
 | `AppointmentPetLink` (vet-appointment.ts) | Vet vertical: pet attending an appointment (`appointmentId, petId, petName, speciesName?`). Kept OFF the generic `Appointment` — whitelabel scheduling never embeds pet data; only `/veterinarian` endpoints speak this type |
 
 ### `src/entities/medical-test.ts`
@@ -145,13 +149,13 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | Export | Notes |
 |---|---|
 | `ClinicalCaseStatus` | enum; values = CatStatus ids under IDUso 405 (40501 OPEN, 40502 FOLLOW_UP, 40503 RESOLVED, 40504 CHRONIC, 40505 CANCELLED); `ClinicalCaseClosingStatus` the three closing ones |
-| `ClinicalCase` | A case (several visits of a pet under one problem): `id, publicId, petId, title, recordTypeId (specialty), status, onsetDate, openedAt, closedAt, presumptiveDiagnosis, finalDiagnosis, closingOutcome, professionalUserId, professionalName? (4.57.0, the responsible vet's display name), visitsCount, lastVisitId/Date/Evolution, nextAppointmentAt/PublicId, inactive`. Item of GET /veterinarian/pets/{petId}/cases (open first) |
+| `ClinicalCase` | A case (several visits of a pet under one problem): `id, publicId, petId, title, recordTypeId (specialty), status, onsetDate, openedAt, closedAt, presumptiveDiagnosis, finalDiagnosis, closingOutcome, professionalUserId, professionalName? (4.44.0, the responsible vet's display name), visitsCount, lastVisitId/Date/Evolution, nextAppointmentAt/PublicId, inactive`. Item of GET /veterinarian/pets/{petId}/cases (open first) |
 | `ClinicalCaseDetail` / `CaseVisitSummary` / `CasePendingAppointment` | GET /veterinarian/cases/{publicId}: the header plus the visits (date, type, evolution, diagnoses, treatment, photos and tests counts) and the pending follow-up appointments |
 | `CaseProgress` / `CaseProgressVisit` / `CaseTrendPoint` / `CaseVisitPhoto` / `CaseVisitTest` | GET /veterinarian/cases/{publicId}/progress: per-visit trend points (`trend` attributes, with `copied`), photos per visit (`description` = anatomical zone, for side-by-side), treatment per visit, studies per visit |
 | `CaseLastVisit` | GET /veterinarian/cases/{publicId}/last-visit: the last visit as a `HealthRecord` with its `vitals` (each with `copied`), to prefill the follow-up; `null` without visits |
 | `CreateClinicalCaseRequest` / `UpdateClinicalCaseRequest` / `CloseClinicalCaseRequest` | Bodies of POST /veterinarian/pets/{petId}/cases (`firstRecordId` links the visit the case opens from and lends its reason, onset date and diagnosis), PUT /veterinarian/cases/{publicId}, POST /veterinarian/cases/{publicId}/close (`cancelAppointments` cancels the pending follow-ups that otherwise block the close) |
-| `ClinicalCaseCloseErrorCode` (4.57.0) | `errorCode` of the close's 409: `CASE_ALREADY_CLOSED` (reload the case) or `CASE_PENDING_APPOINTMENTS` (retry with `cancelAppointments`) |
-| `AttachCaseVisitRequest` / `ClinicalCaseVisitErrorCode` (4.57.0) | Body `{ recordId }` of POST /veterinarian/cases/{publicId}/visits (adds an already saved visit of the pet; the same visit twice is a no-op), removed with DELETE /veterinarian/cases/{publicId}/visits/{recordId}; both answer the consolidated `ClinicalCaseDetail`. A new case from an existing visit is POST /veterinarian/pets/{petId}/cases with `firstRecordId`. The 409's `errorCode`: `CASE_VISIT_OTHER_PET`, `CASE_CLOSED` (reopen first), `CASE_VISIT_IN_OTHER_CASE` (remove it from that case first) |
+| `ClinicalCaseCloseErrorCode` (4.44.0) | `errorCode` of the close's 409: `CASE_ALREADY_CLOSED` (reload the case) or `CASE_PENDING_APPOINTMENTS` (retry with `cancelAppointments`) |
+| `AttachCaseVisitRequest` / `ClinicalCaseVisitErrorCode` (4.47.0) | Body `{ recordId }` of POST /veterinarian/cases/{publicId}/visits (adds an already saved visit of the pet; the same visit twice is a no-op), removed with DELETE /veterinarian/cases/{publicId}/visits/{recordId}; both answer the consolidated `ClinicalCaseDetail`. A new case from an existing visit is POST /veterinarian/pets/{petId}/cases with `firstRecordId`. The 409's `errorCode`: `CASE_VISIT_OTHER_PET`, `CASE_CLOSED` (reopen first), `CASE_VISIT_IN_OTHER_CASE` (remove it from that case first) |
 | `HealthRecord.caseId/casePublicId/caseTitle`, `CreateHealthRecordRequest.caseId`, `Appointment.caseId/casePublicId/caseTitle`, `MedicalTestValue.copied` / `MedicalTestValueInput.copied` | v4.40.0: the case a visit or a follow-up appointment belongs to (the visit started from the appointment inherits it; a closed case refuses new visits and appointments), and the per-value "prefilled, not touched" flag |
 
 ### `src/entities/customer-auth.ts`
@@ -363,7 +367,7 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 ### `src/entities/vet-settings.ts` (v4.29.0)
 | Export | Notes |
 |---|---|
-| `VisitTypeSetting` | Visit type with per-account settings: `id, name, isGlobal, enabled, order, productId, durationMinutes` |
+| `VisitTypeSetting` | Visit type with per-account settings: `id, name, isGlobal, enabled, order, productId, durationMinutes` (4.41.0: `durationMinutes` is the linked product's, read-only; the request types' `durationMinutes` is deprecated and refused by the gateway) |
 | `UpdateVisitTypeSettingRequest` | Body of PUT /veterinarian/settings/visit-types/:id |
 | `CreateVisitTypeRequest` | Body of POST /veterinarian/settings/visit-types (private type) |
 | `TestTypeSetting` | Test type with per-account settings: `id, name, enabled, order, internalProductId, externalProductId` |
@@ -404,7 +408,48 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `SaleOrderItem` (`sale-order.ts`, the item type of `CreateSaleRequest.items`) | `lotId?`; `lotCode?`, `lotExpirationDate?` (4.59.0): a lot typed by hand, read only without `lotId` |
 | `HealthRecordApplication`, `CreateHealthApplicationRequest`, `UpdateHealthApplicationRequest` (`health-record.ts`) | `lotId?` (`string \| null`) |
 
-### Prescriptions, simple (v4.59.1, `prescription.ts`, new file)
+### Pet record: reproductive status, consents, euthanasia (v4.46.0, `pet-record.ts`)
+| Type | Purpose |
+|---|---|
+| `ReproductiveStatus` + `REPRODUCTIVE_STATUS_LABELS` | `Mascotas.IDEstadoReproductivo`: 1 Entero, 2 Esterilizado, 3 Gestante, 4 Lactancia |
+| `ConsentType` + `CONSENT_TYPE_LABELS` | 1 general/privacy, 2 anesthesia, 3 surgery, 4 hospitalization, 5 euthanasia, 6 recording |
+| `PetConsent`, `CreatePetConsentRequest` | Signed consent (`/veterinarian/pets/{petId}/consents`); frozen `text`, PNG data-URL `signature` |
+| `PetEuthanasia`, `CreatePetEuthanasiaRequest` | NOM-033 euthanasia record (`/veterinarian/pets/{petId}/euthanasia`); needs a type-5 consent, optional inventory `lotId` |
+| `UpdatePetDeathRequest` | Natural death (`PUT /veterinarian/pets/{petId}/death`) |
+| `VetProfessional`, `UpsertVetProfessionalRequest` | Printed name, cédula and signature per professional user (`/veterinarian/professionals`) |
+| `ClinicalProblemStatus`, `ClinicalProblem`, `SaveClinicalProblemRequest` | Problem list (`/veterinarian/pets/{petId}/problems`) |
+| `BiteObservationStatus`, `BiteObservation`, `BiteObservationDay` + requests | NOM-011 10-day biting-animal observation (`/veterinarian/pets/{petId}/bite-observations`) |
+| `HealthCertificateType`, `HealthCertificate`, `CreateHealthCertificateRequest` | Issued certificates with consecutive folio and printed snapshot (`/veterinarian/pets/{petId}/certificates`) |
+| `RecordChange` | Change history of the clinical record (`/veterinarian/pets/{petId}/history`) |
+
+### Purchase presentations (v4.60.0, all optional)
+| Type | Notes |
+|---|---|
+| `ProductPresentation` (`product.ts`) | A unit a product is bought in: `id` (PublicId), `name`, `factor` (inventory units per presentation), `isDefault`, `isActive` |
+| `SaveProductPresentationRequest` (`product.ts`) | Create/update body: `name`, `factor`, `isDefault?` (true clears the previous default) |
+| `Product.inventoryUnit?` | Unit stock is counted in; `null` = pieza |
+| `PresentationRef` (`purchase-order-preview.ts`) | `{ id, name, factor }` reference to a presentation |
+| `PurchaseSuggestionLine` | `inventoryUnit?`, `defaultPresentation?: PresentationRef \| null`; `onOrder` is in inventory units |
+| `PurchaseSupplierCost` | `presentation?: PresentationRef \| null` (latest purchase line); `unitCost` is per inventory unit |
+
+Expense (Gasto / GastoProgramado) line types are not shared here; their presentation fields live in the gateway and web.
+
+### Controlled medication, cut 1 (v4.61.0, `controlled-medication.ts`, all optional on existing types)
+| Type | Notes |
+|---|---|
+| `NomRiskGroup` | 1 Group I, 2 Group II, 3 Group III (`ProductosServicios.GrupoRiesgo`) |
+| `CofeprisClass` | 1 estupefaciente, 2 psicotrópico II, 3 psicotrópico III |
+| `ActiveIngredient` | Global catalog (`GET /products/active-ingredients`, `CatPrincipioActivo`); `brands` split from the SP's comma list |
+| `SetProductRiskGroupRequest`, `ProductRiskGroup` | `PUT /products/:id/risk-group` body and response (elevated roles) |
+| `Product.riskGroup?`, `activeIngredientId?`, `activeIngredientName?` | `null` = not controlled |
+| `ControlledDispensingInput` | One dispensing row on a sale line (`DispensacionControlada_Create`); pet / lot by PublicId, `prescriberUserId` numeric |
+| `ControlledDispensing` | Recorded row (`DispensacionControlada_GetByOrden`): input + `id` (PublicId), product, pet, owner (customer PublicId), lot, `isActive`, cancellation |
+| `SaleOrderItem.dispensing?: ControlledDispensingInput[]` | Sent on `CreateSaleRequest.items` |
+| `SaleOrderItemDetail` | `SaleOrderItem` with `dispensing?: ControlledDispensing[]`; `SaleOrder.items` is now `SaleOrderItemDetail[]` (a subtype, no consumer change) |
+| `ControlledLedgerBalance`, `ControlledLedgerMovement`, `ControlledLedgerReport` | `GET /reports/controlled-medication` (`ControlledLedger_Get` RS0 / RS1 + RS2 attached as `dispensing`) |
+| `LotRecipient`, `LotRecipientSource` | `GET /stock/lots/:lotId/recipients` (`ControlledLot_GetRecipients`) |
+
+### Prescriptions, simple (v4.62.0, `prescription.ts`, new file)
 | Type | Notes |
 |---|---|
 | `PrescriptionDoseUnit`, `PRESCRIPTION_DOSE_UNITS`, `PRESCRIPTION_DOSE_UNIT_LABELS` | `RecetaDetalle.Unidad` codes without accents (`ml`, `tableta`, `capsula`, `mg`, `gota`, `aplicacion`, `sobre`, `pieza`); the labels carry the accents |
@@ -414,20 +459,53 @@ These Tier-1 candidates were diffed BE↔FE and deliberately **not** promoted �
 | `AnnulPrescriptionRequest` | `POST /veterinarian/prescriptions/:id/annul` |
 | `AdministrationRoute` (`administration-route.ts`) | Platform catalog `CatViaAdministracion` (`GET /veterinarian/administration-routes`): `id`, `code`, `name`, printed `abbreviation`, `isActive`. Prescriptions use it first; applications, euthanasia and controlled dispensing will move to it |
 
-### Dose formulary and catalog diagnoses (v4.59.2, main line)
-Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, `PrescriptionLine` origin fields) and 4.64.0 (`diagnosis.ts`) on the integration line, brought to main for the dose formulary release.
+### Clinical formulary: recommended doses (v4.63.0, `dose-reference.ts`, new file)
+
 | Type | Notes |
 |---|---|
-| `ActiveIngredient`, `NomRiskGroup`, `CofeprisClass` and the rest of `controlled-medication.ts` (new file) | Global active ingredient catalog; `riskGroup` `null` = not controlled. The dispensing types ride along unused until the controlled-medication release |
-| `dose-reference.ts` (new file) | `DoseReference`, `ProductActiveIngredient(Input)`, `ProductActiveIngredientsResult`, `DoseRecommendation`, `DoseSuggestion(Reason)`, … |
-| `diagnosis.ts` (new file) | `Diagnosis`, `RecordDiagnosis`, `RecordDiagnosisInput`, `DiagnosisKind` |
-| `PrescriptionLine` | `doseReferenceId?`, `catalogVersion?`, `doseModified?` |
+| `DoseUnitCode`, `ConcentrationUnit` | `DosisReferencia.UnidadDosis` (`mg_kg`, `ui_kg`, `ml_kg`, `mg_animal`, `ml_animal`) and `ProductoPrincipioActivo.UnidadConcentracion` codes |
+| `ClinicalSource`, `ClinicalCatalogVersion` | Source of a reference; catalog version in force (`reviewerName` null = pending MVZ review) |
+| `DoseReference`, `IngredientContraindication` | Global formulary rows (tenancy 4.1), identical for every clinic |
+| `ProductActiveIngredient(Input)`, `ProductActiveIngredientsResult` | `GET`/`PUT /products/:id/active-ingredients`: several ingredients per product, concentration per inventory unit, one principal |
+| `DoseSuggestion`, `IngredientDoseRecommendation`, `DoseRecommendation` | `GET /veterinarian/pets/:petId/dose-recommendation`: pet weight, chosen references per route and the computed quantity |
+
+Also in 4.63.0: `ActiveIngredient.riskGroup` may be `null` (non-controlled ingredients); `PrescriptionLine` gains optional `doseReferenceId`, `catalogVersion`, `doseModified`.
+
+### Diagnosis catalog (v4.64.0, `diagnosis.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `DiagnosisKind` | `presumptive` / `definitive` (`ExpedienteClinicoDiagnostico.Tipo` 1 / 2) |
+| `Diagnosis` | Global `CatDiagnostico` row from `GET /veterinarian/diagnoses` (search by name or synonym, `matchedSynonym`) |
+| `RecordDiagnosis`, `RecordDiagnosisInput` | `GET`/`PUT /veterinarian/records/:recordId/diagnoses`: several per consultation; the free-text diagnosis stays |
+
+### Service charges (v4.65.0, `service-charge.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `ChargedServiceKind` | `consultation` / `application` / `test` (health record, health application, medical test) |
+| `ChargedServiceRef` | `{ kind, id }`; `id` = the id the API already exposes for the service. Sent on `SaleOrderItem.sources` (new optional field) |
+| `ServiceChargeStatus` | `charged` (linked to a sale that is not cancelled) / `waived` («Sin cargo» with a reason) / `pending` |
+| `ServiceChargeEntry` | `GET /veterinarian/pets/:petId/charges` and `GET /veterinarian/pending-charges?customerId=`: one tracked service with its product, quantity, state, sale (PublicId + folio + balance flag) and, for applications, the lot |
+| `WaiveServiceChargeRequest` | `POST /veterinarian/charges/waive` (elevated roles) |
+
+Services dated before the account's start date (`CuentaConfiguracion` key `cobro-servicios`) are not tracked and have no entry.
+
+### Lab result trends (v4.66.0, `medical-test.ts`)
+
+| Type | Notes |
+|---|---|
+| `PetLabResultEntry` | `GET /veterinarian/pets/:petId/lab-trends`: one complementary test (id, date, type) with its numeric `MedicalTestValue[]` (species range, `outOfRange`), newest test first; drafts left out. `date` is anchored like `MedicalTest.date` |
 
 ### Studies linked to a consultation (v4.67.0, optional)
 
 `UpdateMedicalTestRequest.healthRecordId?: number | string | null`: links a study (prueba complementaria) to another active consultation of the same patient after it was created; `null` unlinks it, left out keeps it. `CreateMedicalTestRequest.healthRecordId` already existed.
 
-### Category features (v4.59.7, main line, `product.ts`)
+### AI interpretation of numeric studies (v4.68.0, new type)
+
+`MedicalTestAiInterpretation`: answer of `POST /veterinarian/tests/:testId/ai-interpretation` (draft `interpretation`, `recommendations`, `warnings`, `model`, `diagnosisReview`). The diagnosis review of both AI endpoints now also weighs the consultation's catalog diagnoses (`RecordDiagnosis`), not only the free-text diagnosis.
+
+### Category features (v4.69.0, `product.ts`)
 
 | Type | Notes |
 |---|---|
@@ -435,14 +513,15 @@ Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, 
 | `ProductCategory.features?` | Features the category uses, on every category read |
 | `CategoryFeaturesInput` | `PUT /products/categories/:id/features` (elevated roles): replaces the list. Saving non-empty data for a section whose feature is off answers 409 `CATEGORY_FEATURE_DISABLED`; clearing is always allowed |
 
-### Account features (v4.59.9, `account-features.ts`, new file)
+### Account features (v4.72.0, `account-features.ts`, new file)
 
 | Type | Notes |
 |---|---|
 | `AccountFeaturesConfig` | Settings key `features` (`GET/PUT /config/features`, also in `GET /config`). `onlineStore`: the account uses the online store; off hides every store reference in the web (product switch, «En línea» tag and filter, Meta export) and the Meta export answers 404. `onlineStoreAvailable` (read-only): false in the pool, where `onlineStore` is always false. `cashSessions` (5.9.0 on main, 5.8.0 on integration, optional, absent = on): «corte de caja»; off, the web opens the cashier's session on its own at $0 and never asks to close it |
+| `AccountFeaturesConfig` | Settings key `features` (`GET/PUT /config/features`, also in `GET /config`). `onlineStore`: the account uses the online store; off hides every store reference in the web (product switch, «En línea» tag and filter, Meta export) and the Meta export answers 404. `onlineStoreAvailable` (read-only): false in the pool, where `onlineStore` is always false. `cashSessions` (5.8.0, optional, absent = on): «corte de caja»; off, the web opens the cashier's session on its own at $0 and never asks to close it |
 | `SaveAccountFeaturesConfigRequest` | `PUT /config/features` body (ADMIN); only the switches sent change, at least one |
 
-### Active ingredient suggestions (v4.59.10, main line, `dose-reference.ts`)
+### Active ingredient suggestions (v4.73.0, `dose-reference.ts`)
 
 | Type | Notes |
 |---|---|
@@ -484,6 +563,16 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 ### AI interpretation of numeric studies (v5.10.0, new type)
 
 `MedicalTestAiInterpretation`: answer of `POST /veterinarian/tests/:testId/ai-interpretation` (draft `interpretation`, `recommendations`, `warnings`, `model`, `diagnosisReview`). The diagnosis review of both AI endpoints now also weighs the consultation's catalog diagnoses (`RecordDiagnosis`), not only the free-text diagnosis.
+### Team members linked to users (v5.7.0, `staff.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `StaffMember` | `GET /staff` (gateway): an account user (auth service) joined to what the clinic database links to it: professional data (`ProfesionalSalud`), its own agenda (`RecursoAgenda` Clase PROFESIONAL) and hours. `userPublicId` `null` = a PROFESIONAL agenda with no user (from before); `isSelf` = the signed-in user |
+| `StaffFunction` | `vet` → role `veterinarian`, `groomer` → `groomer`, `reception` → `receptionist`, `other` → `otherRole` |
+| `StaffProfessional`, `StaffAgenda`, `StaffHoursRange` | `StaffAgenda.kind` is the agenda kind (`AppointmentResourceKind`: a groomer's is `grooming`, a vet's `consultation`; v5.12.0); a lunch break is two ranges on one day; `day` 1 = Monday |
+| `StaffAccess` | Same values as `UserAccess` |
+| `StaffCreateRequest`, `StaffUpdateRequest` | `POST /staff`, `PUT /staff/:userPublicId`, `PUT /staff/me`; `userPublicId` on a create retries after the user step succeeded |
+| `StaffSaveResult`, `StaffStepResult`, `StaffStepId` | Per-step result of a save (`user`, `reference`, `professional`, `agenda`, `hours`) |
 
 ## Breaking Change Log
 

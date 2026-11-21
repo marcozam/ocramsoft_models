@@ -21,3 +21,26 @@ export interface AppointmentRecordLink {
   petId: number;
   recordId: string;
 }
+
+/**
+ * A consultation started without an appointment (walk-in), listed in the vet
+ * day agenda next to that day's appointments. It stores no branch, so every
+ * branch lists it.
+ */
+export interface WalkInVisit {
+  recordId: string;
+  /** UTC instant of the consultation. */
+  date: string;
+  recordTypeId: number;
+  recordTypeName: string;
+  reason?: string;
+  petId: number;
+  petName: string;
+  speciesName?: string;
+  /** Main owner of the pet; absent when the pet has none. */
+  ownerPersonId?: number;
+  ownerName?: string;
+  /** The owner's customer GUID, which the vet home loads the owner by. */
+  ownerContactPublicId?: string;
+  professionalName?: string;
+}

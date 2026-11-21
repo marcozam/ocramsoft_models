@@ -55,18 +55,29 @@ export type PurchaseSuggestionFlag =
   /** The proposed supplier is marked inactive. */
   | 'inactive-supplier';
 
+/** A purchase presentation as referenced from another record. */
+export interface PresentationRef {
+  /** Presentation PublicId. */
+  id: string;
+  name: string;
+  /** Inventory units per presentation. */
+  factor: number;
+}
+
 /** Latest purchase of a product from one supplier. */
 export interface PurchaseSupplierCost {
   /** Supplier public id; null for a store not registered as supplier. */
   supplierId: string | null;
   supplierName: string;
   supplierActive: boolean;
-  /** Net of discount, before taxes, in MXN. */
+  /** Per inventory unit, net of discount, before taxes, in MXN. */
   unitCost: number;
   /** IVA rate (0.16); null = exento. */
   taxRate: number | null;
   lastPurchaseDate: string;
   purchaseCount: number;
+  /** Presentation of that latest purchase line; null when bought without one. */
+  presentation?: PresentationRef | null;
 }
 
 export interface PurchaseSuggestionLine {
@@ -93,6 +104,7 @@ export interface PurchaseSuggestionLine {
   targetStock: number;
 
   onHand: number;
+  /** In inventory units. */
   onOrder: number;
   /** onHand + onOrder. */
   inventoryPosition: number;
@@ -112,6 +124,11 @@ export interface PurchaseSuggestionLine {
   total: number;
 
   flags: PurchaseSuggestionFlag[];
+
+  /** Unit stock is counted in; null means pieza. */
+  inventoryUnit?: string | null;
+  /** The product's default purchase presentation, if any. */
+  defaultPresentation?: PresentationRef | null;
 }
 
 export interface PurchaseOrderPreviewTotals {

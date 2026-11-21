@@ -358,6 +358,19 @@ export interface MedicalTestAiAnalysis {
     diagnosisReview: MedicalTestAiDiagnosisReview | null;
 }
 /**
+ * One complementary test's numeric results in a pet's lab history
+ * (GET /veterinarian/pets/:petId/lab-trends): active, non-draft tests only,
+ * newest first; `values` holds numeric values only, in the test type's order,
+ * with the pet's species range.
+ */
+export interface PetLabResultEntry {
+    testId: string;
+    date: string;
+    testTypeId: number;
+    testTypeName: string;
+    values: MedicalTestValue[];
+}
+/**
  * Answer of POST /veterinarian/tests/{testId}/ai-interpretation: a draft of
  * the «Interpretación» and «Sugerencias» of a study with numeric results
  * (hemograma, química, perfil tiroideo…), written from its saved values, the

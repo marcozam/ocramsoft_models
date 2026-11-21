@@ -1,5 +1,6 @@
 import { BaseEntity, SimpleEntity } from '../core/base-entity';
 import { Rule } from './rules-engine';
+import { NomRiskGroup } from './controlled-medication';
 
 export interface ProductBrand extends SimpleEntity {}
 
@@ -63,8 +64,12 @@ export interface Product extends BaseEntity {
   categoryId?: string;
   brandId?: string;
   groupId?: string;
-  /** Service duration in minutes. Set (> 0) only for schedulable services. */
-  durationMinutes?: number;
+  /**
+   * Service length in minutes (1..1440); absent when the product is not a
+   * timed service. A visit type takes its appointment length from the product
+   * it charges. On update, `null` clears it.
+   */
+  durationMinutes?: number | null;
   /** Rich-text (HTML) product description. */
   description?: string;
   /** URL of the principal image, when one exists. */
@@ -108,6 +113,35 @@ export interface Product extends BaseEntity {
    * `null` means pieza. Cannot change once the product has stock history.
    */
   inventoryUnit?: string | null;
+  /** Controlled-medication risk group; `null` = not controlled. */
+  riskGroup?: NomRiskGroup | null;
+  activeIngredientId?: string | null;
+  activeIngredientName?: string | null;
+}
+
+/**
+ * A unit the product is bought in: a box of 10, a 1 L bottle. Expense lines
+ * keep quantity and price in this unit; stock receives quantity × `factor`
+ * inventory units.
+ */
+export interface ProductPresentation {
+  /** Presentation PublicId. */
+  id: string;
+  name: string;
+  /** Inventory units per presentation; greater than 0. */
+  factor: number;
+  /** At most one active presentation per product is the default. */
+  isDefault: boolean;
+  isActive: boolean;
+}
+
+/** Body to create or update a product's presentation. */
+export interface SaveProductPresentationRequest {
+  /** Unique among the product's active presentations; at most 60 characters. */
+  name: string;
+  factor: number;
+  /** true clears the previous default. */
+  isDefault?: boolean;
 }
 
 export interface ProductImage {
