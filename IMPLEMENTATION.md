@@ -106,7 +106,10 @@ Extracted from the POS system's BE (`ocramsoft_gateway`) and FE (`lock-security-
 | `AppointmentStatus` | enum; values = CatStatus ids under IDUso 403 (40301 SCHEDULED … 40306 NO_SHOW) |
 | `BookingChannel` | enum; values = CatCanalAgenda ids (1 SELF_SERVICE, 2 ON_BEHALF, 3 API) — how a booking was made |
 | `AppointmentService` | One service line in an appointment: `serviceId, serviceName?, durationMinutes` |
-| `Appointment` | Customer appointment: `branchId, customerId, customerPublicId? (Contacto.PublicId), services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?` (resource reserved for future) |
+| `Appointment` | Customer appointment: `branchId, customerId, customerPublicId? (Contacto.PublicId), services[], start, end, durationMinutes (Σ of services or manual), status, reason?, notes?, createdByUserId?, bookingChannel?, bookedByApiClientId?, resourceId?, resourceName?` (4.51.0: the agenda it is booked on, `null` = the branch's main agenda) |
+| `AppointmentResource` / `AppointmentResourceKind` / `AppointmentResourceClass` (4.51.0, 4.52.0) | A bookable agenda of a branch besides its main one: `id, branchId, kind ('general' \| 'consultation' \| 'grooming' \| 'styling', groups on screen), resourceClass ('professional' = worked by a system user \| 'space' = a table, room or chair), name, isActive, order, userPublicId? (the professional's user; `null` = not linked yet, legacy agendas only), userName?`. Item of GET /appointments/resources; overlaps are checked per agenda |
+| `ResourceWorkingHours` / `SetResourceWorkingHoursRequest` (4.55.0) | One opening range of an agenda's week: `dayOfWeek` (1 = Monday .. 7 = Sunday), `opensAt` / `closesAt` (`HH:mm`, branch-local), `intervalMinutes?` (default 30). GET/PUT /appointments/resources/{id}/hours (`{ hours }`; `[]` = the agenda follows the branch hours). Several ranges per day, never overlapping, inside the branch hours |
+| `AgendaBlock` / `CreateAgendaBlockRequest` (4.55.0) | Blocked span of a branch or one agenda: `id, branchId, resourceId` (`null` = the whole branch), `resourceName?, start, end` (ISO UTC), `reason?, isActive, createdByUserId?, registeredAt?`. GET/POST /appointments/blocks, DELETE /appointments/blocks/{id}. Blocks stop self-service and API bookings; staff may still book over them |
 | `AppointmentSlot` | Availability slot: `start, end, available, resourceId?` |
 | `AppointmentRecordLink` (vet-appointment.ts, v4.22.0) | Item of GET /veterinarian/appointments/{id}/records: the consultation (`recordId`) a pet of the appointment already has, so the agenda offers «Ver consulta» instead of starting another |
 | `AppointmentPetLink` (vet-appointment.ts) | Vet vertical: pet attending an appointment (`appointmentId, petId, petName, speciesName?`). Kept OFF the generic `Appointment` — whitelabel scheduling never embeds pet data; only `/veterinarian` endpoints speak this type |
@@ -484,6 +487,26 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 ### AI interpretation of numeric studies (v5.10.0, new type)
 
 `MedicalTestAiInterpretation`: answer of `POST /veterinarian/tests/:testId/ai-interpretation` (draft `interpretation`, `recommendations`, `warnings`, `model`, `diagnosisReview`). The diagnosis review of both AI endpoints now also weighs the consultation's catalog diagnoses (`RecordDiagnosis`), not only the free-text diagnosis.
+
+### Team members linked to users (v5.7.0, `staff.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `StaffMember` | `GET /staff` (gateway): an account user (auth service) joined to what the clinic database links to it: professional data (`ProfesionalSalud`), its own agenda (`RecursoAgenda` Clase PROFESIONAL) and hours. `userPublicId` `null` = a PROFESIONAL agenda with no user (from before); `isSelf` = the signed-in user |
+| `StaffFunction` | `vet` → role `veterinarian`, `groomer` → `groomer`, `reception` → `receptionist`, `other` → `otherRole` |
+| `StaffProfessional`, `StaffAgenda`, `StaffHoursRange` | `StaffAgenda.kind` is the agenda kind (`AppointmentResourceKind`: a groomer's is `grooming`, a vet's `consultation`; v5.12.0); a lunch break is two ranges on one day; `day` 1 = Monday |
+| `StaffAccess` | Same values as `UserAccess` |
+| `StaffCreateRequest`, `StaffUpdateRequest` | `POST /staff`, `PUT /staff/:userPublicId`, `PUT /staff/me`; `userPublicId` on a create retries after the user step succeeded |
+| `StaffSaveResult`, `StaffStepResult`, `StaffStepId` | Per-step result of a save (`user`, `reference`, `professional`, `agenda`, `hours`) |
+
+### «Arma tu clínica» contract (v5.11.0–5.14.0, `clinic-setup.ts`, new file)
+
+| Type | Notes |
+|---|---|
+| `ClinicSetupTemplate`, `ClinicKindTemplate`, `ClinicSpecialtyTemplate`, `ClinicSetupGroupTemplate`, `ClinicSetupTemplateItem` | GET /veterinarian/settings/clinic-setup/template: clinic kinds, specialties (`estetica` since 5.13.0) and the catalog groups the wizard proposes |
+| `ClinicSetupRequest`, `ClinicSetupItemInput` | POST /veterinarian/settings/clinic-setup; `pricesIncludeTax?` (5.14.0): `true` = the captured prices include IVA, the gateway stores them before tax and saves the POS flag |
+| `ClinicSetupResult`, `ClinicSetupStepResult`, `ClinicSetupStepId` | Per-step result of applying the setup |
+| `ClinicSetupFacts` | GET /veterinarian/settings/clinic-setup: what the clinic already has, to prefill the wizard |
 
 ## Breaking Change Log
 
