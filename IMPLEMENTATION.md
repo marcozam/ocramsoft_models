@@ -481,6 +481,10 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `AccessLinkSent`, `PasswordResetLinkRequest`, `UserAccessErrorCode` (`auth/user-access.ts`) | Admin invitation, reset link and e-mail confirmation endpoints |
 | `VerificationPeek`, `VerificationLinkPurpose` | `GET /auth/verifications/:requestId`, read only, for the page a link opens |
 
+### AI interpretation of numeric studies (v5.10.0, new type)
+
+`MedicalTestAiInterpretation`: answer of `POST /veterinarian/tests/:testId/ai-interpretation` (draft `interpretation`, `recommendations`, `warnings`, `model`, `diagnosisReview`). The diagnosis review of both AI endpoints now also weighs the consultation's catalog diagnoses (`RecordDiagnosis`), not only the free-text diagnosis.
+
 ## Breaking Change Log
 
 | Change | Reason |
