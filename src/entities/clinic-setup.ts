@@ -7,7 +7,7 @@
 
 export type ClinicKind = 'consultorio' | 'clinica' | 'especialidad' | 'hospital';
 
-export type ClinicSpecialty = 'general' | 'dermatologia' | 'medicina-interna';
+export type ClinicSpecialty = 'general' | 'dermatologia' | 'medicina-interna' | 'estetica';
 
 /** Where an item lands: each group is one product category of the clinic. */
 export type ClinicSetupGroup =
@@ -16,7 +16,9 @@ export type ClinicSetupGroup =
   | 'external-study'
   | 'vaccine'
   | 'rabies-vaccine'
-  | 'dewormer';
+  | 'dewormer'
+  /** Grooming services (estética): agenda services, listed as grooming categories. */
+  | 'grooming';
 
 export interface ClinicSetupGroupTemplate {
   group: ClinicSetupGroup;

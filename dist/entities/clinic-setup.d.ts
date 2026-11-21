@@ -5,9 +5,11 @@
  * already set.
  */
 export type ClinicKind = 'consultorio' | 'clinica' | 'especialidad' | 'hospital';
-export type ClinicSpecialty = 'general' | 'dermatologia' | 'medicina-interna';
+export type ClinicSpecialty = 'general' | 'dermatologia' | 'medicina-interna' | 'estetica';
 /** Where an item lands: each group is one product category of the clinic. */
-export type ClinicSetupGroup = 'consultation' | 'internal-study' | 'external-study' | 'vaccine' | 'rabies-vaccine' | 'dewormer';
+export type ClinicSetupGroup = 'consultation' | 'internal-study' | 'external-study' | 'vaccine' | 'rabies-vaccine' | 'dewormer'
+/** Grooming services (estética): agenda services, listed as grooming categories. */
+ | 'grooming';
 export interface ClinicSetupGroupTemplate {
     group: ClinicSetupGroup;
     /** Name of the category created for the group (matched by name). */
