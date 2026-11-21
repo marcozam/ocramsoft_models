@@ -1,3 +1,4 @@
+import { AppointmentResourceKind } from './appointment';
 /** What a team member does; several at once. */
 export type StaffFunction = 'vet' | 'groomer' | 'reception' | 'other';
 export interface StaffProfessional {
@@ -20,7 +21,7 @@ export interface StaffAgenda {
     resourceId: number;
     name: string;
     branchId: number;
-    kind: 'grooming';
+    kind: AppointmentResourceKind;
     isActive: boolean;
     hours: StaffHoursRange[];
 }
