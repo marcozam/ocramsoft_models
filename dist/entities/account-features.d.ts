@@ -16,6 +16,14 @@ export interface AccountFeaturesConfig {
      * be turned on.
      */
     onlineStoreAvailable: boolean;
+    /**
+     * Cashiers open a cash session with the starting cash and close it with the
+     * counted cash («corte de caja»). Off: the web opens the cashier's session on
+     * its own at $0, sells right away and never asks to close it; sales and
+     * payments still belong to that session. Absent means on.
+     */
+    cashSessions?: boolean;
 }
-export type SaveAccountFeaturesConfigRequest = Pick<AccountFeaturesConfig, 'onlineStore'>;
+/** Only the switches sent are changed; at least one is required. */
+export type SaveAccountFeaturesConfigRequest = Partial<Pick<AccountFeaturesConfig, 'onlineStore' | 'cashSessions'>>;
 //# sourceMappingURL=account-features.d.ts.map

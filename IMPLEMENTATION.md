@@ -439,8 +439,8 @@ Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, 
 
 | Type | Notes |
 |---|---|
-| `AccountFeaturesConfig` | Settings key `features` (`GET/PUT /config/features`, also in `GET /config`). `onlineStore`: the account uses the online store; off hides every store reference in the web (product switch, «En línea» tag and filter, Meta export) and the Meta export answers 404. `onlineStoreAvailable` (read-only): false in the pool, where `onlineStore` is always false |
-| `SaveAccountFeaturesConfigRequest` | `PUT /config/features` body (ADMIN) |
+| `AccountFeaturesConfig` | Settings key `features` (`GET/PUT /config/features`, also in `GET /config`). `onlineStore`: the account uses the online store; off hides every store reference in the web (product switch, «En línea» tag and filter, Meta export) and the Meta export answers 404. `onlineStoreAvailable` (read-only): false in the pool, where `onlineStore` is always false. `cashSessions` (5.9.0 on main, 5.8.0 on integration, optional, absent = on): «corte de caja»; off, the web opens the cashier's session on its own at $0 and never asks to close it |
+| `SaveAccountFeaturesConfigRequest` | `PUT /config/features` body (ADMIN); only the switches sent change, at least one |
 
 ### Active ingredient suggestions (v4.59.10, main line, `dose-reference.ts`)
 
