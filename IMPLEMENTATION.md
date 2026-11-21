@@ -565,7 +565,7 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 |---|---|
 | `StaffMember` | `GET /staff` (gateway): an account user (auth service) joined to what the clinic database links to it: professional data (`ProfesionalSalud`), its own agenda (`RecursoAgenda` Clase PROFESIONAL) and hours. `userPublicId` `null` = a PROFESIONAL agenda with no user (from before); `isSelf` = the signed-in user |
 | `StaffFunction` | `vet` → role `veterinarian`, `groomer` → `groomer`, `reception` → `receptionist`, `other` → `otherRole` |
-| `StaffProfessional`, `StaffAgenda`, `StaffHoursRange` | `StaffAgenda.kind` is `grooming` (agenda Tipo `ESTETICA`); a lunch break is two ranges on one day; `day` 1 = Monday |
+| `StaffProfessional`, `StaffAgenda`, `StaffHoursRange` | `StaffAgenda.kind` is the agenda kind (`AppointmentResourceKind`: a groomer's is `grooming`, a vet's `consultation`; v5.12.0); a lunch break is two ranges on one day; `day` 1 = Monday |
 | `StaffAccess` | Same values as `UserAccess` |
 | `StaffCreateRequest`, `StaffUpdateRequest` | `POST /staff`, `PUT /staff/:userPublicId`, `PUT /staff/me`; `userPublicId` on a create retries after the user step succeeded |
 | `StaffSaveResult`, `StaffStepResult`, `StaffStepId` | Per-step result of a save (`user`, `reference`, `professional`, `agenda`, `hours`) |
