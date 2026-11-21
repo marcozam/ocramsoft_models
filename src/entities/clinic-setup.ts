@@ -98,6 +98,12 @@ export interface ClinicSetupRequest {
   appointments: boolean;
   /** Ask for a cash count (corte de caja) to sell. */
   cashSessions: boolean;
+  /**
+   * The prices typed already include tax: saved as the POS setting
+   * `includeTaxInPrices`, and each price is stored before tax. Absent keeps
+   * the setting and stores the prices as typed.
+   */
+  pricesIncludeTax?: boolean;
 }
 
 export type ClinicSetupStepId =
