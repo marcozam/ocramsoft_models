@@ -2,8 +2,6 @@ import { Payment, PaymentMethodType } from './payment';
 import { Address } from './address';
 import { BaseEntity } from '../core/base-entity';
 import { MedidasArmazon, OpticaExamen } from './optica-examen';
-import { ControlledDispensing, ControlledDispensingInput } from './controlled-medication';
-import { ChargedServiceRef } from './service-charge';
 
 /** Eagle-view representation of a sale order — no line items or payment breakdown. */
 export interface SaleOrderSummary extends BaseEntity {
@@ -62,24 +60,6 @@ export interface SaleOrderItem {
   lotCode?: string;
   /** Expiry of a hand-typed `lotCode` (YYYY-MM-DD, last day of the month). */
   lotExpirationDate?: string | null;
-  /**
-   * Controlled dispensing of the line, sent when creating a sale. Required on
-   * a Group I product (quantities add up to `quantity`); rejected on a product
-   * that is not controlled.
-   */
-  dispensing?: ControlledDispensingInput[];
-  /**
-   * Vet services the line charges (consultations, applications, tests), sent
-   * when creating a sale. Their quantities add up to at most `quantity`; a
-   * service already charged by a sale that is not cancelled is refused.
-   */
-  sources?: ChargedServiceRef[];
-}
-
-/** A line of a sale read with `details=true`. */
-export interface SaleOrderItemDetail extends SaleOrderItem {
-  /** Active dispensing rows recorded on the line. */
-  dispensing?: ControlledDispensing[];
 }
 
 export interface SaleOrderPayment extends Payment {
@@ -106,7 +86,7 @@ export interface CreateSaleCommentRequest {
  * When fetched with details=true the items, payments, and comments arrays are included.
  */
 export interface SaleOrder extends SaleOrderSummary {
-  items?: SaleOrderItemDetail[];
+  items?: SaleOrderItem[];
   payments?: SaleOrderPayment[];
   comments?: SaleOrderComment[];
 }

@@ -17,7 +17,6 @@ export * from './entities/stock-lot';
 export * from './entities/physical-count';
 export * from './entities/optica-examen';
 export * from './entities/sale-order';
-export * from './entities/service-charge';
 export * from './entities/quote';
 export * from './entities/production-order';
 export * from './entities/production-recipe';
