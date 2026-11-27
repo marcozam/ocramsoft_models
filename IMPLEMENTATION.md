@@ -508,6 +508,17 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `ClinicSetupResult`, `ClinicSetupStepResult`, `ClinicSetupStepId` | Per-step result of applying the setup |
 | `ClinicSetupFacts` | GET /veterinarian/settings/clinic-setup: what the clinic already has, to prefill the wizard |
 
+### Consultation dictation (v5.15.0, `health-record.ts`)
+
+| Type | Notes |
+|---|---|
+| `HealthRecordFileKind` | `MedicalTestFileKind \| 'audio'`; `HealthRecordFile.kind` widened to it (an FE `switch` on the kind needs an `audio` case) |
+| `HealthRecordFile` | Optional audio fields: `durationSeconds`, `ownerNotified`, `hasTranscript`, `availableUntil` (bytes deleted after `CONSULT_DICTATION_RETENTION_DAYS`, the transcript stays) |
+| `UploadConsultDictationFields` | Multipart fields of `POST /veterinarian/records/:recordId/dictations` (`file` + `durationSeconds`, `ownerNotified` = true) |
+| `ConsultDictationDraft` | `POST …/dictations/:fileId/ai-draft`: transcript + form fields + attribute `values` (`MedicalTestAiSuggestion`) as a draft the vet reviews; never a prescription |
+| `ConsultDictationTranscript` | `GET …/dictations/:fileId/transcript` |
+| `CONSULT_DICTATION_RETENTION_DAYS` (90), `CONSULT_DICTATION_DEFAULT_MAX_MINUTES` (30) | Constants shared by gateway and web |
+
 ## Breaking Change Log
 
 | Change | Reason |

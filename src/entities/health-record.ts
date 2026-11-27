@@ -1,4 +1,5 @@
 import type {
+  MedicalTestAiSuggestion,
   MedicalTestFileKind,
   MedicalTestValue,
   MedicalTestValueInput,
@@ -141,12 +142,81 @@ export interface HealthRecordFile {
   recordId: string;
   fileName: string;
   contentType: string;
-  kind: MedicalTestFileKind;
+  kind: HealthRecordFileKind;
   /** Size in bytes. */
   size: number;
   uploadedAt: string | null;
   /** Caption (up to 200 characters), e.g. the lesion the photo shows. */
   description?: string | null;
+  /** Audio only: length of the recording in seconds. */
+  durationSeconds?: number | null;
+  /** Audio only: the owner was told the visit is recorded (always `true` on an audio). */
+  ownerNotified?: boolean | null;
+  /** Audio only: a transcript is stored (the AI draft writes it). */
+  hasTranscript?: boolean;
+  /**
+   * Audio only: last moment the recording can be played; the bytes are
+   * deleted after {@link CONSULT_DICTATION_RETENTION_DAYS} days, the
+   * transcript is kept. `null` for photos and PDFs.
+   */
+  availableUntil?: string | null;
+}
+
+/**
+ * How a consultation file is shown: an inline photo, a PDF document, or the
+ * audio of the consultation's dictation.
+ */
+export type HealthRecordFileKind = MedicalTestFileKind | 'audio';
+
+/** Days a consultation's dictation audio is kept; its transcript stays. */
+export const CONSULT_DICTATION_RETENTION_DAYS = 90;
+
+/** Default length limit of one dictation, in minutes; the vet may extend it. */
+export const CONSULT_DICTATION_DEFAULT_MAX_MINUTES = 30;
+
+/**
+ * Multipart fields of POST /veterinarian/records/{recordId}/dictations
+ * besides `file` (the audio: `audio/mp4` from iPad Safari, `audio/webm` from
+ * Chrome). Sent as strings in the form.
+ */
+export interface UploadConsultDictationFields {
+  /** Length of the recording in seconds. */
+  durationSeconds: number;
+  /** Must be `true`: the owner was told the visit is being recorded. */
+  ownerNotified: boolean;
+}
+
+/**
+ * Response of POST /veterinarian/records/{recordId}/dictations/{fileId}/ai-draft:
+ * what the model heard in the consultation, as a draft the vet reviews field
+ * by field before saving. The model only orders what was said: a field that
+ * was not mentioned is `null` (or absent from `values`). It never proposes a
+ * prescription. The transcript is also stored with the audio.
+ */
+export interface ConsultDictationDraft {
+  fileId: string;
+  transcript: string;
+  reason: string | null;
+  /** `YYYY-MM-DD`, e.g. from «desde hace 3 días» relative to the visit date. */
+  onsetDate: string | null;
+  diagnosis: string | null;
+  finalDiagnosis: string | null;
+  treatment: string | null;
+  notes: string | null;
+  /**
+   * Values of the attributes the visit type captures (vitals, physical exam
+   * by systems), validated against each attribute's type, options and limits.
+   */
+  values: MedicalTestAiSuggestion[];
+  /** What the model could not judge, or suggestions that were dropped. */
+  warnings: string[];
+  model: string;
+}
+
+/** Response of GET /veterinarian/records/{recordId}/dictations/{fileId}/transcript. */
+export interface ConsultDictationTranscript {
+  fileId: string;
+  transcript: string | null;
 }
 
 /**
