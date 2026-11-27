@@ -166,13 +166,29 @@ export interface UploadConsultDictationFields {
     durationSeconds: number;
     /** Must be `true`: the owner was told the visit is being recorded. */
     ownerNotified: boolean;
+    /**
+     * `true` for the vet's closing summary («Resumen MVZ»): what the vet states
+     * belongs in the clinical record. Stored with the caption «Resumen del MVZ».
+     */
+    summary?: boolean;
+}
+/**
+ * Body of POST /veterinarian/records/{recordId}/dictations/{fileId}/ai-draft.
+ * With `contextFileIds`, `fileId` is the vet's summary and only it fills the
+ * fields; the other recordings of the visit (the talk with the owner) are
+ * context only. Without it, the recording is read alone.
+ */
+export interface ConsultDictationDraftRequest {
+    /** Other audio files of the same consultation, in recording order. */
+    contextFileIds?: string[];
 }
 /**
  * Response of POST /veterinarian/records/{recordId}/dictations/{fileId}/ai-draft:
  * what the model heard in the consultation, as a draft the vet reviews field
  * by field before saving. The model only orders what was said: a field that
  * was not mentioned is `null` (or absent from `values`). It never proposes a
- * prescription. The transcript is also stored with the audio.
+ * prescription, and explanations of other diseases that do not apply to the
+ * patient never fill a field. The transcript is also stored with the audio.
  */
 export interface ConsultDictationDraft {
     fileId: string;
@@ -192,6 +208,8 @@ export interface ConsultDictationDraft {
     /** What the model could not judge, or suggestions that were dropped. */
     warnings: string[];
     model: string;
+    /** `true` when the fields came only from the vet's summary («Resumen MVZ»). */
+    fromSummary?: boolean;
 }
 /** Response of GET /veterinarian/records/{recordId}/dictations/{fileId}/transcript. */
 export interface ConsultDictationTranscript {
