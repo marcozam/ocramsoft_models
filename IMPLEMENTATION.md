@@ -578,7 +578,6 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `HealthRecordFile` | Optional audio fields: `durationSeconds`, `ownerNotified`, `hasTranscript`, `availableUntil` (bytes deleted after `CONSULT_DICTATION_RETENTION_DAYS`, the transcript stays) |
 | `UploadConsultDictationFields` | Multipart fields of `POST /veterinarian/records/:recordId/dictations` (`file` + `durationSeconds`, `ownerNotified` = true) |
 | `ConsultDictationDraft` | `POST …/dictations/:fileId/ai-draft`: transcript + form fields + attribute `values` (`MedicalTestAiSuggestion`) as a draft the vet reviews; never a prescription |
-| `ConsultDictationDraftRequest`, `UploadConsultDictationFields.summary`, `ConsultDictationDraft.fromSummary` | «Resumen MVZ»: the vet's closing summary is the only source of the fields; the other recordings of the visit are context |
 | `ConsultDictationTranscript` | `GET …/dictations/:fileId/transcript` |
 | `CONSULT_DICTATION_RETENTION_DAYS` (90), `CONSULT_DICTATION_DEFAULT_MAX_MINUTES` (30) | Constants shared by gateway and web |
 
