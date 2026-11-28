@@ -175,9 +175,31 @@ export interface MedicalTest {
     /** External studies: when the results arrived (ISO instant). */
     resultsReceivedAt?: string | null;
     status?: MedicalTestStatus;
+    /**
+     * Set when the study was cancelled: it stays in the record, read only, and
+     * no longer counts as pending, in trends or in the printed record.
+     */
+    cancellation?: MedicalTestCancellation | null;
     values: MedicalTestValue[];
     /** Single-study reads only: results flagged as zoonotic or notifiable. */
     notifiableFindings?: NotifiableFinding[];
+}
+/** Why a study was cancelled. `other` requires a note. */
+export type MedicalTestCancellationReason = 'ordered_by_mistake' | 'duplicate' | 'owner_declined' | 'unsuitable_sample' | 'other';
+/** Who cancelled a study, when and why. */
+export interface MedicalTestCancellation {
+    /** ISO instant. */
+    cancelledAt: string;
+    reason: MedicalTestCancellationReason;
+    note: string | null;
+    /** Display name of the user who cancelled it. */
+    cancelledBy: string | null;
+}
+/** Body of `POST /veterinarian/tests/:testId/cancel`. */
+export interface CancelMedicalTestRequest {
+    reason: MedicalTestCancellationReason;
+    /** Required when `reason` is `other`; up to 300 characters. */
+    note?: string | null;
 }
 /**
  * A result of a study that matches the catalog of zoonotic / notifiable

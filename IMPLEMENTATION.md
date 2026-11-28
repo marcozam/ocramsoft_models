@@ -519,7 +519,15 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `ConsultDictationTranscript` | `GET …/dictations/:fileId/transcript` |
 | `CONSULT_DICTATION_RETENTION_DAYS` (90), `CONSULT_DICTATION_DEFAULT_MAX_MINUTES` (30) | Constants shared by gateway and web |
 
-### Live dictation transcript (v5.18.0, `health-record.ts`)
+### Cancelled medical tests (v5.17.0; main twin v5.15.1, `medical-test.ts`)
+
+| Type | Notes |
+|---|---|
+| `MedicalTest.cancellation` | Optional `MedicalTestCancellation` (`cancelledAt`, `reason`, `note`, `cancelledBy`); only reads that ask for cancelled studies return them |
+| `MedicalTestCancellationReason` | `ordered_by_mistake`, `duplicate`, `owner_declined`, `unsuitable_sample`, `other` (needs a note) |
+| `CancelMedicalTestRequest` | Body of `POST /veterinarian/tests/:testId/cancel` |
+
+### Live dictation transcript (v5.18.0; main twin v5.15.2, `health-record.ts`)
 
 | Type | Notes |
 |---|---|
