@@ -547,6 +547,14 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `ImprovePrescriptionWordingRequest` | Body of `POST /veterinarian/prescriptions/instructions/improve`: `field`, `text` (reduced Markdown), `species`, `weightKg`, `medicine` / `medicines`, `previous` (for «Otra versión») |
 | `ImprovePrescriptionWordingResponse` | `text` (reduced Markdown) and the `numbers` it kept, the same as the original's |
 
+### Diagnosis on the prescription (v5.19.0, `prescription.ts`)
+
+| Field | Notes |
+|---|---|
+| `Prescription.diagnosis?`, `printDiagnosis?` | The diagnosis printed under the patient (`Receta.Diagnostico`) and whether the sheet shows it (`ImprimirDiagnostico`, default true) |
+| `IssuePrescriptionRequest.diagnosis?`, `printDiagnosis?` | Same, when issuing |
+| `PRESCRIPTION_DIAGNOSIS_MAX_LENGTH` (1000) | Longest diagnosis |
+
 ## Breaking Change Log
 
 | Change | Reason |
