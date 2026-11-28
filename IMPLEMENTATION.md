@@ -426,6 +426,8 @@ Same types as 4.61.0 (`controlled-medication.ts`), 4.63.0 (`dose-reference.ts`, 
 | `diagnosis.ts` (new file) | `Diagnosis`, `RecordDiagnosis`, `RecordDiagnosisInput`, `DiagnosisKind` |
 | `PrescriptionLine` | `doseReferenceId?`, `catalogVersion?`, `doseModified?` |
 
+In 5.15.3 (formatted instructions, main line; 5.16.0 on integration): `PRESCRIPTION_GENERAL_INSTRUCTIONS_MAX_LENGTH` (4000, `Receta.IndicacionesGenerales nvarchar(4000)`) and `PRESCRIPTION_LINE_INSTRUCTIONS_MAX_LENGTH` (1000, `RecetaDetalle.Indicaciones nvarchar(1000)`). `generalInstructions` and a line's `instructions` are reduced Markdown, plain text on the wire: bold `**`, italic `*`, underline `++`, `-` and `1.` lists.
+
 ### Studies linked to a consultation (v4.67.0, optional)
 
 `UpdateMedicalTestRequest.healthRecordId?: number | string | null`: links a study (prueba complementaria) to another active consultation of the same patient after it was created; `null` unlinks it, left out keeps it. `CreateMedicalTestRequest.healthRecordId` already existed.
