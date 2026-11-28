@@ -519,6 +519,15 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `ConsultDictationTranscript` | `GET …/dictations/:fileId/transcript` |
 | `CONSULT_DICTATION_RETENTION_DAYS` (90), `CONSULT_DICTATION_DEFAULT_MAX_MINUTES` (30) | Constants shared by gateway and web |
 
+### Live dictation transcript (v5.18.0, `health-record.ts`)
+
+| Type | Notes |
+|---|---|
+| `ConsultDictationLiveFields` | Multipart fields of `POST /veterinarian/records/:recordId/dictations/live-transcript` (`file` = a self-contained piece, `ownerNotified` = true, optional `previous` text) |
+| `ConsultDictationLiveTranscript` | Its response: `text` of the piece; nothing is stored |
+| `ConsultDictationDraftRequest` | Optional body of `…/ai-draft`: `transcript` made while recording; the draft reads it instead of the audio and stores it |
+| `CONSULT_DICTATION_LIVE_MAX_BYTES` (4 MB) | Largest piece |
+
 ## Breaking Change Log
 
 | Change | Reason |
