@@ -57,6 +57,9 @@ export const PRESCRIPTION_GENERAL_INSTRUCTIONS_MAX_LENGTH = 4000;
  */
 export const PRESCRIPTION_LINE_INSTRUCTIONS_MAX_LENGTH = 1000;
 
+/** Longest `diagnosis` (`Receta.Diagnostico nvarchar(1000)`), plain text. */
+export const PRESCRIPTION_DIAGNOSIS_MAX_LENGTH = 1000;
+
 /**
  * One medicine of a prescription, in print order. `dose` and `doseUnit` go
  * together; without a dose, `instructions` is required.
@@ -108,6 +111,10 @@ export interface Prescription {
   lines: PrescriptionLine[];
   /** Reduced Markdown, up to `PRESCRIPTION_GENERAL_INSTRUCTIONS_MAX_LENGTH`. */
   generalInstructions: string | null;
+  /** Printed under the patient when `printDiagnosis`; frozen when issued. */
+  diagnosis?: string | null;
+  /** Whether the sheet shows `diagnosis` (default true). */
+  printDiagnosis?: boolean;
   status: PrescriptionStatus;
   annulReason: string | null;
   /** ISO 8601 UTC. */
@@ -123,6 +130,10 @@ export interface IssuePrescriptionRequest {
   vetUserId: number;
   lines: PrescriptionLine[];
   generalInstructions?: string | null;
+  /** Plain text, at most {@link PRESCRIPTION_DIAGNOSIS_MAX_LENGTH}; blank = none. */
+  diagnosis?: string | null;
+  /** Default true. */
+  printDiagnosis?: boolean;
   data: Record<string, unknown>;
 }
 

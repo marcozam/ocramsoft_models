@@ -9,7 +9,7 @@
  * routes of administration by their numeric id.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PRESCRIPTION_LINE_INSTRUCTIONS_MAX_LENGTH = exports.PRESCRIPTION_GENERAL_INSTRUCTIONS_MAX_LENGTH = exports.PRESCRIPTION_DOSE_UNIT_LABELS = exports.PRESCRIPTION_DOSE_UNITS = void 0;
+exports.PRESCRIPTION_DIAGNOSIS_MAX_LENGTH = exports.PRESCRIPTION_LINE_INSTRUCTIONS_MAX_LENGTH = exports.PRESCRIPTION_GENERAL_INSTRUCTIONS_MAX_LENGTH = exports.PRESCRIPTION_DOSE_UNIT_LABELS = exports.PRESCRIPTION_DOSE_UNITS = void 0;
 exports.PRESCRIPTION_DOSE_UNITS = [
     'ml',
     'tableta',
@@ -42,4 +42,6 @@ exports.PRESCRIPTION_GENERAL_INSTRUCTIONS_MAX_LENGTH = 4000;
  * Reduced Markdown, like `generalInstructions`.
  */
 exports.PRESCRIPTION_LINE_INSTRUCTIONS_MAX_LENGTH = 1000;
+/** Longest `diagnosis` (`Receta.Diagnostico nvarchar(1000)`), plain text. */
+exports.PRESCRIPTION_DIAGNOSIS_MAX_LENGTH = 1000;
 //# sourceMappingURL=prescription.js.map
