@@ -213,6 +213,34 @@ export interface ConsultDictationDraft {
   model: string;
 }
 
+/**
+ * Multipart fields of POST /veterinarian/records/{recordId}/dictations/live-transcript,
+ * beside `file` (a short, self-contained piece of the recording). Nothing is stored.
+ */
+export interface ConsultDictationLiveFields {
+  ownerNotified: true;
+  /** The end of the text transcribed so far, so speakers and words carry over. */
+  previous?: string;
+}
+
+/** Response of POST /veterinarian/records/{recordId}/dictations/live-transcript. */
+export interface ConsultDictationLiveTranscript {
+  /** What was said in the piece; `''` when nothing was. */
+  text: string;
+}
+
+/**
+ * Optional body of POST …/dictations/{fileId}/ai-draft: the transcript
+ * already made while recording. The draft is then read from the text, faster
+ * than listening to the audio again, and stored as the audio's transcript.
+ */
+export interface ConsultDictationDraftRequest {
+  transcript?: string;
+}
+
+/** Longest piece of a recording sent for a live transcript (bytes). */
+export const CONSULT_DICTATION_LIVE_MAX_BYTES = 4 * 1024 * 1024;
+
 /** Response of GET /veterinarian/records/{recordId}/dictations/{fileId}/transcript. */
 export interface ConsultDictationTranscript {
   fileId: string;
