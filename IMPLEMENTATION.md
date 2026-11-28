@@ -538,6 +538,15 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `ConsultDictationDraftRequest` | Optional body of `…/ai-draft`: `transcript` made while recording; the draft reads it instead of the audio and stores it |
 | `CONSULT_DICTATION_LIVE_MAX_BYTES` (4 MB) | Largest piece |
 
+### Prescription wording AI (v5.18.1, `prescription.ts`)
+
+| Type | Notes |
+|---|---|
+| `PrescriptionWordingField` | `'general'` \| `'line'` |
+| `PrescriptionWordingMedicine` | Medicine as context (name, dose, unit, every hours, days) |
+| `ImprovePrescriptionWordingRequest` | Body of `POST /veterinarian/prescriptions/instructions/improve`: `field`, `text` (reduced Markdown), `species`, `weightKg`, `medicine` / `medicines`, `previous` (for «Otra versión») |
+| `ImprovePrescriptionWordingResponse` | `text` (reduced Markdown) and the `numbers` it kept, the same as the original's |
+
 ## Breaking Change Log
 
 | Change | Reason |

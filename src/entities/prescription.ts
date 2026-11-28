@@ -130,3 +130,41 @@ export interface IssuePrescriptionRequest {
 export interface AnnulPrescriptionRequest {
   reason: string;
 }
+
+/** Which instructions «Mejorar redacción» rewrites: the general ones or one medicine's. */
+export type PrescriptionWordingField = 'general' | 'line';
+
+/** A medicine of the prescription, as context for the rewrite (never sent to the printer). */
+export interface PrescriptionWordingMedicine {
+  name: string;
+  dose?: number | null;
+  doseUnit?: PrescriptionDoseUnit | null;
+  everyHours?: number | null;
+  durationDays?: number | null;
+}
+
+/**
+ * Body of POST /veterinarian/prescriptions/instructions/improve. `text` is the
+ * reduced Markdown the vet wrote; the context carries no owner data.
+ * `previous` is the proposal being replaced by «Otra versión».
+ */
+export interface ImprovePrescriptionWordingRequest {
+  field: PrescriptionWordingField;
+  text: string;
+  species?: string | null;
+  weightKg?: number | null;
+  /** For `field = 'line'`: the medicine the instructions belong to. */
+  medicine?: PrescriptionWordingMedicine | null;
+  /** For `field = 'general'`: every medicine of the prescription. */
+  medicines?: PrescriptionWordingMedicine[];
+  previous?: string | null;
+}
+
+/**
+ * The proposal: reduced Markdown within the field's limit, with exactly the
+ * numbers of the original (`numbers`, in order of appearance).
+ */
+export interface ImprovePrescriptionWordingResponse {
+  text: string;
+  numbers: string[];
+}
