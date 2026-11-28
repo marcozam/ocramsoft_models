@@ -45,6 +45,19 @@ export const PRESCRIPTION_DOSE_UNIT_LABELS: Record<PrescriptionDoseUnit, string>
 export type PrescriptionStatus = 'issued' | 'annulled';
 
 /**
+ * Longest `generalInstructions` (`Receta.IndicacionesGenerales nvarchar(4000)`).
+ * The value is reduced Markdown, stored and sent as plain text: bold `**`,
+ * italic `*`, underline `++`, `-` and `1.` lists.
+ */
+export const PRESCRIPTION_GENERAL_INSTRUCTIONS_MAX_LENGTH = 4000;
+
+/**
+ * Longest `instructions` of a line (`RecetaDetalle.Indicaciones nvarchar(1000)`).
+ * Reduced Markdown, like `generalInstructions`.
+ */
+export const PRESCRIPTION_LINE_INSTRUCTIONS_MAX_LENGTH = 1000;
+
+/**
  * One medicine of a prescription, in print order. `dose` and `doseUnit` go
  * together; without a dose, `instructions` is required.
  */
@@ -65,6 +78,7 @@ export interface PrescriptionLine {
   everyHours: number | null;
   /** 1..365. */
   durationDays: number | null;
+  /** Reduced Markdown, up to `PRESCRIPTION_LINE_INSTRUCTIONS_MAX_LENGTH`. */
   instructions: string | null;
   /** `DoseReference.id` the line was proposed from, when it was. */
   doseReferenceId?: string | null;
@@ -92,6 +106,7 @@ export interface Prescription {
   vetUserId: number;
   vetName: string | null;
   lines: PrescriptionLine[];
+  /** Reduced Markdown, up to `PRESCRIPTION_GENERAL_INSTRUCTIONS_MAX_LENGTH`. */
   generalInstructions: string | null;
   status: PrescriptionStatus;
   annulReason: string | null;

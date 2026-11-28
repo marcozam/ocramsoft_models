@@ -471,6 +471,8 @@ Expense (Gasto / GastoProgramado) line types are not shared here; their presenta
 
 Also in 4.63.0: `ActiveIngredient.riskGroup` may be `null` (non-controlled ingredients); `PrescriptionLine` gains optional `doseReferenceId`, `catalogVersion`, `doseModified`.
 
+In 5.16.0 (formatted instructions): `PRESCRIPTION_GENERAL_INSTRUCTIONS_MAX_LENGTH` (4000, `Receta.IndicacionesGenerales nvarchar(4000)`) and `PRESCRIPTION_LINE_INSTRUCTIONS_MAX_LENGTH` (1000, `RecetaDetalle.Indicaciones nvarchar(1000)`). `generalInstructions` and a line's `instructions` are reduced Markdown, plain text on the wire: bold `**`, italic `*`, underline `++`, `-` and `1.` lists.
+
 ### Diagnosis catalog (v4.64.0, `diagnosis.ts`, new file)
 
 | Type | Notes |
