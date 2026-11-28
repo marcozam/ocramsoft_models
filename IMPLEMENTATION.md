@@ -527,6 +527,15 @@ A suggestion never writes `ProductoPrincipioActivo` or the inventory unit by its
 | `MedicalTestCancellationReason` | `ordered_by_mistake`, `duplicate`, `owner_declined`, `unsuitable_sample`, `other` (needs a note) |
 | `CancelMedicalTestRequest` | Body of `POST /veterinarian/tests/:testId/cancel` |
 
+### Live dictation transcript (v5.18.0; main twin v5.15.2, `health-record.ts`)
+
+| Type | Notes |
+|---|---|
+| `ConsultDictationLiveFields` | Multipart fields of `POST /veterinarian/records/:recordId/dictations/live-transcript` (`file` = a self-contained piece, `ownerNotified` = true, optional `previous` text) |
+| `ConsultDictationLiveTranscript` | Its response: `text` of the piece; nothing is stored |
+| `ConsultDictationDraftRequest` | Optional body of `…/ai-draft`: `transcript` made while recording; the draft reads it instead of the audio and stores it |
+| `CONSULT_DICTATION_LIVE_MAX_BYTES` (4 MB) | Largest piece |
+
 ## Breaking Change Log
 
 | Change | Reason |
